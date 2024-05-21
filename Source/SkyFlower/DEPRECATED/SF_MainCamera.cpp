@@ -2,7 +2,7 @@
 #include "SF_Player.h"
 //#include "SF_EnemyBase.h"
 #include "SF_GameMode.h"
-#include "DebugHelpers.h"
+#include "../DebugHelpers.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"

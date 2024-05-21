@@ -6,7 +6,7 @@
 #include "SF_MovementInput.h"
 #include "SF_PlayerController.h"
 #include "Kismet/GameplayStatics.h"
-#include "DebugHelpers.h"
+#include "../DebugHelpers.h"
 
 ASF_Player::ASF_Player()
 {

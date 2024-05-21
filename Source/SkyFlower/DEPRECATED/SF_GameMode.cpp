@@ -11,10 +11,8 @@
 #include "SF_GameMode.h"
 #include "SF_Player.h"
 #include "SF_PlayerController.h"
-#include "DebugHelpers.h"
+#include "../DebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
-
-using namespace Debug;
 
 
 ASF_GameMode::ASF_GameMode()

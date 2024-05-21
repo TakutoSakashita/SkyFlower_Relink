@@ -4,7 +4,7 @@
 #include "SF_GameMode.h"
 //#include "SF_EnemyBase.h"
 //#include "SF_FunctionLibrary.h"
-#include "DebugHelpers.h"
+#include "../DebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
 
 

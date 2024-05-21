@@ -14,7 +14,7 @@
 #include "Components/InputComponent.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "DebugHelpers.h"
+#include "../DebugHelpers.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
 

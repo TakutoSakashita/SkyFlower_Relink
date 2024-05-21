@@ -1,7 +1,7 @@
 #include "SF_CharacterBase.h"
 //#include "SF_WeaponBase.h"
 //#include "SF_Shield.h"
-#include "DebugHelpers.h"
+#include "../DebugHelpers.h"
 
 ASF_CharacterBase::ASF_CharacterBase()
 	//: WeaponActor(nullptr)
