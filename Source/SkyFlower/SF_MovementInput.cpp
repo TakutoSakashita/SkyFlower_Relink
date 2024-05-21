@@ -9,7 +9,8 @@
 
 #include "SF_MovementInput.h"
 #include "SF_Player.h"
-//#include "SF_MainCamera.h"
+#include "SF_MainCamera.h"
+#include "SF_GameMode.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -50,8 +51,7 @@ void USF_MovementInput::MoveForward(const float InValue)
 	//UE_LOG(LogTemp, Warning, TEXT("Forward: %f"), SF_Player->GetActorUpVector());
 
 	// “ü—Í•ûŒü‚ÉˆÚ“®
-	//m_pCharacter->AddMovementInput(GetMainCamera()->GetActorForwardVector(), InValue);
-	m_pCharacter->AddMovementInput(m_pCharacter->GetActorForwardVector(), InValue);
+	m_pCharacter->AddMovementInput(GetMainCamera()->GetActorForwardVector(), InValue);
 
 	// ‰ñ“]
 	CharacterRotate();
@@ -63,8 +63,7 @@ void USF_MovementInput::MoveRight(const float InValue)
 	if (!m_pCharacter) return;
 
 	// “ü—Í•ûŒü‚ÉˆÚ“®
-	//m_pCharacter->AddMovementInput(GetMainCamera()->GetActorRightVector(), InValue);
-	m_pCharacter->AddMovementInput(m_pCharacter->GetActorRightVector(), InValue);
+	m_pCharacter->AddMovementInput(GetMainCamera()->GetActorRightVector(), InValue);
 
 	// ‰ñ“]
 	CharacterRotate();
@@ -130,20 +129,20 @@ void USF_MovementInput::CharacterRotate() const
 	}
 }
 
-/////////////////////////////FORCEINLINE
-//ASF_GameMode* USF_MoveInput::GetGameMode() const
-//{
-//	return Cast<ASF_GameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-//}
-//
-//ASF_MainCamera* USF_MoveInput::GetMainCamera() const
-//{
-//	if (!GetGameMode()) return nullptr;
-//	return GetGameMode()->GetMainCamera();
-//}
-//
-//ASF_Player* USF_MoveInput::GetPlayerCharacter() const
-//{
-//	if (!GetGameMode()) return nullptr;
-//	return GetGameMode()->GetPlayerCharacter();
-//}
+///////////////////////////FORCEINLINE
+ASF_GameMode* USF_MovementInput::GetGameMode() const
+{
+	return Cast<ASF_GameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+}
+
+ASF_MainCamera* USF_MovementInput::GetMainCamera() const
+{
+	if (!GetGameMode()) return nullptr;
+	return GetGameMode()->GetMainCamera();
+}
+
+ASF_Player* USF_MovementInput::GetPlayerCharacter() const
+{
+	if (!GetGameMode()) return nullptr;
+	return GetGameMode()->GetPlayerCharacter();
+}

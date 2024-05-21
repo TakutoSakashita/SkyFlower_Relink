@@ -8,7 +8,7 @@
 
 
 class ASF_Player;
-//class ASF_MainCamera;
+class ASF_MainCamera;
 
 UCLASS()
 class SKYFLOWER_API ASF_PlayerController : public APlayerController
@@ -53,12 +53,12 @@ private:
 	///////////////////////////// custom variable
 protected:
 	ASF_Player* m_pCharacter;
-	//ASF_MainCamera* m_pCamera;
+	ASF_MainCamera* m_pCamera;
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "SF_GameMode")
 	void SetPlayerCharacter(ASF_Player* const InPlayerCharacter) { m_pCharacter = InPlayerCharacter; }
 
-	//UFUNCTION(BlueprintCallable, Category = "SF_GameMode")
-	//void SetMainCamera(ASF_MainCamera* const InMainCamera) { m_pCamera = InMainCamera; }
+	UFUNCTION(BlueprintCallable, Category = "SF_GameMode")
+	void SetMainCamera(ASF_MainCamera* const InMainCamera) { m_pCamera = InMainCamera; }
 };

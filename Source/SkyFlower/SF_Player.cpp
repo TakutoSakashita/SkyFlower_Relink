@@ -1,6 +1,6 @@
 #include "SF_Player.h"
 //#include "SF_EnemyBase.h"
-//#include "SF_MainCamera.h"
+#include "SF_MainCamera.h"
 //#include "SF_AttackInput.h"
 #include "SF_GameMode.h"
 #include "SF_MovementInput.h"
@@ -21,11 +21,11 @@ void ASF_Player::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//if (ASF_GameMode* SF_GameMode =
-	//	Cast<ASF_GameMode>(UGameplayStatics::GetGameMode(GetWorld())))
-	//{
-	//	SF_GameMode->SetPlayerCharacter(this);
-	//}
+	if (ASF_GameMode* SF_GameMode =
+		Cast<ASF_GameMode>(UGameplayStatics::GetGameMode(GetWorld())))
+	{
+		SF_GameMode->SetPlayerCharacter(this);
+	}
 
 	if (ASF_PlayerController* CustomController =
 		Cast<ASF_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0))) {

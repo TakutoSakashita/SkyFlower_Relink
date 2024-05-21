@@ -13,8 +13,8 @@
 #include "Components/ActorComponent.h"
 #include "SF_MovementInput.generated.h"
 
-//class ASF_GameMode;
-//class ASF_MainCamera;
+class ASF_GameMode;
+class ASF_MainCamera;
 class ASF_Player;
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
@@ -53,9 +53,9 @@ private:
 	void AddForce(const FVector InDirection);
 
 	////////////////////////////////////////// Getä÷êî
-	//FORCEINLINE ASF_GameMode* GetGameMode() const;
-	//
-	//FORCEINLINE ASF_MainCamera* GetMainCamera() const;
+	FORCEINLINE ASF_GameMode* GetGameMode() const;
+	
+	FORCEINLINE ASF_MainCamera* GetMainCamera() const;
 
-	//FORCEINLINE ASF_Player* GetPlayerCharacter() const;
+	FORCEINLINE ASF_Player* GetPlayerCharacter() const;
 };

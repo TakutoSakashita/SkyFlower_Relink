@@ -20,7 +20,7 @@ using namespace Debug;
 ASF_GameMode::ASF_GameMode()
 	: PlayerCharacter(nullptr)
 	//, EnemyManager(nullptr)
-	//, MainCamera(nullptr)
+	, MainCamera(nullptr)
 	//, LockOnEnemy(nullptr)
 	, bIsInHitStop(false)
 	, HitStopSpeed(0.5f)

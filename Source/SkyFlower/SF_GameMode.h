@@ -15,7 +15,7 @@
 
 //class USF_EnemyManager;
 class ASF_Player;
-//class ASF_MainCamera;
+class ASF_MainCamera;
 
 UCLASS()
 class SKYFLOWER_API ASF_GameMode : public AGameModeBase
@@ -48,8 +48,8 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "GameMode")
 	ASF_Player* PlayerCharacter;
 
-	//UPROPERTY(VisibleAnywhere, Category = "GameMode")
-	//ASF_MainCamera* MainCamera;
+	UPROPERTY(VisibleAnywhere, Category = "GameMode")
+	ASF_MainCamera* MainCamera;
 	//
 	//UPROPERTY(VisibleAnywhere, Category = "GameMode")
 	//ASF_EnemyBase* LockOnEnemy;
@@ -58,12 +58,12 @@ public:
 	void SetPlayerCharacter(ASF_Player* const InPlayerCharacter) { PlayerCharacter = InPlayerCharacter; }
 	//USF_EnemyManager* GetEnemyManager() const { return EnemyManager; }
 	//
-	//void SetMainCamera(ASF_MainCamera* const InMainCamera) { MainCamera = InMainCamera; }
+	void SetMainCamera(ASF_MainCamera* const InMainCamera) { MainCamera = InMainCamera; }
 	//
-	//UFUNCTION(BlueprintCallable, Category = "SF_GameMode")
-	//ASF_Player* GetPlayerCharacter() const { return PlayerCharacter; }
-	//UFUNCTION(BlueprintCallable, Category = "SF_GameMode")
-	//ASF_MainCamera* GetMainCamera() const { return MainCamera; }
+	UFUNCTION(BlueprintCallable, Category = "SF_GameMode")
+	ASF_Player* GetPlayerCharacter() const { return PlayerCharacter; }
+	UFUNCTION(BlueprintCallable, Category = "SF_GameMode")
+	ASF_MainCamera* GetMainCamera() const { return MainCamera; }
 	//
 	//void SetLockOnEnemy(ASF_EnemyBase* const InEnemy) { LockOnEnemy = InEnemy; }
 	//UFUNCTION(BlueprintCallable, Category = "SF_GameMode")

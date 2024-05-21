@@ -1,7 +1,7 @@
 #include "SF_PlayerController.h"
 #include "SF_Player.h"
-//#include "SF_MainCamera.h"
-//#include "SF_GameMode.h"
+#include "SF_MainCamera.h"
+#include "SF_GameMode.h"
 //#include "SF_EnemyBase.h"
 //#include "SF_FunctionLibrary.h"
 #include "DebugHelpers.h"
@@ -10,7 +10,7 @@
 
 ASF_PlayerController::ASF_PlayerController()
 	:m_pCharacter(nullptr)
-	//, m_pCamera(nullptr)
+	, m_pCamera(nullptr)
 {
 }
 
@@ -23,10 +23,10 @@ void ASF_PlayerController::BeginPlay()
 	m_pCharacter = Cast<ASF_Player>(pPawn);
 	ensure(m_pCharacter != nullptr);
 
-	//ASF_GameMode* const GameMode =
-	//	Cast<ASF_GameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-	//ensure(GameMode != nullptr);
-	//m_pCamera = GameMode->GetMainCamera();
+	ASF_GameMode* const GameMode =
+		Cast<ASF_GameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	ensure(GameMode != nullptr);
+	m_pCamera = GameMode->GetMainCamera();
 }
 
 void ASF_PlayerController::SetupInputComponent()
@@ -55,14 +55,14 @@ void ASF_PlayerController::SetupInputComponent()
 ///////////////////////// camera
 void ASF_PlayerController::LookUp(const float InValue)
 {
-	//if (!m_pCamera) return;
-	//m_pCamera->AddPitchRotation(InValue);
+	if (!m_pCamera) return;
+	m_pCamera->AddPitchRotation(InValue);
 }
 
 void ASF_PlayerController::Turn(const float InValue)
 {
-	//if (!m_pCamera) return;
-	//m_pCamera->AddYawRotation(InValue);
+	if (!m_pCamera) return;
+	m_pCamera->AddYawRotation(InValue);
 
 }
 
