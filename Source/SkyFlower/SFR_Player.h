@@ -7,6 +7,10 @@
 #include "SFR_Player.generated.h"
 
 class USFR_InputHandlerComponent;
+class UCapsuleComponent;
+class USkeletalMeshComponent;
+class USFR_MoveComponent;
+class USFR_ActionComponent;
 
 UCLASS()
 class SKYFLOWER_API ASFR_Player : public APawn
@@ -22,8 +26,22 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	
 	///////////////// custom parameter
+public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	USFR_InputHandlerComponent* InputHandler;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	USFR_MoveComponent* MoveComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	USFR_ActionComponent* ActionComponent;
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	USFR_InputHandlerComponent* InputComp;
+	UCapsuleComponent* CapsuleComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	USkeletalMeshComponent* SkeletalMeshComponent;
 };

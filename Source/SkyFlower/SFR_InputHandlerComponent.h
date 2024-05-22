@@ -6,8 +6,26 @@
 #include "Components/ActorComponent.h"
 #include "SFR_InputHandlerComponent.generated.h"
 
+
+UENUM(BlueprintType)
+enum class EInputState : uint8
+{
+	None,
+	
+	Both_enable,
+	Move_enable,
+	Action_enable,
+	Both_disable,
+	
+	ElementsNum,
+};
+
+
+// forward declaration
 class USFR_MoveComponent;
 class USFR_ActionComponent;
+class ASFR_PlayerCamera;
+class ASFR_Player;
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class SKYFLOWER_API USFR_InputHandlerComponent : public UActorComponent
@@ -27,12 +45,24 @@ public:
 	void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent);
 	void Initialize(AActor* player);
 
+	void MoveForward(float Value);
+	void MoveRight(float Value);
+	void Turn(float Value);
+	void LookUp(float Value);
+
+
 	///////////////// custom parameter
-private:
+public:
 	UPROPERTY()
 	USFR_MoveComponent* MoveComponent;
 
 	UPROPERTY()
 	USFR_ActionComponent* ActionComponent;
+
+	UPROPERTY()
+	ASFR_Player* Player;
+
+	UPROPERTY()
+	ASFR_PlayerCamera* Camera;
 
 };

@@ -9,7 +9,7 @@ void ASFR_PlayerController::BeginPlay()
 {
     Super::BeginPlay();
 
-    // Spawn the custom CameraActor
+    // Spawn the custom Camera
     FActorSpawnParameters SpawnParams;
     SpawnParams.Owner = this;
 
@@ -18,7 +18,7 @@ void ASFR_PlayerController::BeginPlay()
 
     if (CameraActor)
     {
-        // Set the CameraActor to follow the player
+        // Set the Camera to follow the player
         AActor* PlayerPawn = GetPawn();
         if (PlayerPawn)
         {
@@ -32,20 +32,9 @@ void ASFR_PlayerController::BeginPlay()
 
 }
 
-void ASFR_PlayerController::Turn(float Rate)
-{
-    AddYawInput(Rate);
-}
-
-void ASFR_PlayerController::LookUp(float Rate)
-{
-    AddPitchInput(Rate);
-}
-
-void ASFR_PlayerController::SetupInputComponent()
-{
-    Super::SetupInputComponent();
-
-    InputComponent->BindAxis("Turn", this, &ASFR_PlayerController::Turn);
-    InputComponent->BindAxis("LookUp", this, &ASFR_PlayerController::LookUp);
-}
+//void ASFR_PlayerController::SetupInputComponent()
+//{
+//    Super::SetupInputComponent();
+//
+//
+//}

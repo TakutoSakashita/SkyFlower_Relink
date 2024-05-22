@@ -7,7 +7,7 @@
 #include "SFR_PlayerCamera.generated.h"
 
 UCLASS()
-class SKYFLOWER_API ASFR_PlayerCamera : public AActor
+class SKYFLOWER_API ASFR_PlayerCamera : public APawn
 {
 	GENERATED_BODY()
 
@@ -19,7 +19,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	///////////////// custom function
+
 
 	///////////////// custom parameter
 public:
@@ -32,29 +32,21 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	class UArrowComponent* CameraArrowMain;
 
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
-	//class USpringArmComponent* SpringArmLeft;
-
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
-	//class UCameraComponent* CameraLeft;
-
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
-	//class UArrowComponent* CameraArrowLeft;
-
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
-	//class USpringArmComponent* SpringArmRight;
-
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
-	//class UCameraComponent* CameraRight;
-
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
-	//class UArrowComponent* CameraArrowRight;
-
+	///////////////// custom function
+public:
 	UFUNCTION(BlueprintCallable, Category = "Camera")
 	void SetFollowTarget(AActor* Target);
 
 	UFUNCTION(BlueprintCallable, Category = "Camera")
 	UCameraComponent* GetMainCamera() const { return CameraMain; }
+
+	UFUNCTION(BlueprintCallable, Category = "Camera")
+	void Turn(float value);
+
+	UFUNCTION(BlueprintCallable, Category = "Camera")
+	void LookUp(float value);
+
+
 
 private:
 	AActor* FollowTarget;

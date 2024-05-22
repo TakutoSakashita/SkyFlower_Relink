@@ -2,12 +2,13 @@
 
 
 #include "SFR_MoveComponent.h"
+#include "SFR_InputHandlerComponent.h"
+#include "SFR_PlayerCamera.h"
+#include "DebugHelpers.h"
 
-// Sets default values for this component's properties
+
 USFR_MoveComponent::USFR_MoveComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
 	// ...
@@ -20,7 +21,28 @@ void USFR_MoveComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
+
+}
+
+void USFR_MoveComponent::SwitchStateByKey(FString StateKey)
+{
+	Super::SwitchStateByKey(StateKey);
+}
+
+void USFR_MoveComponent::InitStateManager()
+{
+	Super::InitStateManager();
+}
+
+void USFR_MoveComponent::InitializeStates()
+{
+	Super::InitializeStates();
+}
+
+void USFR_MoveComponent::Initialize(ASFR_Player* player, USFR_InputHandlerComponent* inputHandler)
+{
+	PlayerRef = player;
+	InputHandler = inputHandler;
 }
 
 
@@ -29,6 +51,30 @@ void USFR_MoveComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	//updateMovement()
+
+
+
+	//updateGravity()
 }
 
+//
+//void USFR_MoveComponent::MoveForward(float Value)
+//{
+//
+//	if (!IsValid(InputHandler->PlayerPawn)) return;
+//	const FVector Direction = FRotationMatrix(InputHandler->Camera->GetActorRotation()).GetScaledAxis(EAxis::X);
+//	FVector Offset = Direction * Value * (/*CurrentVelocity*/ 1.f * /*DeltaTime*/ 1.f);
+//	InputHandler->PlayerPawn->AddActorWorldOffset(Offset);
+//	Debug::PrintFixedLine("ASFR_PlayerCamera::MoveForward  " + Direction.ToString(), 110);
+//}
+//
+//void USFR_MoveComponent::MoveRight(float Value)
+//{
+//
+//	if (!IsValid(InputHandler->PlayerPawn)) return;
+//	const FVector Direction = FRotationMatrix(InputHandler->Camera->GetActorRotation()).GetScaledAxis(EAxis::Y);
+//	FVector Offset = Direction * Value * (/*CurrentVelocity*/ 1.f * /*DeltaTime*/ 1.f);
+//	InputHandler->PlayerPawn->AddActorWorldOffset(Offset);
+//	Debug::PrintFixedLine("ASFR_PlayerCamera::MoveRight  " + Direction.ToString(), 120);
+//}

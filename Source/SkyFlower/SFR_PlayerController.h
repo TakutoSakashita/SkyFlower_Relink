@@ -17,16 +17,15 @@ class SKYFLOWER_API ASFR_PlayerController : public APlayerController
 	///////////////// override function
 protected:
 	virtual void BeginPlay() override;
-	virtual void SetupInputComponent() override;
+	//virtual void SetupInputComponent() override;
 
 	///////////////// custom function
-protected:
-	void Turn(float Rate);
-	void LookUp(float Rate);
+
 
 	///////////////// custom parameter
 private:
 	ASFR_PlayerCamera* CameraActor;
 
-
+public:
+	ASFR_PlayerCamera* GetCamera() const { return CameraActor; }
 };

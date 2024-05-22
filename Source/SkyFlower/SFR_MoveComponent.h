@@ -4,25 +4,60 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "StateMachine/SFR_StateMachineComponent.h"
 #include "SFR_MoveComponent.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class SKYFLOWER_API USFR_MoveComponent : public UActorComponent
+UENUM(BlueprintType)
+enum class EMovementState : uint8
+{
+	None,
+
+	Walk,
+	Jump,
+	Float,
+	Dash, // on land
+	Glide, // in air
+	Dive, // flying down
+
+
+	ElementsNum,
+};
+
+// forward declaration
+class USFR_InputHandlerComponent;
+class ASFR_Player;
+
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
+class SKYFLOWER_API USFR_MoveComponent : public USFR_StateMachineComponent
 {
 	GENERATED_BODY()
 
 	///////////////// override function
-public:	
+public:
 	USFR_MoveComponent();
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 protected:
 	virtual void BeginPlay() override;
 
+public:
+	virtual void SwitchStateByKey(FString StateKey) override;
 
-///////////////// custom function
+	virtual void InitStateManager() override;
 
-///////////////// custom parameter
+protected:
+	virtual void InitializeStates() override;
+
+	///////////////// custom function
+
+public:
+	void Initialize(ASFR_Player* player, USFR_InputHandlerComponent* inputHandler);
+
+
+	///////////////// custom parameter
+public:
+	USFR_InputHandlerComponent* InputHandler = nullptr;
+	ASFR_Player* PlayerRef = nullptr;
 
 };
