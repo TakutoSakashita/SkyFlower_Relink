@@ -42,7 +42,7 @@ namespace Debug {
 	}
 
 	//to avoid conflict, message orderKey start from 10 
-	static void PrintFixedLine(const FString& Mng, int32 InKey = 10) {
+    static void PrintFixedLine(const FString& Mng, int32 InKey = 10) {
 #ifdef DEBUG_LOG_ENABLE
 		if (GEngine)
 		{

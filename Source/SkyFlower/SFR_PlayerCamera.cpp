@@ -55,8 +55,8 @@ void ASFR_PlayerCamera::SetFollowTarget(AActor* Target)
 
 void ASFR_PlayerCamera::Turn(float Value)
 {
-
-	Debug::PrintFixedLine("ASFR_PlayerCamera::Turn  ", 104);
+	if (bDebugLog)
+		Debug::PrintFixedLine("ASFR_PlayerCamera::Turn  ", 104);
 
 	//AddControllerYawInput(Value);
 
@@ -67,7 +67,8 @@ void ASFR_PlayerCamera::Turn(float Value)
 
 void ASFR_PlayerCamera::LookUp(float Value)
 {
-	Debug::PrintFixedLine("ASFR_PlayerCamera::LookUp  ", 105);
+	if (bDebugLog)
+		Debug::PrintFixedLine("ASFR_PlayerCamera::LookUp  ", 105);
 
 	//AddControllerPitchInput(Value);
 

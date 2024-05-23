@@ -3,8 +3,11 @@
 
 #include "SFR_MoveComponent.h"
 #include "SFR_InputHandlerComponent.h"
-#include "SFR_PlayerCamera.h"
 #include "DebugHelpers.h"
+#include "SFR_PlayerController.h"
+#include "SFR_PlayerCamera.h"
+#include "SFR_Player.h"
+#include "Kismet/GameplayStatics.h"
 
 
 USFR_MoveComponent::USFR_MoveComponent()
@@ -43,6 +46,7 @@ void USFR_MoveComponent::Initialize(ASFR_Player* player, USFR_InputHandlerCompon
 {
 	PlayerRef = player;
 	InputHandler = inputHandler;
+	CameraRef = Cast<ASFR_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0))->GetCamera();
 }
 
 
@@ -58,23 +62,26 @@ void USFR_MoveComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 	//updateGravity()
 }
 
-//
-//void USFR_MoveComponent::MoveForward(float Value)
-//{
-//
-//	if (!IsValid(InputHandler->PlayerPawn)) return;
-//	const FVector Direction = FRotationMatrix(InputHandler->Camera->GetActorRotation()).GetScaledAxis(EAxis::X);
-//	FVector Offset = Direction * Value * (/*CurrentVelocity*/ 1.f * /*DeltaTime*/ 1.f);
-//	InputHandler->PlayerPawn->AddActorWorldOffset(Offset);
-//	Debug::PrintFixedLine("ASFR_PlayerCamera::MoveForward  " + Direction.ToString(), 110);
-//}
-//
-//void USFR_MoveComponent::MoveRight(float Value)
-//{
-//
-//	if (!IsValid(InputHandler->PlayerPawn)) return;
-//	const FVector Direction = FRotationMatrix(InputHandler->Camera->GetActorRotation()).GetScaledAxis(EAxis::Y);
-//	FVector Offset = Direction * Value * (/*CurrentVelocity*/ 1.f * /*DeltaTime*/ 1.f);
-//	InputHandler->PlayerPawn->AddActorWorldOffset(Offset);
-//	Debug::PrintFixedLine("ASFR_PlayerCamera::MoveRight  " + Direction.ToString(), 120);
-//}
+void USFR_MoveComponent::MoveForward(float Value)
+{
+	if (!IsValid(PlayerRef)) return;
+	if (!IsValid(CameraRef)) return;
+	const FVector Direction = FRotationMatrix(CameraRef->GetActorRotation()).GetScaledAxis(EAxis::X);
+	FVector Offset = Direction * Value * (/*CurrentVelocity*/ CurrentVelocity * /*DeltaTime*/ 1.f);
+	PlayerRef->AddActorWorldOffset(Offset);
+
+	if (bDebugLog)
+		Debug::PrintFixedLine("ASFR_PlayerCamera::MoveForward  " + Direction.ToString(), 110);
+}
+
+void USFR_MoveComponent::MoveRight(float Value)
+{
+	if (!IsValid(PlayerRef)) return;
+	if (!IsValid(CameraRef)) return;
+	const FVector Direction = FRotationMatrix(CameraRef->GetActorRotation()).GetScaledAxis(EAxis::Y);
+	FVector Offset = Direction * Value * (/*CurrentVelocity*/ CurrentVelocity * /*DeltaTime*/ 1.f);
+	PlayerRef->AddActorWorldOffset(Offset);
+
+	if (bDebugLog)
+		Debug::PrintFixedLine("ASFR_PlayerCamera::MoveRight  " + Direction.ToString(), 120);
+}

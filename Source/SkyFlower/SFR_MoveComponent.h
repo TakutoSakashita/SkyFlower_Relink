@@ -27,6 +27,7 @@ enum class EMovementState : uint8
 // forward declaration
 class USFR_InputHandlerComponent;
 class ASFR_Player;
+class ASFR_PlayerCamera;
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class SKYFLOWER_API USFR_MoveComponent : public USFR_StateMachineComponent
@@ -54,10 +55,17 @@ protected:
 public:
 	void Initialize(ASFR_Player* player, USFR_InputHandlerComponent* inputHandler);
 
+	void MoveForward(float Value);
+	void MoveRight(float Value);
 
 	///////////////// custom parameter
 public:
 	USFR_InputHandlerComponent* InputHandler = nullptr;
 	ASFR_Player* PlayerRef = nullptr;
+	ASFR_PlayerCamera* CameraRef = nullptr;
 
+	float CurrentVelocity = 10.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Debug")
+	bool bDebugLog = false;
 };

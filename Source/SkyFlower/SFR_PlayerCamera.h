@@ -32,6 +32,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	class UArrowComponent* CameraArrowMain;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Debug")
+	bool bDebugLog = false;
+
 	///////////////// custom function
 public:
 	UFUNCTION(BlueprintCallable, Category = "Camera")

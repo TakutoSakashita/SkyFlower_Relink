@@ -24,7 +24,7 @@ void USFR_FloatingState::TickState(float DeltaTime)
 {
 	Super::TickState(DeltaTime);
 
-	Debug::PrintFixedLine("USFR_FloatingState::TickState");
+	Debug::PrintFixedLine("USFR_FloatingState::TickState",100001);
 	//process gravity
 
 }

@@ -13,8 +13,8 @@ enum class EInputState : uint8
 	None,
 	
 	Both_enable,
-	Move_enable,
-	Action_enable,
+	Move_disable,
+	Action_disable,
 	Both_disable,
 	
 	ElementsNum,
@@ -49,10 +49,15 @@ public:
 	void MoveRight(float Value);
 	void Turn(float Value);
 	void LookUp(float Value);
-
+	void Key_E_Pressed();
+	void Key_E_Released();
+	void Shift_Pressed();
 
 	///////////////// custom parameter
 public:
+	UPROPERTY()
+	EInputState InputState = EInputState::Both_enable;
+
 	UPROPERTY()
 	USFR_MoveComponent* MoveComponent;
 
@@ -64,5 +69,8 @@ public:
 
 	UPROPERTY()
 	ASFR_PlayerCamera* Camera;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Debug")
+	bool bDebugLog = false;
 
 };

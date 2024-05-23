@@ -47,8 +47,10 @@ void USFR_InputHandlerComponent::SetupPlayerInputComponent(UInputComponent* Play
 	PlayerInputComponent->BindAxis("Turn", this, &USFR_InputHandlerComponent::Turn);
 	PlayerInputComponent->BindAxis("LookUp", this, &USFR_InputHandlerComponent::LookUp);
 
+	PlayerInputComponent->BindAction("Key_E", IE_Pressed, this, &USFR_InputHandlerComponent::Key_E_Pressed);
+	PlayerInputComponent->BindAction("Key_E", IE_Released, this, &USFR_InputHandlerComponent::Key_E_Released);
 
-
+	PlayerInputComponent->BindAction("Shift", IE_Pressed, this, &USFR_InputHandlerComponent::Shift_Pressed);
 
 }
 
@@ -58,7 +60,8 @@ void USFR_InputHandlerComponent::TickComponent(float DeltaTime, ELevelTick TickT
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	Debug::PrintFixedLine("USFR_InputHandlerComponent::TickComponent", 101);
+	if (bDebugLog)
+		Debug::PrintFixedLine("USFR_InputHandlerComponent::TickComponent", 101);
 
 	if (!IsValid(Camera))
 		Camera = Cast<ASFR_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0))->GetCamera();
@@ -71,13 +74,18 @@ void USFR_InputHandlerComponent::TickComponent(float DeltaTime, ELevelTick TickT
 void USFR_InputHandlerComponent::MoveForward(float Value)
 {
 	if (!IsValid(MoveComponent)) return;
-	//MoveComponent->MoveForward(Value);
+	//check InputState
+	if (InputState == EInputState::Move_disable) return;
+
+	MoveComponent->MoveForward(Value);
 }
 
 void USFR_InputHandlerComponent::MoveRight(float Value)
 {
 	if (!IsValid(MoveComponent)) return;
-	//MoveComponent->MoveRight(Value);
+	if (InputState == EInputState::Move_disable) return;
+
+	MoveComponent->MoveRight(Value);
 }
 
 void USFR_InputHandlerComponent::Turn(float Value)
@@ -92,4 +100,36 @@ void USFR_InputHandlerComponent::LookUp(float Value)
 	if (!IsValid(Camera)) return;
 
 	Camera->LookUp(Value);
+}
+
+void USFR_InputHandlerComponent::Key_E_Pressed()
+{
+	if (!IsValid(MoveComponent)) return;
+	if (InputState == EInputState::Move_disable) return;
+
+	MoveComponent->SwitchStateByKey("Glind");
+
+	Debug::PrintFixedLine("Key_E_Pressed", 120);
+}
+
+void USFR_InputHandlerComponent::Key_E_Released()
+{
+	if (!IsValid(MoveComponent)) return;
+	if (InputState == EInputState::Move_disable) return;
+
+	MoveComponent->SwitchStateByKey("Float");
+
+	Debug::PrintFixedLine("Key_E_Released", 120);
+
+}
+
+void USFR_InputHandlerComponent::Shift_Pressed()
+{
+	if (!IsValid(MoveComponent)) return;
+	if (InputState == EInputState::Move_disable) return;
+
+	MoveComponent->SwitchStateByKey("Dash");
+
+	Debug::PrintFixedLine("Shift_Pressed", 120);
+
 }
