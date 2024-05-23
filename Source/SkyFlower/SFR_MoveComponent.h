@@ -66,6 +66,8 @@ public:
 
 	float CurrentVelocity = 10.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Debug")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bDebugLog = false;
+
+	EMovementState MoveState = EMovementState::Float;
 };

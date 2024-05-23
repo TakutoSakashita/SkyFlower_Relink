@@ -2,7 +2,7 @@
 
 
 #include "SFR_FloatingState.h"
-#include "../DebugHelpers.h"
+
 
 void USFR_FloatingState::OnEnterState()
 {
@@ -18,6 +18,8 @@ void USFR_FloatingState::OnEnterState()
 	//ASFR_Player* PlayerRef = nullptr;
 	//USFR_InputHandlerComponent* InputHandlerRef = nullptr;
 	//USFR_MoveComponent* MoveComponent = nullptr;
+
+	MoveComponent->MoveState = EMovementState::Float;
 }
 
 void USFR_FloatingState::TickState(float DeltaTime)

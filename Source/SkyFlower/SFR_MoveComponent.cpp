@@ -54,12 +54,6 @@ void USFR_MoveComponent::Initialize(ASFR_Player* player, USFR_InputHandlerCompon
 void USFR_MoveComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	//updateMovement()
-
-
-
-	//updateGravity()
 }
 
 void USFR_MoveComponent::MoveForward(float Value)

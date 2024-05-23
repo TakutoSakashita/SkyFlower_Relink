@@ -4,19 +4,21 @@
 #include "SFR_StateBase.h"
 #include "../DebugHelpers.h"
 
-//#undef DEBUG_LOG_ENABLE
+#define LOG 0
+#define DEBUG_FIXED(text,num) if(LOG) Debug::PrintFixedLine(text, num)
+#define DEBUG_PRINT(text) if(LOG) Debug::Print(text)
 
 void USFR_StateBase::OnEnterState()
 {
-	Debug::Print("USFR_StateBase::OnEnterState");
+	DEBUG_PRINT("USFR_StateBase::OnEnterState");
 }
 
 void USFR_StateBase::TickState(float DeltaTime)
 {
-	Debug::PrintFixedLine("USFR_StateBase::TickState",10001);
+	DEBUG_FIXED("USFR_StateBase::TickState", 10001);
 }
 
 void USFR_StateBase::OnExitState()
 {
-	Debug::Print("USFR_StateBase::OnExitState");
+	DEBUG_PRINT("USFR_StateBase::OnExitState");
 }
