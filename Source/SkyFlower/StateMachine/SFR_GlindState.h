@@ -20,13 +20,17 @@ public:
 	virtual void OnExitState()override;
 
 	/* enter */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float graidSpeedBias = 1.7f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float graidGravityBias = 0.2f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float graidStopPowerBias = 1.5f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float graidAirControllBias = 1.5f;
 
-	virtual void SetGraidSpeedBias() { moveSpeedBias = graidSpeedBias; }
-	virtual void SetGraidGravityBias() { gravityBias = graidGravityBias; }
-	virtual void SetGraidStopPowerBias() { stopPowerBias = graidStopPowerBias; }
-	virtual void SetGraidAirControlledBias() { airControllBias = graidAirControllBias; }
+	virtual void SetGraidSpeedBias() { MoveComponent->moveSpeedBias = graidSpeedBias; }
+	virtual void SetGraidGravityBias() { MoveComponent->gravityBias = graidGravityBias; }
+	virtual void SetGraidStopPowerBias() { MoveComponent->stopPowerBias = graidStopPowerBias; }
+	virtual void SetGraidAirControlledBias() { MoveComponent->airControllBias = graidAirControllBias; }
 };

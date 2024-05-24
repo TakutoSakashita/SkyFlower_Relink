@@ -46,6 +46,14 @@ void ASFR_PlayerCamera::Tick(float DeltaTime)
 	{
 		SetActorLocation(FollowTarget->GetActorLocation());
 	}
+
+	//update rotation
+	float rotateCorrection = 60.f / (1.0f / DeltaTime);
+	FRotator rotation = this->GetActorRotation();
+	rotation.Pitch = FMath::Clamp(rotation.Pitch + (inputValue.Y * pitch_sensitivity * rotateCorrection), current_pitch_min, current_pitch_max);
+	rotation.Yaw += inputValue.X * yaw_sensitivity * rotateCorrection;
+	float newLength = (-rotation.Pitch - current_pitch_min) / (current_pitch_max - current_pitch_min) * (current_boom_length_max - boom_length_min) + boom_length_min;
+	SpringArmMain->TargetArmLength = newLength;
 }
 
 void ASFR_PlayerCamera::SetFollowTarget(AActor* Target)
@@ -53,7 +61,7 @@ void ASFR_PlayerCamera::SetFollowTarget(AActor* Target)
 	FollowTarget = Target;
 }
 
-void ASFR_PlayerCamera::Turn(float Value)
+void ASFR_PlayerCamera::Turn(float Value)//yaw
 {
 	if (bDebugLog)
 		Debug::PrintFixedLine("ASFR_PlayerCamera::Turn  ", 104);
@@ -63,9 +71,11 @@ void ASFR_PlayerCamera::Turn(float Value)
 	FRotator CameraRotation = GetActorRotation();
 	CameraRotation.Yaw += Value;
 	SetActorRotation(CameraRotation);
+
+	inputValue.X = Value;
 }
 
-void ASFR_PlayerCamera::LookUp(float Value)
+void ASFR_PlayerCamera::LookUp(float Value)//pitch
 {
 	if (bDebugLog)
 		Debug::PrintFixedLine("ASFR_PlayerCamera::LookUp  ", 105);
@@ -75,4 +85,6 @@ void ASFR_PlayerCamera::LookUp(float Value)
 	FRotator CameraRotation = GetActorRotation();
 	CameraRotation.Pitch = FMath::Clamp(CameraRotation.Pitch + Value, -80.0f, 80.0f);// pitch from -80 to 80 degree
 	SetActorRotation(CameraRotation);
+
+	inputValue.Y = Value;
 }

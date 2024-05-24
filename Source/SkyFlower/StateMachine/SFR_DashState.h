@@ -7,7 +7,7 @@
 #include "SFR_DashState.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class SKYFLOWER_API USFR_DashState : public USFR_PlayerStateBase
@@ -16,5 +16,12 @@ class SKYFLOWER_API USFR_DashState : public USFR_PlayerStateBase
 
 	virtual void OnEnterState()override;
 	virtual void TickState(float DeltaTime)override;
-	//virtual void OnExitState()override;
+	virtual void OnExitState()override;
+
+	float airDashSpeed = 20.f;
+	float airDashDeceleration = 14.f;
+	float airJumpPower = 20.f;
+	float airJumpDeceleration = 14.f;
+
+	float timer = 1.0f;
 };

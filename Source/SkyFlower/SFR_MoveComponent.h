@@ -8,6 +8,7 @@
 #include "SFR_MoveComponent.generated.h"
 
 
+
 UENUM(BlueprintType)
 enum class EMovementState : uint8
 {
@@ -58,6 +59,7 @@ public:
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 
+
 	///////////////// custom parameter
 public:
 	USFR_InputHandlerComponent* InputHandler = nullptr;
@@ -70,4 +72,98 @@ public:
 	bool bDebugLog = false;
 
 	EMovementState MoveState = EMovementState::Float;
+
+
+	void AddForwardMovementInput(float InputValue);
+	void AddRightMovementInput(float InputValue);
+
+	/* tick */
+	virtual void UpdateRootMotion(float DeltaTime); //todo
+	virtual void UpdateMove(float DeltaTime); //todo
+	virtual void UpdateGravity(float DeltaTime);//todo
+
+	virtual void UpdateForce(float DeltaTime);
+	virtual void UpdateFly(float DeltaTime);
+	virtual void UpdateRotation(float DeltaTime);
+
+	virtual bool SweepMove(FVector MoveVector, float MoveSpeed);
+	virtual FVector GetAlongWallVector(FVector_NetQuantizeNormal HitNormal, FVector MoveVector);
+	bool UnderCheck();
+	void AddForce(FVector Vector, float Value, float Deceleration);
+
+	/* parameter */
+
+	FVector2D inputValue;
+	FVector2D inputBias;
+	bool bInputFwd;
+	bool bInputRight;
+
+	bool bRootMotion = false;
+	bool bFloat;
+	bool bWire;
+	bool bForce;
+	bool bFly;
+	bool bGraid;
+	bool bDive;
+
+	float moveSpeed = 10.f;
+	float gravity = 5.f;
+	float stopPower = 0.01f;
+	float airControll = 0.02f;
+
+	float moveSpeedBias = 1.f;
+	float gravityBias = 1.f;
+	float stopPowerBias = 1.f;
+	float airControllBias = 1.f;
+
+	float airborneTime = 0.f;
+
+	float friction = 7.f;
+	float rotationSpeed = 15.f;
+
+	virtual void ResetSpeedBias() { moveSpeedBias = 1.f; }
+	virtual void ResetGravityBias() { gravityBias = 1.f; }
+	virtual void ResetStopPowerBias() { stopPowerBias = 1.f; }
+	virtual void ResetAirControlledBias() { airControllBias = 1.f; }
+	virtual void ResetAirbornTime() { airborneTime = 0.f; }
+
+	float beforeGravityAcceleration;
+
+	FVector forceVector;
+	float forceValue;
+	float forceDecelerationValue;
+
+	float currentFlyVelocityValue;
+	float flyDurationTimer;
+	FVector flyVec;
+
+	//FVector wireMoveVector;
+	//float wireMoveSpeed;
+	//float wireMoveTime;
+	//float currentWireMoveTime;
+
+	FVector2D beforeMoveVector;
+	FVector beforePos;
+
+	float diveSpeedBias = 3.5f;
+	float diveGravity = 20.f;
+	float diveThreshold = 5.f;
+	void SetDiveSpeedBias() { moveSpeedBias = diveSpeedBias; }
+
+	float flyVelocityValue = 5.f;
+	float flyZVelocity = 10.f;
+	float flyDuration = 3.f;
+	UCurveFloat* flyCurveZ;
+	UCurveFloat* flyCurveSpeed;
+
+	//float graidSpeedBias = 1.7f;
+	//float graidGravityBias = 0.2f;
+	//float graidStopPowerBias = 1.5f;
+	//float graidAirControllBias = 1.5f;
+
+	//float airDashSpeed = 20.f;
+	//float airDashDeceleration = 14.f;
+	
+	//float airJumpPower = 20.f;
+	//float airJumpDeceleration = 14.f;
 };

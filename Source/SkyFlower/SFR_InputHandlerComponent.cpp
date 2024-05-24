@@ -69,8 +69,6 @@ void USFR_InputHandlerComponent::TickComponent(float DeltaTime, ELevelTick TickT
 }
 
 
-
-
 void USFR_InputHandlerComponent::MoveForward(float Value)
 {
 	if (!IsValid(MoveComponent)) return;

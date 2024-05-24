@@ -16,8 +16,8 @@ void USFR_GlindState::OnEnterState()
 	ResetAirbornTime();
 
 	//TODO camera work
-	//CameraRef->SetGraidBoomLength();
-	//CameraRef->ResetPitch();
+	CameraRef->SetGraidBoomLength();
+	CameraRef->ResetPitch();
 }
 
 void USFR_GlindState::TickState(float DeltaTime)
@@ -43,6 +43,5 @@ void USFR_GlindState::OnExitState()
 	ResetAirbornTime();
 
 	//TODO camera work
-	//CameraRef->ResetPitch();
-	//CameraRef->ResetBoomLength();
+	CameraRef->ResetBoomLength();
 }

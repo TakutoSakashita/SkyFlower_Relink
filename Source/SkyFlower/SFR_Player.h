@@ -38,10 +38,11 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USFR_ActionComponent* ActionComponent;
 
-protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UCapsuleComponent* CapsuleComponent;
+	UCapsuleComponent* GetCapsule()const { return CapsuleComponent; }
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USkeletalMeshComponent* SkeletalMeshComponent;
+	USkeletalMeshComponent* GetMesh()const { return SkeletalMeshComponent; }
 };

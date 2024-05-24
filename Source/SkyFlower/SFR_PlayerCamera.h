@@ -50,7 +50,38 @@ public:
 	void LookUp(float value);
 
 
+	float deadZone = 0.05f;	
+	float pitch_sensitivity = 2.f;	
+	float yaw_sensitivity = 2.f;
+
+	float pitch_min = -40.f;
+	float current_pitch_min = -40.f;
+	float dive_pitch_min = -40.f;
+
+	float pitch_max = 65.f;
+	float current_pitch_max = 65.f;
+	float dive_pitch_max = 30.f;
+
+	float boom_length_min = 180.f;
+
+	float current_boom_length_max = 500.f;
+	float boom_length_max = 500.f;
+	float dive_boom_length_max = 400.f;
+	float graid_boom_length_max = 520.f;
+	float fly_boom_length_max = 480.f;
+
+
+	void SetDiveBoomLength() { current_boom_length_max = dive_boom_length_max; }
+	void SetDivePitch() { current_pitch_min = dive_pitch_min; current_pitch_max = dive_pitch_max; }
+
+	void SetGraidBoomLength() { current_boom_length_max = graid_boom_length_max; }
+	void SetFlyBoomLength() { current_boom_length_max = fly_boom_length_max; }
+
+	void ResetBoomLength() { current_boom_length_max = boom_length_max; }
+	void ResetPitch() { current_pitch_min = pitch_min; current_pitch_max = pitch_max; }
 
 private:
 	AActor* FollowTarget;
+
+	FVector2D inputValue;
 };

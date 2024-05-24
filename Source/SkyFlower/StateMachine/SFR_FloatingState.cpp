@@ -20,6 +20,16 @@ void USFR_FloatingState::OnEnterState()
 	//USFR_MoveComponent* MoveComponent = nullptr;
 
 	MoveComponent->MoveState = EMovementState::Float;
+
+	ResetSpeedBias();
+	ResetGravityBias();
+	ResetStopPowerBias();
+	ResetAirControlledBias();
+	ResetAirbornTime();
+
+	//TODO camera work
+	CameraRef->ResetPitch();
+	CameraRef->ResetBoomLength();
 }
 
 void USFR_FloatingState::TickState(float DeltaTime)
@@ -29,4 +39,11 @@ void USFR_FloatingState::TickState(float DeltaTime)
 	Debug::PrintFixedLine("USFR_FloatingState::TickState",100001);
 	//process gravity
 
+
+	UpdateRootMotion(DeltaTime);
+	UpdateMove(DeltaTime);
+	UpdateForce(DeltaTime);
+	UpdateFly(DeltaTime);
+	UpdateGravity(DeltaTime);
+	UpdateRotation(DeltaTime);
 }
