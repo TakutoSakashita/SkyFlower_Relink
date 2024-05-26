@@ -34,16 +34,6 @@ public:
 	//virtual void TickState(float DeltaTime)override;
 	//virtual void OnExitState()override;
 
-	virtual void UpdateRootMotion(float DeltaTime); //todo
-	virtual void UpdateMove(float DeltaTime);	//todo
-	virtual void UpdateForce(float DeltaTime); //todo
-	virtual void UpdateFly(float DeltaTime); //todo
-	virtual void UpdateGravity(float DeltaTime); //todo
-	virtual void UpdateRotation(float DeltaTime); //todo
-
-	bool SweepMove(FVector MoveVector, float MoveSpeed);
-	FVector GetAlongWallVector(FVector_NetQuantizeNormal HitNormal, FVector MoveVector);
-
 	virtual void ResetSpeedBias() { MoveComponent->ResetSpeedBias(); }
 	virtual void ResetGravityBias() { MoveComponent->ResetGravityBias(); }
 	virtual void ResetStopPowerBias() { MoveComponent->ResetStopPowerBias(); }

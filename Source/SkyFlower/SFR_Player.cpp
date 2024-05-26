@@ -34,7 +34,7 @@ void ASFR_Player::BeginPlay()
 	Super::BeginPlay();
 
 	InputHandler->Initialize(this);
-	MoveComponent->Initialize(this, InputHandler);
+	MoveComponent->Initialize(this);
 	MoveComponent->InitStateManager();
 }
 

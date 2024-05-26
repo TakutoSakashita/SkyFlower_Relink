@@ -45,10 +45,10 @@ void USFR_MoveComponent::InitializeStates()
 	Super::InitializeStates();
 }
 
-void USFR_MoveComponent::Initialize(ASFR_Player* player, USFR_InputHandlerComponent* inputHandler)
+void USFR_MoveComponent::Initialize(ASFR_Player* player)
 {
 	PlayerRef = player;
-	InputHandler = inputHandler;
+	InputHandler = player->GetInputHandler();
 	CameraRef = Cast<ASFR_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0))->GetCamera();
 }
 
@@ -57,37 +57,38 @@ void USFR_MoveComponent::Initialize(ASFR_Player* player, USFR_InputHandlerCompon
 void USFR_MoveComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	UpdateRootMotion(DeltaTime);
+	UpdateMove(DeltaTime);
+	//UpdateGravity(DeltaTime);
+
+	UpdateForce(DeltaTime);
+	//UpdateFly(DeltaTime);
+	UpdateRotation(DeltaTime);//update player rotation to move direction
 }
 
-void USFR_MoveComponent::MoveForward(float Value)
-{
-	if (!IsValid(PlayerRef)) return;
-	if (!IsValid(CameraRef)) return;
+//void USFR_MoveComponent::MoveForward(float Value)
+//{
+//	if (!IsValid(PlayerRef)) return;
+//	if (!IsValid(CameraRef)) return;
+//	const FVector Direction = FRotationMatrix(CameraRef->GetActorRotation()).GetScaledAxis(EAxis::X);
+//	FVector Offset = Direction * Value * (/*CurrentVelocity*/ CurrentVelocity * /*DeltaTime*/ 1.f);
+//	PlayerRef->AddActorWorldOffset(Offset);
+//
+//	if (bDebugLog)
+//		Debug::PrintFixedLine("ASFR_PlayerCamera::MoveForward  " + Direction.ToString(), 110);
+//}
 
-	AddForwardMovementInput(Value);
-
-	//const FVector Direction = FRotationMatrix(CameraRef->GetActorRotation()).GetScaledAxis(EAxis::X);
-	//FVector Offset = Direction * Value * (/*CurrentVelocity*/ CurrentVelocity * /*DeltaTime*/ 1.f);
-	//PlayerRef->AddActorWorldOffset(Offset);
-
-	//if (bDebugLog)
-	//	Debug::PrintFixedLine("ASFR_PlayerCamera::MoveForward  " + Direction.ToString(), 110);
-}
-
-void USFR_MoveComponent::MoveRight(float Value)
-{
-	if (!IsValid(PlayerRef)) return;
-	if (!IsValid(CameraRef)) return;
-
-	AddRightMovementInput(Value);
-
-	//const FVector Direction = FRotationMatrix(CameraRef->GetActorRotation()).GetScaledAxis(EAxis::Y);
-	//FVector Offset = Direction * Value * (/*CurrentVelocity*/ CurrentVelocity * /*DeltaTime*/ 1.f);
-	//PlayerRef->AddActorWorldOffset(Offset);
-
-	//if (bDebugLog)
-	//	Debug::PrintFixedLine("ASFR_PlayerCamera::MoveRight  " + Direction.ToString(), 120);
-}
+//void USFR_MoveComponent::MoveRight(float Value)
+//{
+//	if (!IsValid(PlayerRef)) return;
+//	if (!IsValid(CameraRef)) return;
+//	const FVector Direction = FRotationMatrix(CameraRef->GetActorRotation()).GetScaledAxis(EAxis::Y);
+//	FVector Offset = Direction * Value * (/*CurrentVelocity*/ CurrentVelocity * /*DeltaTime*/ 1.f);
+//	PlayerRef->AddActorWorldOffset(Offset);
+//	if (bDebugLog)
+//		Debug::PrintFixedLine("ASFR_PlayerCamera::MoveRight  " + Direction.ToString(), 120);
+//}
 
 
 
@@ -160,82 +161,86 @@ void USFR_MoveComponent::UpdateRootMotion(float DeltaTime)
 
 void USFR_MoveComponent::UpdateMove(float DeltaTime)
 {
+
 	if (IsValid(CameraRef))
 	{
-		FVector Fwd = FVector(CameraRef->GetActorForwardVector().X, CameraRef->GetActorForwardVector().Y, 0);
-		FVector Right = FVector(CameraRef->GetActorRightVector().X, CameraRef->GetActorRightVector().Y, 0);
+		FVector Fwd = FVector(CameraRef->GetActorForwardVector().X, CameraRef->GetActorForwardVector().Y, 0).GetSafeNormal();
+		FVector Right = FVector(CameraRef->GetActorRightVector().X, CameraRef->GetActorRightVector().Y, 0).GetSafeNormal();
 		FVector2D V = inputBias;
 		V.Normalize();
 		FVector MoveVelocity = Fwd * FMath::Abs(V.Y) * inputBias.Y + Right * FMath::Abs(V.X) * inputBias.X;
 
 		SweepMove(MoveVelocity, moveSpeed * moveSpeedBias * TIME);
+
+		Debug::PrintFixedLine(" moveSpeed : " + LexToString(moveSpeed) + " moveSpeedBias : " + LexToString(moveSpeedBias), 10);
 	}
+
 }
 
-void USFR_MoveComponent::UpdateGravity(float DeltaTime)
-{
-	// Wire移動中
-	if (bWire)return;
-	// 浮遊中
-	if (bFloat) return;
-	// 吹っ飛び中
-	if (bForce)return;
-	// 飛翔中
-	if (bFly)return;
-	// 怯み中
-	//if (character->bInFear)return;
-
-	float gravityAcceleration = 0;
-	if (UnderCheck())
-	{
-		airborneTime = 0;
-		gravityAcceleration = 0.f;
-		bDive = false;
-		if (!bGraid)
-		{
-			ResetSpeedBias();
-	
-			if (IsValid(CameraRef))
-			{
-				CameraRef->ResetBoomLength();
-				CameraRef->ResetPitch();
-			}
-		}
-	}
-	else
-	{
-		airborneTime += DeltaTime;
-		if (airborneTime >= diveThreshold && !bGraid)
-		{
-			bDive = true;
-			gravityAcceleration = diveGravity;
-			SetDiveSpeedBias();
-			UE_LOG(LogTemp, Log, TEXT("Dive : moveComp : UpdateGravity"));
-
-			
-			if (IsValid(CameraRef))
-			{
-				CameraRef->SetDiveBoomLength();
-				CameraRef->SetDivePitch();
-			}
-		}
-		else
-		{
-			bDive = false;
-			gravityAcceleration = 0.5f * gravity * gravityBias * pow(airborneTime, 2) * TIME;
-
-			if (!bGraid)
-			{
-				ResetSpeedBias();
-				if (IsValid(CameraRef))
-				{
-					CameraRef->ResetBoomLength();
-					CameraRef->ResetPitch();
-				}
-			}
-		}
-	}
-}
+//void USFR_MoveComponent::UpdateGravity(float DeltaTime)
+//{
+//	// Wire移動中
+//	if (bWire)return;
+//	// 浮遊中
+//	if (bFloat) return;
+//	// 吹っ飛び中
+//	if (bForce)return;
+//	// 飛翔中
+//	if (bFly)return;
+//	// 怯み中
+//	if (character->bInFear)return;
+//
+//	float gravityAcceleration = 0;
+//	if (UnderCheck())
+//	{
+//		airborneTime = 0;
+//		gravityAcceleration = 0.f;
+//		//bDive = false;
+//		if (!bGlide)
+//		{
+//			ResetSpeedBias();
+//	
+//			if (IsValid(CameraRef))
+//			{
+//				CameraRef->ResetBoomLength();
+//				CameraRef->ResetPitch();
+//			}
+//		}
+//	}
+//	else
+//	{
+//		airborneTime += DeltaTime;
+//		if (airborneTime >= diveThreshold && !bGlide)
+//		{
+//			bDive = true;
+//			gravityAcceleration = diveGravity;
+//			SetDiveSpeedBias();
+//			UE_LOG(LogTemp, Log, TEXT("Dive : moveComp : UpdateGravity"));
+//
+//			
+//			if (IsValid(CameraRef))
+//			{
+//				CameraRef->SetDiveBoomLength();
+//				CameraRef->SetDivePitch();
+//			}
+//		}
+//		else
+//		{
+//			//bDive = false;
+//			gravityAcceleration = 0.5f * gravity * gravityBias * pow(airborneTime, 2) * TIME;
+//
+//			if (!bGlide)
+//			{
+//				ResetSpeedBias();
+//				if (IsValid(CameraRef))
+//				{
+//					CameraRef->ResetBoomLength();
+//					CameraRef->ResetPitch();
+//				}
+//			}
+//		}
+//	}
+//}
 
 
 
@@ -246,85 +251,88 @@ void USFR_MoveComponent::UpdateForce(float DeltaTime)
 
 	// 移動量
 	forceValue -= forceDecelerationValue * DeltaTime;
-	FVector force = forceVector;
+	FVector forceDirection = forceVector;
 
 	// 力を受けてなかったら無視
-	if (forceValue <= 0)
+	if (/*forceValue <= 0*/forceValue * TIME <= moveSpeed * moveSpeedBias * TIME)
 	{
 		bForce = false;
-		if (bGraid)return;
-		if (bFly)return;
+		if (bGlide)return;
+		//if (bFly)return;
 		ResetGravityBias();
 		ResetAirbornTime();
 		ResetSpeedBias();
+
+		InputHandler->InputState = EInputState::Both_enable;
+
 		return;
 	}
 
 	// 移動
-	SweepMove(force, forceValue * TIME);
+	SweepMove(forceDirection, forceValue * TIME);
 }
 
-void USFR_MoveComponent::UpdateFly(float DeltaTime)
-{
-	if (!bFly)return;
-
-	if (IsValid(CameraRef))
-	{
-		// カメラベクトル
-		FVector Fwd = FVector(CameraRef->GetActorForwardVector().X, CameraRef->GetActorForwardVector().Y, 0);
-		FVector Right = FVector(CameraRef->GetActorRightVector().X, CameraRef->GetActorRightVector().Y, 0);
-		// 移動方向
-		if (inputValue.IsZero())
-		{
-			flyVec = PlayerRef->GetActorForwardVector();
-		}
-		else
-		{
-			FVector2D V = inputBias;
-			V.Normalize();
-			flyVec = Fwd * FMath::Abs(V.Y) * inputBias.Y + Right * FMath::Abs(V.X) * inputBias.X;
-			//flyVec = Fwd * inputValue.Y + Right * inputValue.X;
-		}
-
-		//flyVec = camera->arrow->GetForwardVector();
-		flyVec.Z = 0.f;
-	}
-
-	flyVec.Z = flyZVelocity * flyCurveZ->GetFloatValue(flyDurationTimer);
-	currentFlyVelocityValue = flyVelocityValue * flyCurveSpeed->GetFloatValue(flyDurationTimer);
-
-	DrawDebugLine(GetWorld(), PlayerRef->GetActorLocation(), PlayerRef->GetActorLocation() + flyVec * 300.f, FColor::Blue);
-
-	// 時間
-	flyDurationTimer += DeltaTime;
-	if (flyDurationTimer > flyDuration)
-	{
-		bFly = false;
-		ResetAirbornTime();
-		ResetGravityBias();
-		ResetSpeedBias();
-
-		if (IsValid(CameraRef))
-		{
-			CameraRef->ResetBoomLength();
-		}
-		return;
-	}
-
-	// 移動
-	SweepMove(flyVec, currentFlyVelocityValue * TIME);
-}
+//void USFR_MoveComponent::UpdateFly(float DeltaTime)
+//{
+	//if (!bFly)return;
+	//
+	//if (IsValid(CameraRef))
+	//{
+	//	// カメラベクトル
+	//	FVector Fwd = FVector(CameraRef->GetActorForwardVector().X, CameraRef->GetActorForwardVector().Y, 0);
+	//	FVector Right = FVector(CameraRef->GetActorRightVector().X, CameraRef->GetActorRightVector().Y, 0);
+	//	// 移動方向
+	//	if (inputValue.IsZero())
+	//	{
+	//		flyVec = PlayerRef->GetActorForwardVector();
+	//	}
+	//	else
+	//	{
+	//		FVector2D V = inputBias;
+	//		V.Normalize();
+	//		flyVec = Fwd * FMath::Abs(V.Y) * inputBias.Y + Right * FMath::Abs(V.X) * inputBias.X;
+	//		//flyVec = Fwd * inputValue.Y + Right * inputValue.X;
+	//	}
+	//
+	//	//flyVec = camera->arrow->GetForwardVector();
+	//	flyVec.Z = 0.f;
+	//}
+	//
+	//flyVec.Z = flyZVelocity * flyCurveZ->GetFloatValue(flyDurationTimer);
+	//currentFlyVelocityValue = flyVelocityValue * flyCurveSpeed->GetFloatValue(flyDurationTimer);
+	//
+	//DrawDebugLine(GetWorld(), PlayerRef->GetActorLocation(), PlayerRef->GetActorLocation() + flyVec * 300.f, FColor::Blue);
+	//
+	//// 時間
+	//flyDurationTimer += DeltaTime;
+	//if (flyDurationTimer > flyDuration)
+	//{
+	//	bFly = false;
+	//	ResetAirbornTime();
+	//	ResetGravityBias();
+	//	ResetSpeedBias();
+	//
+	//	if (IsValid(CameraRef))
+	//	{
+	//		CameraRef->ResetBoomLength();
+	//	}
+	//	return;
+	//}
+	//
+	//// 移動
+	//SweepMove(flyVec, currentFlyVelocityValue * TIME);
+//}
 
 void USFR_MoveComponent::UpdateRotation(float DeltaTime)
 {
 	// 飛翔中は自動
-	if (bFly)
-	{
-		//FRotator rotation = UKismetMathLibrary::FindLookAtRotation(PlayerRef->GetActorLocation(), PlayerRef->GetActorLocation() + flyVec);
-		FRotator rotation = CameraRef->GetActorRotation();
-		PlayerRef->SetActorRotation(rotation);
-		return;
-	}
+	//if (bFly)
+	//{
+	//	FRotator rotation = UKismetMathLibrary::FindLookAtRotation(PlayerRef->GetActorLocation(), PlayerRef->GetActorLocation() + flyVec);
+	//	FRotator rotation = CameraRef->GetActorRotation();
+	//	PlayerRef->SetActorRotation(rotation);
+	//	return;
+	//}
 
 	// 入力してないときは回転しない
 	if (!bInputFwd && !bInputRight)return;
@@ -341,8 +349,6 @@ void USFR_MoveComponent::UpdateRotation(float DeltaTime)
 		PlayerRef->SetActorRotation(rotation);
 	}
 }
-
-
 
 bool USFR_MoveComponent::SweepMove(FVector MoveVector, float MoveSpeed)
 {
@@ -383,7 +389,7 @@ bool USFR_MoveComponent::UnderCheck()
 {
 	FVector startPos = PlayerRef->GetActorLocation();
 	startPos.Z -= PlayerRef->GetCapsule()->GetScaledCapsuleHalfHeight();
-	FVector endPos = startPos - PlayerRef->GetActorUpVector() * 5.f;
+	FVector endPos = startPos - PlayerRef->GetActorUpVector() * 5.f/*lineTrace length*/;
 	FCollisionQueryParams params;
 	params.AddIgnoredActor(PlayerRef);
 
@@ -400,6 +406,9 @@ bool USFR_MoveComponent::UnderCheck()
 
 void USFR_MoveComponent::AddForce(FVector Vector, float Value, float Deceleration)
 {
+	//InputHandler->InputState = EInputState::Move_disable;
+
+
 	Vector.Normalize();
 	forceVector = Vector;
 	forceValue = Value;
@@ -407,9 +416,9 @@ void USFR_MoveComponent::AddForce(FVector Vector, float Value, float Deceleratio
 	bForce = true;
 
 	// 吹き飛び以外の挙動をキャンセル
-	bFly = false;
-	bWire = false;
-	bDive = false;
+	//bFly = false;
+	//bWire = false;
+	//bDive = false;
 	beforeGravityAcceleration = 0;
 	//currentWireMoveTime = 0;
 	ResetAirbornTime();

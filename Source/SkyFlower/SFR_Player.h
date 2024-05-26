@@ -31,12 +31,15 @@ protected:
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USFR_InputHandlerComponent* InputHandler;
+	USFR_InputHandlerComponent* GetInputHandler() const { return InputHandler; }
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USFR_MoveComponent* MoveComponent;
+	USFR_MoveComponent* GetMoveComponent() const { return MoveComponent; }
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USFR_ActionComponent* ActionComponent;
+	USFR_ActionComponent* GetActionComponent() const { return ActionComponent; }
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UCapsuleComponent* CapsuleComponent;

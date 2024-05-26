@@ -52,7 +52,7 @@ void ASFR_PlayerCamera::Tick(float DeltaTime)
 	FRotator rotation = this->GetActorRotation();
 	rotation.Pitch = FMath::Clamp(rotation.Pitch + (inputValue.Y * pitch_sensitivity * rotateCorrection), current_pitch_min, current_pitch_max);
 	rotation.Yaw += inputValue.X * yaw_sensitivity * rotateCorrection;
-	float newLength = (-rotation.Pitch - current_pitch_min) / (current_pitch_max - current_pitch_min) * (current_boom_length_max - boom_length_min) + boom_length_min;
+	float newLength = (-rotation.Pitch - current_pitch_min) / (current_pitch_max - current_pitch_min) * (current_boom_length_max - default_boom_length_min) + default_boom_length_min;
 	SpringArmMain->TargetArmLength = newLength;
 }
 

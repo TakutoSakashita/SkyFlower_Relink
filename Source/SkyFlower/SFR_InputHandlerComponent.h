@@ -53,6 +53,7 @@ public:
 	void Key_E_Released();
 	void Shift_Pressed();
 
+
 	///////////////// custom parameter
 public:
 	UPROPERTY()
@@ -72,5 +73,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Debug")
 	bool bDebugLog = false;
+
+
 
 };

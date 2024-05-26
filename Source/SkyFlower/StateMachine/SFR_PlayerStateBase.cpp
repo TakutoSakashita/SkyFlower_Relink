@@ -19,44 +19,4 @@ void USFR_PlayerStateBase::OnEnterState()
 
 }
 
-void USFR_PlayerStateBase::UpdateRootMotion(float DeltaTime)
-{
-	return MoveComponent->UpdateRootMotion(DeltaTime);
-}
-
-void USFR_PlayerStateBase::UpdateMove(float DeltaTime)
-{
-	return MoveComponent->UpdateMove(DeltaTime);
-}
-
-void USFR_PlayerStateBase::UpdateForce(float DeltaTime)
-{
-	return MoveComponent->UpdateForce(DeltaTime);
-}
-
-void USFR_PlayerStateBase::UpdateFly(float DeltaTime)
-{
-	return MoveComponent->UpdateFly(DeltaTime);
-}
-
-void USFR_PlayerStateBase::UpdateGravity(float DeltaTime)
-{
-	return MoveComponent->UpdateGravity(DeltaTime);
-}
-
-void USFR_PlayerStateBase::UpdateRotation(float DeltaTime)
-{
-	return MoveComponent->UpdateRotation(DeltaTime);
-}
-
-bool USFR_PlayerStateBase::SweepMove(FVector MoveVector, float MoveSpeed)
-{
-	return MoveComponent->SweepMove(MoveVector, MoveSpeed);
-}
-
-FVector USFR_PlayerStateBase::GetAlongWallVector(FVector_NetQuantizeNormal HitNormal, FVector MoveVector)
-{
-	return MoveComponent->GetAlongWallVector(HitNormal, MoveVector);
-}
-
 

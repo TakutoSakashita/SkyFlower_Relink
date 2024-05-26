@@ -3,21 +3,24 @@
 
 #include "SFR_FloatingState.h"
 
-
-void USFR_FloatingState::OnEnterState()
-{
-	Super::OnEnterState();
-
 	/* derived from StateBase */
 	//bCanTickState = true;
 	//bCanRepeat = false;
-	StateDisplayName = "Float";
+	//StateDisplayName = "Float";
 
 	/* derived from PlayerStateBase */
 	//ASFR_PlayerCamera* CameraRef = nullptr;
 	//ASFR_Player* PlayerRef = nullptr;
 	//USFR_InputHandlerComponent* InputHandlerRef = nullptr;
 	//USFR_MoveComponent* MoveComponent = nullptr;
+
+void USFR_FloatingState::OnEnterState()
+{
+	Super::OnEnterState();
+
+
+	if (!IsValid(CameraRef)) return;
+	if (!IsValid(MoveComponent)) return;
 
 	MoveComponent->MoveState = EMovementState::Float;
 
@@ -39,11 +42,4 @@ void USFR_FloatingState::TickState(float DeltaTime)
 	Debug::PrintFixedLine("USFR_FloatingState::TickState",100001);
 	//process gravity
 
-
-	UpdateRootMotion(DeltaTime);
-	UpdateMove(DeltaTime);
-	UpdateForce(DeltaTime);
-	UpdateFly(DeltaTime);
-	UpdateGravity(DeltaTime);
-	UpdateRotation(DeltaTime);
 }

@@ -75,7 +75,7 @@ void USFR_InputHandlerComponent::MoveForward(float Value)
 	//check InputState
 	if (InputState == EInputState::Move_disable) return;
 
-	MoveComponent->MoveForward(Value);
+	MoveComponent->AddForwardMovementInput(Value);
 }
 
 void USFR_InputHandlerComponent::MoveRight(float Value)
@@ -83,7 +83,7 @@ void USFR_InputHandlerComponent::MoveRight(float Value)
 	if (!IsValid(MoveComponent)) return;
 	if (InputState == EInputState::Move_disable) return;
 
-	MoveComponent->MoveRight(Value);
+	MoveComponent->AddRightMovementInput(Value);
 }
 
 void USFR_InputHandlerComponent::Turn(float Value)
@@ -105,7 +105,7 @@ void USFR_InputHandlerComponent::Key_E_Pressed()
 	if (!IsValid(MoveComponent)) return;
 	if (InputState == EInputState::Move_disable) return;
 
-	MoveComponent->SwitchStateByKey("Glind");
+	MoveComponent->SwitchStateByKey("Dash");
 
 	Debug::PrintFixedLine("Key_E_Pressed", 120);
 }
@@ -126,8 +126,9 @@ void USFR_InputHandlerComponent::Shift_Pressed()
 	if (!IsValid(MoveComponent)) return;
 	if (InputState == EInputState::Move_disable) return;
 
-	MoveComponent->SwitchStateByKey("Dash");
+	//MoveComponent->SwitchStateByKey("Dash");
 
-	Debug::PrintFixedLine("Shift_Pressed", 120);
+	//Debug::PrintFixedLine("Shift_Pressed", 120);
 
 }
+

@@ -8,22 +8,26 @@ void USFR_DashState::OnEnterState()
 {
 	Super::OnEnterState();
 
+	if (!IsValid(CameraRef)) return;
+	if (!IsValid(MoveComponent)) return;
 
-	if (IsValid(CameraRef))
+	MoveComponent->MoveState = EMovementState::Dash;
+
+	if (MoveComponent->inputValue.IsZero()) {// air jump
+		MoveComponent->AddForce(FVector(0, 0, 1), airJumpPower, airJumpDeceleration);
+	}
+	else // air dash
 	{
-		// カメラベクトル
 		FVector Fwd = FVector(CameraRef->GetActorForwardVector().X, CameraRef->GetActorForwardVector().Y, 0);
 		FVector Right = FVector(CameraRef->GetActorRightVector().X, CameraRef->GetActorRightVector().Y, 0);
-		// 移動方向
 		FVector moveVector = Fwd * MoveComponent->inputValue.Y + Right * MoveComponent->inputValue.X;
 		moveVector.Z += 0.1f;
 		MoveComponent->AddForce(moveVector, airDashSpeed, airDashDeceleration);
+	}
 
 		CameraRef->ResetBoomLength();
 		CameraRef->ResetPitch();
-	}
 
-	timer = 1.0f;
 }
 
 void USFR_DashState::TickState(float DeltaTime)
@@ -32,28 +36,13 @@ void USFR_DashState::TickState(float DeltaTime)
 
 	Debug::PrintFixedLine("USFR_DashState::TickState", 100002);
 
-	UpdateRootMotion(DeltaTime);
-	UpdateMove(DeltaTime);
-	UpdateForce(DeltaTime);
-	UpdateFly(DeltaTime);
-	UpdateGravity(DeltaTime);
-	UpdateRotation(DeltaTime);
-
-	timer -= DeltaTime;
-	if (timer < 0.f)
-		MoveComponent->SwitchStateByKey("Float");
+	if (!MoveComponent->bForce)
+		MoveComponent->SwitchStateByKey("Glide");
+	
 }
 
 void USFR_DashState::OnExitState()
 {
-	ResetSpeedBias();
-	ResetGravityBias();
-	ResetStopPowerBias();
-	ResetAirControlledBias();
-	ResetAirbornTime();
-
-	//TODO camera work
-	CameraRef->ResetPitch();
-	CameraRef->ResetBoomLength();
+	Super::OnExitState();
 }
 

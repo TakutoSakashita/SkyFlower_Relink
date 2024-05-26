@@ -14,14 +14,20 @@ class SKYFLOWER_API USFR_DashState : public USFR_PlayerStateBase
 {
 	GENERATED_BODY()
 
+public:
 	virtual void OnEnterState()override;
 	virtual void TickState(float DeltaTime)override;
 	virtual void OnExitState()override;
 
-	float airDashSpeed = 20.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float airDashSpeed = 40.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float airDashDeceleration = 14.f;
-	float airJumpPower = 20.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float airJumpPower = 40.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float airJumpDeceleration = 14.f;
 
-	float timer = 1.0f;
+
 };
