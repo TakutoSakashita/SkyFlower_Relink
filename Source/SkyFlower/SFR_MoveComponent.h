@@ -71,6 +71,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bDebugLog = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EMovementState MoveState = EMovementState::Float;
 
 

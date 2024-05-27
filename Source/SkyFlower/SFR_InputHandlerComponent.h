@@ -49,8 +49,13 @@ public:
 	void MoveRight(float Value);
 	void Turn(float Value);
 	void LookUp(float Value);
+
+	UFUNCTION(BlueprintCallable)
 	void Key_E_Pressed();
+
+	UFUNCTION(BlueprintCallable)
 	void Key_E_Released();
+
 	void Shift_Pressed();
 
 
