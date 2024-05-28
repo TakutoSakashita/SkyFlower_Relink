@@ -79,6 +79,8 @@ void USFR_PlayerStateMachine::AddRightMovementInput(float InputValue)
 void USFR_PlayerStateMachine::UpdateRootMotion(float DeltaTime)
 {
 	USkeletalMeshComponent* mesh = PlayerRef->GetMesh();
+
+	if (!IsValid(mesh->GetAnimInstance())) return;
 	FRootMotionMovementParams params = mesh->GetAnimInstance()->ConsumeExtractedRootMotion(1.0f);
 	if (!params.bHasRootMotion)
 	{
