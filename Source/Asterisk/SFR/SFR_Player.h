@@ -6,24 +6,44 @@
 #include "GameFramework/Pawn.h"
 #include "SFR_Player.generated.h"
 
+
+class UCapsuleComponent;
+class USkeletalMeshComponent;
+class USFR_InputHandlerComponent;
+class USFR_PlayerStateMachine;
+
+
 UCLASS()
 class ASTERISK_API ASFR_Player : public APawn
 {
 	GENERATED_BODY()
 
+	///////////////// override function
 public:
-	// Sets default values for this pawn's properties
 	ASFR_Player();
+	virtual void Tick(float DeltaTime) override;
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	///////////////// custom parameter
+public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	USFR_InputHandlerComponent* InputHandler;
+	USFR_InputHandlerComponent* GetInputHandler() const { return InputHandler; }
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	USFR_PlayerStateMachine* PlayerStateMachine;
+	USFR_PlayerStateMachine* GetPlayerStateMachine() const { return PlayerStateMachine; }
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UCapsuleComponent* CapsuleComponent;
+	UCapsuleComponent* GetCapsule()const { return CapsuleComponent; }
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	USkeletalMeshComponent* SkeletalMeshComponent;
+	USkeletalMeshComponent* GetMesh()const { return SkeletalMeshComponent; }
 
 };

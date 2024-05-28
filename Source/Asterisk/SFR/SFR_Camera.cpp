@@ -2,33 +2,87 @@
 
 
 #include "SFR_Camera.h"
+#include "Camera/CameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Components/ArrowComponent.h"
 
-// Sets default values
+
 ASFR_Camera::ASFR_Camera()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	// Init main camera
+	SpringArmMain = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmMain"));
+	SpringArmMain->SetupAttachment(RootComponent);
+	SpringArmMain->TargetArmLength = 300.0f; // Adjust as needed
+	SpringArmMain->bUsePawnControlRotation = true;
+
+	CameraMain = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraMain"));
+	CameraMain->SetupAttachment(SpringArmMain, USpringArmComponent::SocketName);
+	CameraMain->bUsePawnControlRotation = false;
+
+	CameraArrowMain = CreateDefaultSubobject<UArrowComponent>(TEXT("CameraArrowMain"));
+	CameraArrowMain->SetupAttachment(CameraMain);
+	CameraArrowMain->ArrowSize = 0.2f;
+	CameraArrowMain->bHiddenInGame = false;
+	CameraArrowMain->SetRelativeLocation(FVector(400.f, 0.f, 0.f));
 
 }
 
-// Called when the game starts or when spawned
+
 void ASFR_Camera::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
-// Called every frame
 void ASFR_Camera::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (FollowTarget)
+	{
+		SetActorLocation(FollowTarget->GetActorLocation());
+	}
+
+	//update rotation
+	float rotateCorrection = 60.f / (1.0f / DeltaTime);
+	FRotator rotation = this->GetActorRotation();
+	rotation.Pitch = FMath::Clamp(rotation.Pitch + (inputValue.Y * pitch_sensitivity * rotateCorrection), current_pitch_min, current_pitch_max);
+	rotation.Yaw += inputValue.X * yaw_sensitivity * rotateCorrection;
+	float newLength = (-rotation.Pitch - current_pitch_min) / (current_pitch_max - current_pitch_min) * (current_boom_length_max - default_boom_length_min) + default_boom_length_min;
+	SpringArmMain->TargetArmLength = newLength;
+
 }
 
-// Called to bind functionality to input
-void ASFR_Camera::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void ASFR_Camera::SetFollowTarget(AActor* Target)
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
+	FollowTarget = Target;
 }
+
+void ASFR_Camera::Turn(float value)
+{
+	//AddControllerYawInput(Value);
+
+	FRotator CameraRotation = GetActorRotation();
+	CameraRotation.Yaw += value;
+	SetActorRotation(CameraRotation);
+
+	inputValue.X = value;
+}
+
+void ASFR_Camera::LookUp(float value)
+{
+	//AddControllerPitchInput(Value);
+
+	FRotator CameraRotation = GetActorRotation();
+	CameraRotation.Pitch = FMath::Clamp(CameraRotation.Pitch + value, -80.0f, 80.0f);// pitch from -80 to 80 degree
+	SetActorRotation(CameraRotation);
+
+	inputValue.Y = value;
+}
+
+
+
+
 

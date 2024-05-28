@@ -13,5 +13,7 @@ UCLASS()
 class ASTERISK_API ASFR_GameMode : public AGameModeBase
 {
 	GENERATED_BODY()
-	
+
+public:
+	ASFR_GameMode();
 };
