@@ -2,4 +2,17 @@
 
 
 #include "SFR_PlayerStateBase.h"
+#include "Kismet/GameplayStatics.h"
 
+
+void USFR_PlayerStateBase::OnEnterState()
+{
+	Super::OnEnterState();
+
+	CameraRef = Cast<ASFR_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0))->GetCamera();
+	PlayerRef = Cast<ASFR_Player>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+	if (IsValid(PlayerRef)) {
+		InputHandlerRef = PlayerRef->InputHandler;
+		PlayerStateMachine = PlayerRef->PlayerStateMachine;
+	}
+}

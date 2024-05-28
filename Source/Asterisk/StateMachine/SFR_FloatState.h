@@ -14,4 +14,7 @@ class ASTERISK_API USFR_FloatState : public USFR_PlayerStateBase
 {
 	GENERATED_BODY()
 	
+	virtual void OnEnterState()override;
+	virtual void TickState(float DeltaTime)override;
+	//virtual void OnExitState()override;
 };

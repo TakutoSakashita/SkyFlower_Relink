@@ -7,9 +7,19 @@
 //				Debug::PrintFixedLine("Interact: " + ObjectiveID, 12);
 //				DRAW_LINE(FVector, FVector);
 // Update:		2024/04/05 22cu0214 init 
-// 				2024/04/05 22cu0214 init 
-//				2024/04/05 22cu0214 init 
 // ==================================================
+
+
+/*
+* copy-paste following to your .cpp file
+
+#include "../DebugHelpers.h"
+
+#define LOG_PRINT 0
+#define DEBUG_FIXED(text,num) if(LOG_PRINT) Debug::PrintFixedLine(text, num);
+#define DEBUG_PRINT(text) if(LOG_PRINT) Debug::Print(text);
+
+*/
 
 #pragma once
 
@@ -57,3 +67,20 @@ namespace Debug {
 		DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, -1.f, 0, 1.f); \
 		DrawDebugPoint(GetWorld(), EndLocation, 15.f, FColor::Red, false, -1.f); \
 	}
+
+
+// ==================================================
+// Filename	:	
+// Author	:	22cu0214 JinWener
+// Description:	
+// Notes:		
+// Update:		[date]		[name]		[memo]
+//				2024/05/21	22cu0214	
+// ==================================================
+
+
+	///////////////// override function
+
+	///////////////// custom function
+
+	///////////////// custom parameter

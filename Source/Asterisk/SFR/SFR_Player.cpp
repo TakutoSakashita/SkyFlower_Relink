@@ -29,8 +29,7 @@ void ASFR_Player::BeginPlay()
 {
 	Super::BeginPlay();
 	InputHandler->Initialize(this);
-	//PlayerStateMachine->Initialize(this);
-	//PlayerStateMachine->InitStateManager();
+	PlayerStateMachine->Initialize(this);
 }
 
 void ASFR_Player::Tick(float DeltaTime)

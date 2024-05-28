@@ -57,22 +57,21 @@ public:
 
 	float default_pitch_min = -40.f;
 	float current_pitch_min = -40.f;
-	float dive_pitch_min = -40.f;
+	//float dive_pitch_min = -40.f;
 
 	float default_pitch_max = 65.f;
 	float current_pitch_max = 65.f;
-	float dive_pitch_max = 30.f;
+	//float dive_pitch_max = 30.f;
 
 	float default_boom_length_max = 500.f;
 	float current_boom_length_max = 500.f;
-	float dive_boom_length_max = 400.f;
-	float graid_boom_length_max = 520.f;
-	float fly_boom_length_max = 480.f;
+	//float dive_boom_length_max = 400.f;
+	//float fly_boom_length_max = 480.f;
 
 	float default_boom_length_min = 180.f;
 
 
-	void SetGlideBoomLength() { current_boom_length_max = graid_boom_length_max; }
+	void SetBoomLength(float boomLength) { current_boom_length_max = boomLength; }
 	//void SetFlyBoomLength() { current_boom_length_max = fly_boom_length_max; }
 	//void SetDiveBoomLength() { current_boom_length_max = dive_boom_length_max; }
 	//void SetDivePitch() { current_pitch_min = dive_pitch_min; current_pitch_max = dive_pitch_max; }

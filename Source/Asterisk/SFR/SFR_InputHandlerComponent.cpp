@@ -56,7 +56,7 @@ void USFR_InputHandlerComponent::MoveForward(float Value)
 	if (!IsValid(PlayerStateMachine)) return;
 	if (InputState == EInputState::Move_disable) return;
 
-	//PlayerStateMachine->AddForwardMovementInput(Value);
+	PlayerStateMachine->AddForwardMovementInput(Value);
 }
 
 void USFR_InputHandlerComponent::MoveRight(float Value)
@@ -64,7 +64,7 @@ void USFR_InputHandlerComponent::MoveRight(float Value)
 	if (!IsValid(PlayerStateMachine)) return;
 	if (InputState == EInputState::Move_disable) return;
 
-	//PlayerStateMachine->AddRightMovementInput(Value);
+	PlayerStateMachine->AddRightMovementInput(Value);
 }
 
 void USFR_InputHandlerComponent::Turn(float Value)
@@ -88,7 +88,7 @@ void USFR_InputHandlerComponent::Key_E_Pressed()
 	if (!IsValid(PlayerStateMachine)) return;
 	if (InputState == EInputState::Move_disable) return;
 
-	//PlayerStateMachine->SwitchStateByKey("Dash");
+	PlayerStateMachine->SwitchStateByKey("Dash");
 
 	Debug::PrintFixedLine("Key_E_Pressed", 120);
 }
@@ -98,7 +98,7 @@ void USFR_InputHandlerComponent::Key_E_Released()
 	if (!IsValid(PlayerStateMachine)) return;
 	if (InputState == EInputState::Move_disable) return;
 
-	//PlayerStateMachine->SwitchStateByKey("Float");
+	PlayerStateMachine->SwitchStateByKey("Float");
 
 	Debug::PrintFixedLine("Key_E_Released", 120);
 }

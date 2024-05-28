@@ -9,9 +9,21 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Blueprintable)
 class ASTERISK_API USFR_StateBase : public UObject
 {
 	GENERATED_BODY()
 	
+	public:
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
+	bool bCanTickState = true;
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
+	bool bCanRepeat = false;
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
+	FName StateDisplayName;
+
+
+	virtual void OnEnterState();
+	virtual void TickState(float DeltaTime);
+	virtual void OnExitState();
 };
