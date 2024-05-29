@@ -11,7 +11,7 @@ void USFR_FloatState::OnEnterState()
 	if (!IsValid(CameraRef)) return;
 	if (!IsValid(PlayerStateMachine)) return;
 
-	PlayerStateMachine->MoveState = EMovementState::Float;
+	PlayerStateMachine->MoveState = ESFR_MoveState::Float;
 
 	ResetSpeedBias();
 	ResetGravityBias();

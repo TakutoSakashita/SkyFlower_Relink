@@ -10,7 +10,7 @@ void USFR_DashState::OnEnterState()
 	if (!IsValid(CameraRef)) return;
 	if (!IsValid(PlayerStateMachine)) return;
 
-	PlayerStateMachine->MoveState = EMovementState::Dash;
+	PlayerStateMachine->MoveState = ESFR_MoveState::Dash;
 
 	if (PlayerStateMachine->inputValue.IsZero()) {// air jump
 		PlayerStateMachine->AddForce(FVector(0, 0, 1), airJumpPower, airJumpDeceleration);

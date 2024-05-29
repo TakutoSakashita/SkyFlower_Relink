@@ -2,33 +2,89 @@
 
 
 #include "SFA_Camera.h"
+#include "Camera/CameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Components/ArrowComponent.h"
 
-// Sets default values
+//debug
+#include "../DebugHelpers.h"
+#define LOG_PRINT 1
+#define DEBUG_PRINT(text) if(LOG_PRINT) Debug::Print(text);
+#define DEBUG_FIXED(text,num) if(LOG_PRINT) Debug::PrintFixedLine(text, num);
+
+
 ASFA_Camera::ASFA_Camera()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	CameraArrowMain = CreateDefaultSubobject<UArrowComponent>(TEXT("CameraArrowMain"));
+	CameraArrowMain->SetupAttachment(RootComponent);
+	CameraArrowMain->ArrowSize = 2.f;
+	CameraArrowMain->bHiddenInGame = false;
+
+	SpringArmMain = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmMain"));
+	SpringArmMain->SetupAttachment(CameraArrowMain);
+	SpringArmMain->TargetArmLength = 400.0f; // Adjust as needed
+	SpringArmMain->bUsePawnControlRotation = true;
+
+	CameraMain = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraMain"));
+	CameraMain->SetupAttachment(SpringArmMain, USpringArmComponent::SocketName);
+	CameraMain->bUsePawnControlRotation = false;
+
+	CameraMain->bCameraMeshHiddenInGame = false;
 
 }
 
-// Called when the game starts or when spawned
 void ASFA_Camera::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
-// Called every frame
 void ASFA_Camera::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	UpdateLocation();
+
 }
 
-// Called to bind functionality to input
-void ASFA_Camera::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void ASFA_Camera::Turn(float value)
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	//AddControllerYawInput(2.f /*yawSensitivity*/ * value * GetWorld()->GetDeltaSeconds());
 
+	FRotator CameraRotation = GetActorRotation();
+	CameraRotation.Yaw += 1.f /*yawSensitivity*/ * value;
+	SetActorRotation(CameraRotation);
+
+	DEBUG_FIXED("ASFA_Camera::Turn : " + FString::SanitizeFloat(value), 10)
 }
+
+void ASFA_Camera::LookUp(float value)
+{
+	//AddControllerPitchInput(2.f /*pitchSensitivity*/ * value * GetWorld()->GetDeltaSeconds());
+
+	FRotator CameraRotation = GetActorRotation();
+	CameraRotation.Pitch += 1.f /*pitchSensitivity*/ * value;
+	CameraRotation.Pitch = FMath::Clamp(CameraRotation.Pitch, -80.0f, 80.0f);// pitch from -80 to 80 degree
+	SetActorRotation(CameraRotation);
+
+	DEBUG_FIXED("ASFA_Camera::LookUp : " + FString::SanitizeFloat(value), 11)
+}
+
+void ASFA_Camera::UpdateLocation()
+{
+	if (!IsValid(FollowTarget)) return;
+	FVector targetPos = FollowTarget->GetActorLocation();
+	FVector cameraPos = FVector(
+		targetPos.X,
+		targetPos.Y,
+		targetPos.Z + 50.f /* set camera higher than player pos */
+	);
+	SetActorLocation(cameraPos);
+
+	//SetActorLocation(FollowTarget->GetActorLocation());
+}
+
+
 

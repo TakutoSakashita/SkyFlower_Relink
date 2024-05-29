@@ -10,7 +10,6 @@ USFR_StateMachineComponent::USFR_StateMachineComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
-
 void USFR_StateMachineComponent::BeginPlay()
 {
 	Super::BeginPlay();
@@ -19,7 +18,6 @@ void USFR_StateMachineComponent::BeginPlay()
 
 	InitStateManager();
 }
-
 
 void USFR_StateMachineComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
@@ -36,6 +34,7 @@ void USFR_StateMachineComponent::TickComponent(float DeltaTime, ELevelTick TickT
 	Debug::PrintFixedLine("CurrentState : " + CurrentState->StateDisplayName.ToString(), 1001);
 
 }
+
 void USFR_StateMachineComponent::SwitchStateByKey(FString StateKey)
 {
 	USFR_StateBase* NewState = StateMap.FindRef(StateKey);

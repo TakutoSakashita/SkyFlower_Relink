@@ -8,7 +8,7 @@
 
 
 UENUM(BlueprintType)
-enum class EInputState : uint8
+enum class ESFR_InputState : uint8
 {
 	None,
 
@@ -62,7 +62,7 @@ public:
 	///////////////// custom parameter
 public:
 	UPROPERTY()
-	EInputState InputState = EInputState::Both_enable;
+	ESFR_InputState InputState = ESFR_InputState::Both_enable;
 
 	UPROPERTY()
 	ASFR_Camera* Camera;

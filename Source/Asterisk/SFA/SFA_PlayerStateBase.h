@@ -4,14 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "../StateMachine/SFR_StateBase.h"
+#include "SFA_PlayerStateMachine.h"
+#include "../DebugHelpers.h"
 #include "SFA_PlayerStateBase.generated.h"
 
-/**
- * 
- */
+
+
 UCLASS()
 class ASTERISK_API USFA_PlayerStateBase : public USFR_StateBase
 {
 	GENERATED_BODY()
-	
+
+public:
+	USFA_PlayerStateMachine* PlayerStateMachine;
+
 };

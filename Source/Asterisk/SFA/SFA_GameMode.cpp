@@ -2,4 +2,9 @@
 
 
 #include "SFA_GameMode.h"
+#include "SFA_PlayerController.h"
 
+ASFA_GameMode::ASFA_GameMode()
+{
+	PlayerControllerClass = ASFA_PlayerController::StaticClass();
+}

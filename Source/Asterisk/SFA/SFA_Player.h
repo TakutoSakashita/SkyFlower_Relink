@@ -6,24 +6,45 @@
 #include "GameFramework/Character.h"
 #include "SFA_Player.generated.h"
 
+
+
+class USFA_InputHandlerComponent;
+class USFA_PlayerMovementComponent;
+class USFA_PlayerStateMachine;
+
+
+
 UCLASS()
 class ASTERISK_API ASFA_Player : public ACharacter
 {
 	GENERATED_BODY()
 
+	///////////////// override function
 public:
-	// Sets default values for this character's properties
-	ASFA_Player();
+	ASFA_Player(const FObjectInitializer& ObjectInitializer);
+	virtual void Tick(float DeltaTime) override;
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	///////////////// custom parameter
+private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	USFA_InputHandlerComponent* InputHandler;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	USFA_PlayerMovementComponent* PlayerMovement;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	USFA_PlayerStateMachine* PlayerStateMachine;
+
+
+public:
+	FORCEINLINE USFA_InputHandlerComponent* GetInputHandler() const { return InputHandler; }
+	FORCEINLINE USFA_PlayerMovementComponent* GetPlayerMovement() const { return PlayerMovement; }
+	FORCEINLINE USFA_PlayerStateMachine* GetPlayerStateMachine() const { return PlayerStateMachine; }
+
+
 
 };

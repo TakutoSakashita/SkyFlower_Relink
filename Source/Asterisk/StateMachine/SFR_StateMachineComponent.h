@@ -24,7 +24,6 @@ protected:
 	///////////////// custom function
 public:
 	virtual void SwitchStateByKey(FString StateKey);
-
 	virtual void InitStateManager();
 
 protected:

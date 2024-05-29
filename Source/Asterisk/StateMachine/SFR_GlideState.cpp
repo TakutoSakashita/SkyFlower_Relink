@@ -7,7 +7,7 @@ void USFR_GlideState::OnEnterState()
 {
 	Super::OnEnterState();
 
-	PlayerStateMachine->MoveState = EMovementState::Glide;
+	PlayerStateMachine->MoveState = ESFR_MoveState::Glide;
 	PlayerStateMachine->bGlide = true;
 
 	SetGlideSpeedBias();

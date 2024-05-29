@@ -54,7 +54,7 @@ void USFR_InputHandlerComponent::SetupPlayerInputComponent(UInputComponent* Play
 void USFR_InputHandlerComponent::MoveForward(float Value)
 {
 	if (!IsValid(PlayerStateMachine)) return;
-	if (InputState == EInputState::Move_disable) return;
+	if (InputState == ESFR_InputState::Move_disable) return;
 
 	PlayerStateMachine->AddForwardMovementInput(Value);
 }
@@ -62,7 +62,7 @@ void USFR_InputHandlerComponent::MoveForward(float Value)
 void USFR_InputHandlerComponent::MoveRight(float Value)
 {
 	if (!IsValid(PlayerStateMachine)) return;
-	if (InputState == EInputState::Move_disable) return;
+	if (InputState == ESFR_InputState::Move_disable) return;
 
 	PlayerStateMachine->AddRightMovementInput(Value);
 }
@@ -86,7 +86,7 @@ void USFR_InputHandlerComponent::LookUp(float Value)
 void USFR_InputHandlerComponent::Key_E_Pressed()
 {
 	if (!IsValid(PlayerStateMachine)) return;
-	if (InputState == EInputState::Move_disable) return;
+	if (InputState == ESFR_InputState::Move_disable) return;
 
 	PlayerStateMachine->SwitchStateByKey("Dash");
 
@@ -96,7 +96,7 @@ void USFR_InputHandlerComponent::Key_E_Pressed()
 void USFR_InputHandlerComponent::Key_E_Released()
 {
 	if (!IsValid(PlayerStateMachine)) return;
-	if (InputState == EInputState::Move_disable) return;
+	if (InputState == ESFR_InputState::Move_disable) return;
 
 	PlayerStateMachine->SwitchStateByKey("Float");
 

@@ -14,4 +14,6 @@ class ASTERISK_API ASFA_GameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 	
+public:
+	ASFA_GameMode();
 };

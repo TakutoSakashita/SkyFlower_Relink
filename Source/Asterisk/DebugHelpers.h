@@ -4,7 +4,7 @@
 // Description:	This file provides a collection of debugging utilities for displaying
 //				messages and drawing shapes (e.g., spheres, lines, points) 
 // Notes:		EXAMPLE
-//				Debug::PrintFixedLine("Interact: " + ObjectiveID, 12);
+//				Debug::PrintFixedLine("Interact: " + FString::SanitizeFloat(value), 12);
 //				DRAW_LINE(FVector, FVector);
 // Update:		2024/04/05 22cu0214 init 
 // ==================================================
@@ -13,11 +13,11 @@
 /*
 * copy-paste following to your .cpp file
 
+//debug
 #include "../DebugHelpers.h"
-
-#define LOG_PRINT 0
-#define DEBUG_FIXED(text,num) if(LOG_PRINT) Debug::PrintFixedLine(text, num);
+#define LOG_PRINT 1
 #define DEBUG_PRINT(text) if(LOG_PRINT) Debug::Print(text);
+#define DEBUG_FIXED(text,num) if(LOG_PRINT) Debug::PrintFixedLine(text, num);
 
 */
 
@@ -26,11 +26,8 @@
 namespace Debug {
 
 	/// <summary>
-	/// Print message Newer on top
+	/// Print message from top
 	/// </summary>
-	/// <param name="Mng"> "hello world" </param>
-	/// <param name="Color"> = FColor::MakeRandomColor() </param>
-	/// <param name="InKey"> = -1 </param>
 	static void Print(const FString& Mng, const FColor& Color = FColor::MakeRandomColor(), int32 InKey = -1) {
 		if (GEngine)
 		{
@@ -39,8 +36,8 @@ namespace Debug {
 
 		UE_LOG(LogTemp, Warning, TEXT("%s"), *Mng);
 	}
-	//to avoid conflict, message orderKey start from 10 
-	static void PrintFixedLine(const FString& Mng, int32 InKey = 10) {
+
+	static void PrintFixedLine(const FString& Mng, int32 InKey = 1) {
 		if (GEngine)
 		{
 			GEngine->AddOnScreenDebugMessage(InKey, 5.f, FColor::MakeRandomColor(), Mng);

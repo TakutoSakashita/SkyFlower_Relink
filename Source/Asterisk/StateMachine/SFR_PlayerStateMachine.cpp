@@ -141,7 +141,7 @@ void USFR_PlayerStateMachine::UpdateForce(float DeltaTime)
 		ResetAirbornTime();
 		ResetSpeedBias();
 
-		InputHandler->InputState = EInputState::Both_enable;
+		InputHandler->InputState = ESFR_InputState::Both_enable;
 
 		return;
 	}

@@ -8,7 +8,7 @@
 
 
 UENUM(BlueprintType)
-enum class EMovementState : uint8
+enum class ESFR_MoveState : uint8
 {
 	None,
 
@@ -62,7 +62,7 @@ public:
 	bool bDebugLog = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EMovementState MoveState = EMovementState::Float;
+	ESFR_MoveState MoveState = ESFR_MoveState::Float;
 
 
 	void AddForwardMovementInput(float InputValue);
