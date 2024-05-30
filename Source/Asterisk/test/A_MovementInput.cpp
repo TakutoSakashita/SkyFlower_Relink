@@ -237,8 +237,7 @@ void UA_MovementInput::UpdateGravity(float DeltaTime)
 	//}
 
 	// ˆÚ“®
-	GetPlayerCharacter()->SetActorLocation(GetPlayerCharacter()->GetActorLocation() +
-		FVector(0, 0, -1) * beforeGravityAcceleration);
+	GetPlayerCharacter()->SetActorLocation(GetPlayerCharacter()->GetActorLocation() +FVector(0, 0, -1) * beforeGravityAcceleration);
 }
 
 /// @brief ‰Á‘¬

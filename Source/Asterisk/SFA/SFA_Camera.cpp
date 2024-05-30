@@ -8,9 +8,6 @@
 
 //debug
 #include "../DebugHelpers.h"
-#define LOG_PRINT 1
-#define DEBUG_PRINT(text) if(LOG_PRINT) Debug::Print(text);
-#define DEBUG_FIXED(text,num) if(LOG_PRINT) Debug::PrintFixedLine(text, num);
 
 
 ASFA_Camera::ASFA_Camera()
@@ -31,7 +28,7 @@ ASFA_Camera::ASFA_Camera()
 	CameraMain->SetupAttachment(SpringArmMain, USpringArmComponent::SocketName);
 	CameraMain->bUsePawnControlRotation = false;
 
-	CameraMain->bCameraMeshHiddenInGame = false;
+	//CameraMain->bCameraMeshHiddenInGame = false;
 
 }
 
@@ -57,7 +54,7 @@ void ASFA_Camera::Turn(float value)
 	CameraRotation.Yaw += 1.f /*yawSensitivity*/ * value;
 	SetActorRotation(CameraRotation);
 
-	DEBUG_FIXED("ASFA_Camera::Turn : " + FString::SanitizeFloat(value), 10)
+
 }
 
 void ASFA_Camera::LookUp(float value)
@@ -69,7 +66,7 @@ void ASFA_Camera::LookUp(float value)
 	CameraRotation.Pitch = FMath::Clamp(CameraRotation.Pitch, -80.0f, 80.0f);// pitch from -80 to 80 degree
 	SetActorRotation(CameraRotation);
 
-	DEBUG_FIXED("ASFA_Camera::LookUp : " + FString::SanitizeFloat(value), 11)
+
 }
 
 void ASFA_Camera::UpdateLocation()

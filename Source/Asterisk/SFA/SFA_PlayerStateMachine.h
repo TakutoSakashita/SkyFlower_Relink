@@ -19,9 +19,11 @@ enum class ESFA_MoveState : uint8
 	Glide,	// move in air
 	Walk,	// move on land
 	Dash,	// jump or dash in air
+	
+	Land,	// idle on land
 	Jump,	// jump on land
 	Float,	// idle in air
-	Stand,	// idle on land
+	
 	Dive,	// 
 	Fall,	// 
 

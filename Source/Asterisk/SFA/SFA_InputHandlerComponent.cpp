@@ -15,9 +15,7 @@
 
 //debug
 #include "../DebugHelpers.h"
-#define LOG_PRINT 1
-#define DEBUG_PRINT(text) if(LOG_PRINT) Debug::Print(text);
-#define DEBUG_FIXED(text,num) if(LOG_PRINT) Debug::PrintFixedLine(text, num);
+
 
 #define MIN_VALID_MAGNITUDE 0.09f
 
@@ -71,7 +69,7 @@ void USFA_InputHandlerComponent::SetupPlayerInputComponent(UInputComponent* Play
 
 	}
 
-	DEBUG_PRINT("USFA_InputHandlerComponent::SetupPlayerInputComponent")
+
 }
 
 void USFA_InputHandlerComponent::Look(const FInputActionValue& Value)
@@ -86,7 +84,6 @@ void USFA_InputHandlerComponent::Look(const FInputActionValue& Value)
 		Camera->LookUp(LookAxisVector.Y);
 	}
 
-	DEBUG_FIXED("USFA_InputHandlerComponent::Look", 20)
 }
 
 void USFA_InputHandlerComponent::Move(const FInputActionValue& Value)
@@ -104,7 +101,7 @@ void USFA_InputHandlerComponent::Move(const FInputActionValue& Value)
 		Player->AddMovementInput(Camera->GetActorRightVector(), MovementVector.X);
 	}
 
-	DEBUG_FIXED("USFA_InputHandlerComponent::Move", 21)
+
 }
 
 void USFA_InputHandlerComponent::InitializePointers()
