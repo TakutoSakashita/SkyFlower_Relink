@@ -34,7 +34,7 @@ namespace Debug {
 			GEngine->AddOnScreenDebugMessage(InKey, 5.f, Color, Mng);
 		}
 
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *Mng);
+		//UE_LOG(LogTemp, Warning, TEXT("%s"), *Mng);
 	}
 
 	static void PrintFixedLine(const FString& Mng, int32 InKey = 1) {

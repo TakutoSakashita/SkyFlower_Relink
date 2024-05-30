@@ -7,6 +7,8 @@
 
 #include "SFA_InputHandlerComponent.generated.h"
 
+
+
 UENUM(BlueprintType)
 enum class ESFA_InputState : uint8
 {
@@ -19,6 +21,38 @@ enum class ESFA_InputState : uint8
 
 	ElementsNum,
 };
+
+UENUM(BlueprintType)
+enum class ESFA_MoveState : uint8
+{
+	None,
+
+	Glide,	// move in air
+	Walk,	// move on land
+	Dash,	// jump or dash in air
+
+	Land,	// idle on land
+	Jump,	// jump on land
+	Float,	// idle in air
+
+	Dive,	// 
+	Fall,	// 
+
+	ElementsNum,
+};
+
+enum class ESFA_AttackState : uint8
+{
+	None,
+
+	NormalAttack,	// normal 1
+	HomingAttack,
+	LaserAttack,
+
+	ElementsNum,
+};
+
+
 
 struct FInputActionValue;
 class UInputComponent;
@@ -45,8 +79,13 @@ protected:
 
 	///////////////// custom property
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	ESFA_InputState InputState = ESFA_InputState::Both_enable;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	ESFA_MoveState MoveState = ESFA_MoveState::Float;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	ESFA_AttackState AttackState = ESFA_AttackState::None;
+
 
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
