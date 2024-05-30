@@ -13,6 +13,10 @@
 #include "../Plugins/EnhancedInput/Source/EnhancedInput/Public/EnhancedInputComponent.h"
 #include "../Plugins/EnhancedInput/Source/EnhancedInput/Public/EnhancedInputSubsystems.h"
 
+// AattackInput
+//#include "A_Weapon.h"
+#include "Components/BoxComponent.h" 
+
 //debug
 #include "../DebugHelpers.h"
 
@@ -22,8 +26,6 @@
 USFA_InputHandlerComponent::USFA_InputHandlerComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
-
-
 }
 
 void USFA_InputHandlerComponent::BeginPlay()
@@ -51,6 +53,38 @@ void USFA_InputHandlerComponent::TickComponent(float DeltaTime, ELevelTick TickT
 	if (!IsValid(Camera) || !IsValid(Player)) InitializePointers(); // debug for packaging
 }
 
+//////////////////////////////////// NotifyEvent
+void USFA_InputHandlerComponent::StartCollision()
+{
+	// コリジョン有効
+	Debug::PrintFixedLine("StartCollision");
+}
+
+void USFA_InputHandlerComponent::EndCollision()
+{
+	// コリジョン無効
+	Debug::PrintFixedLine("EndCollision");
+}
+
+void USFA_InputHandlerComponent::StartCombo()
+{
+	// コンボ入力受付開始
+	ComboAccept = true;
+}
+
+void USFA_InputHandlerComponent::EndCombo()
+{
+	// コンボ入力受付終了
+	ComboAccept = false;
+}
+void USFA_InputHandlerComponent::ResetCombo()
+{
+	// コンボリセット
+	ComboAccept = true;
+	ComboCount = 0;
+}
+//////////////////////////////////// NotifyEvent
+
 void USFA_InputHandlerComponent::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	// Set up action bindings
@@ -60,16 +94,10 @@ void USFA_InputHandlerComponent::SetupPlayerInputComponent(UInputComponent* Play
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &USFA_InputHandlerComponent::Look);
 
 		//TODO add playerAbilities
-
-
-
-
-
+		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &USFA_InputHandlerComponent::Attack);
 
 
 	}
-
-
 }
 
 void USFA_InputHandlerComponent::Look(const FInputActionValue& Value)
@@ -102,6 +130,31 @@ void USFA_InputHandlerComponent::Move(const FInputActionValue& Value)
 	}
 
 
+}
+
+void USFA_InputHandlerComponent::Attack()
+{
+	if (!ComboAccept)return;
+	ComboCount++;
+	ComboAccept = false;
+
+	//GetPlayerCharacter()->SetCharacterState(ESF_CharacterState::BeginAttack);
+
+	// ComboMontageはAnimMontageへのポインタを保持している変数
+	AnimInstance = Player->GetMesh()->GetAnimInstance();
+	if (!AnimInstance) return;
+
+	if (AttackMontage && AnimInstance)
+	{
+		Debug::PrintFixedLine("AttackMontage");
+
+		//UE_LOG(LogTemp, Warning, TEXT("ComboMontage"));
+
+		FString SectionName = FString::Printf(TEXT("Attack0%d"), ComboCount);
+		FName SectionFName(*SectionName);
+
+		Player->PlayAnimMontage(AttackMontage, 1.0f, SectionFName);
+	}
 }
 
 void USFA_InputHandlerComponent::InitializePointers()

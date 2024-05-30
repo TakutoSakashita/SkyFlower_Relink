@@ -22,35 +22,36 @@ enum class ESFA_InputState : uint8
 	ElementsNum,
 };
 
-UENUM(BlueprintType)
-enum class ESFA_MoveState : uint8
-{
-	None,
-
-	Glide,	// move in air
-	Walk,	// move on land
-	Dash,	// jump or dash in air
-
-	Land,	// idle on land
-	Jump,	// jump on land
-	Float,	// idle in air
-
-	Dive,	// 
-	Fall,	// 
-
-	ElementsNum,
-};
-
-enum class ESFA_AttackState : uint8
-{
-	None,
-
-	NormalAttack,	// normal 1
-	HomingAttack,
-	LaserAttack,
-
-	ElementsNum,
-};
+//UENUM(BlueprintType)
+//enum class ESFA_MoveState : uint8
+//{
+//	None,
+//
+//	Glide,	// move in air
+//	Walk,	// move on land
+//	Dash,	// jump or dash in air
+//
+//	Land,	// idle on land
+//	Jump,	// jump on land
+//	Float,	// idle in air
+//
+//	Dive,	// 
+//	Fall,	// 
+//
+//	ElementsNum,
+//};
+//
+//UENUM(BlueprintType)
+//enum class ESFA_AttackState : uint8
+//{
+//	None,
+//
+//	NormalAttack,	// normal 1
+//	HomingAttack,
+//	LaserAttack,
+//
+//	ElementsNum,
+//};
 
 
 
@@ -69,7 +70,7 @@ class ASTERISK_API USFA_InputHandlerComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-	///////////////// override function
+		///////////////// override function
 public:
 	USFA_InputHandlerComponent();
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
@@ -80,35 +81,59 @@ protected:
 	///////////////// custom property
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	ESFA_InputState InputState = ESFA_InputState::Both_enable;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	ESFA_MoveState MoveState = ESFA_MoveState::Float;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	ESFA_AttackState AttackState = ESFA_AttackState::None;
+		ESFA_InputState InputState = ESFA_InputState::Both_enable;
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	//ESFA_MoveState MoveState = ESFA_MoveState::Float;
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	//ESFA_AttackState AttackState = ESFA_AttackState::None;
 
 
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
-	UInputMappingContext* DefaultMappingContext;
+		UInputMappingContext* DefaultMappingContext;
 
 	/** Action Input */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
-	UInputAction* MoveAction;
+		UInputAction* MoveAction;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
-	UInputAction* LookAction;
+		UInputAction* LookAction;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
-	UInputAction* DashAction;
+		UInputAction* DashAction;
 
 	//TODO add playerAbilities
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
-	UInputAction* DiveAction;
+		UInputAction* DiveAction;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
+		UInputAction* AttackAction;
 
+	/** Attack Input */
 
+	// ƒRƒ“ƒ{“ü—ÍŽó•t true : start , false : end
+	UPROPERTY(BlueprintReadOnly)
+		bool ComboAccept = true;
+	//UPROPERTY(BlueprintReadOnly)
+	//	bool CanselAttack = true;
+	UPROPERTY(BlueprintReadOnly)
+		int ComboCount = 0;
 
+	// AnimInstance
+	UPROPERTY(EditAnywhere, Category = "Animation")
+		UAnimMontage* AttackMontage;
+	UPROPERTY(BlueprintReadOnly, Category = "Animation")
+		UAnimInstance* AnimInstance;
 
-
-
+	// function
+	UFUNCTION(BlueprintCallable, Category = "Function")
+		void StartCollision();
+	UFUNCTION(BlueprintCallable, Category = "Function")
+		void EndCollision();
+	UFUNCTION(BlueprintCallable, Category = "Function")
+		void StartCombo();
+	UFUNCTION(BlueprintCallable, Category = "Function")
+		void EndCombo();
+	UFUNCTION(BlueprintCallable, Category = "Function")
+		void ResetCombo();
 
 private:
 	//~Parameters for components
@@ -126,5 +151,6 @@ public:
 private:
 	void Look(const FInputActionValue& Value);
 	void Move(const FInputActionValue& Value);
+	void Attack();
 	void InitializePointers();
 };
