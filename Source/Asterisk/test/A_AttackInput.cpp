@@ -42,6 +42,7 @@ void UA_AttackInput::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 
 void UA_AttackInput::BeginShortRangeAttack()
 {
+	GetPlayerCharacter()->SetCharacterState(ESF_CharacterState::BeginAttack);
 	// ComboMontage‚ÍAnimMontage‚Ö‚Ìƒ|ƒCƒ“ƒ^‚ð•ÛŽ‚µ‚Ä‚¢‚é•Ï”‚Å‚·
 	AnimInstance = GetPlayerCharacter()->GetMesh()->GetAnimInstance();
 	if (!AnimInstance) return;

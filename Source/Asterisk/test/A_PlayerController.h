@@ -25,6 +25,7 @@ protected:
 protected:
 
 	virtual void SetupInputComponent() override;
+
 private:
 	/********************MovementInput********************/
 	// 視点Y軸回転処理
@@ -34,25 +35,28 @@ private:
 
 	// 前方向移動処理
 	void MoveForward(const float InValue);
-	void MoveAcceleration(const float InValue);
 	// 横方向移動処理
 	void MoveRight(const float InValue);
 	// 前方向にダッシュする
-	void MoveDash();
-	void StopMoveDash();
+	void StartMoveDash();
+	void EndMoveDash();
 	// 上方向移動処理
-	void MoveJump();
+	void StartMoveJump();
+	void EndMoveJump();
 
 	/********************AttackInput********************/
+	// 近距離攻撃
 	void BeginShortRangeAttack();
 	void EndShortRangeAttack();
-	void HomingAttack();
-	void LaserAttack();
-
-	void HomingShoot();
-	void LockOn();
+	// 遠距離攻撃
 	void BeginLongRangeAttack();
 	void EndLongRangeAttack();
+	//
+	void HomingAttack();
+	void HomingShoot();
+	void LaserAttack();
+	//
+	void LockOn();
 
 	///////////////////////////// custom variable
 protected:

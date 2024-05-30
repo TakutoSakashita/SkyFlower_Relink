@@ -33,13 +33,13 @@ void AA_PlayerController::SetupInputComponent()
 	Super::SetupInputComponent();
 	//movement process
 	InputComponent->BindAxis("MoveForward", this, &AA_PlayerController::MoveForward);
-	InputComponent->BindAxis("MoveAcceleration", this, &AA_PlayerController::MoveAcceleration);
 	InputComponent->BindAxis("MoveRight", this, &AA_PlayerController::MoveRight);
 	InputComponent->BindAxis("Turn", this, &AA_PlayerController::Turn);
 	InputComponent->BindAxis("LookUp", this, &AA_PlayerController::LookUp);
-	InputComponent->BindAction("MoveDash", IE_Pressed, this, &AA_PlayerController::MoveDash);
-	InputComponent->BindAction("StopMoveDash", IE_Released, this, &AA_PlayerController::StopMoveDash);
-	InputComponent->BindAction("MoveJump", IE_Pressed, this, &AA_PlayerController::MoveJump);
+	InputComponent->BindAction("StartMoveDash", IE_Pressed, this, &AA_PlayerController::StartMoveDash);
+	InputComponent->BindAction("EndMoveDash", IE_Released, this, &AA_PlayerController::EndMoveDash);
+	InputComponent->BindAction("StartMoveJump", IE_Pressed, this, &AA_PlayerController::StartMoveJump);
+	InputComponent->BindAction("EndMoveJump", IE_Pressed, this, &AA_PlayerController::EndMoveJump);
 
 	//attack process
 	InputComponent->BindAction("BeginShortRangeAttack", IE_Pressed, this, &AA_PlayerController::BeginShortRangeAttack);
@@ -73,34 +73,34 @@ void AA_PlayerController::MoveForward(const float InValue)
 	m_pCharacter->MoveForward(InValue);
 }
 
-void AA_PlayerController::MoveAcceleration(const float InValue)
-{
-	if (!m_pCharacter) return;
-	m_pCharacter->MoveAcceleration(InValue);
-}
-
 void AA_PlayerController::MoveRight(const float InValue)
 {
 	if (!m_pCharacter) return;
 	m_pCharacter->MoveRight(InValue);
 }
 
-void AA_PlayerController::MoveJump()
+void AA_PlayerController::StartMoveJump()
 {
 	if (!m_pCharacter) return;
-	m_pCharacter->MoveJump();
+	m_pCharacter->StartMoveJump();
 }
 
-void AA_PlayerController::MoveDash()
+void AA_PlayerController::EndMoveJump()
 {
 	if (!m_pCharacter) return;
-	m_pCharacter->MoveDash();
+	m_pCharacter->EndMoveJump();
 }
 
-void AA_PlayerController::StopMoveDash()
+void AA_PlayerController::StartMoveDash()
 {
 	if (!m_pCharacter) return;
-	m_pCharacter->StopMoveDash();
+	m_pCharacter->StartMoveDash();
+}
+
+void AA_PlayerController::EndMoveDash()
+{
+	if (!m_pCharacter) return;
+	m_pCharacter->EndMoveDash();
 }
 
 ///////////////////////// Player attack

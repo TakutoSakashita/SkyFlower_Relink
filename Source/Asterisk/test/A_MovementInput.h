@@ -16,22 +16,25 @@ class ASTERISK_API UA_MovementInput : public UActorComponent
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this component's properties
 	UA_MovementInput();
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 protected:
 	virtual void BeginPlay() override;
 
 public:
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	/********************MovementInput********************/
 
-public:
+	// 前方向移動処理
 	void MoveForward(const float InValue);
-	void MoveAcceleration(const float InValue);
+	// 横方向移動処理
 	void MoveRight(const float InValue);
-	void MoveJump();
-	void MoveDash();
-	void StopMoveDash();
+	// 前方向にダッシュする
+	void StartMoveDash();
+	void EndMoveDash();
+	// 上方向移動処理
+	void StartMoveJump();
+	void EndMoveJump();
 
 	void SetGraidSpeedBias() { moveSpeedBias = graidSpeedBias; }
 	void SetDiveSpeedBias() { moveSpeedBias = diveSpeedBias; }
@@ -45,99 +48,59 @@ public:
 
 public:
 	UPROPERTY(EditAnywhere, Category = "Animation")
-	UAnimMontage* ComboMontage;
+	UAnimMontage* MoveMontage;
 	UPROPERTY(BlueprintReadOnly, Category = "Animation")
 	UAnimInstance* AnimInstance;
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	/// @brief 入力値
-	UPROPERTY(BlueprintReadOnly)
-	FVector2D inputValue;
-	/// @brief 入力値の補正値
-	FVector2D inputBias;
-	/// @brief 入力
-	bool bInputFwd;
-	/// @brief 入力
-	bool bInputRight;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float InitAcceleration = 1000.f;
+		float InitAcceleration = 1000.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MaxAcceleration = 2000.f;
-	// @brief 移動速度
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float moveSpeed = 100.f;
+		float MaxAcceleration = 2000.f;
+
 	// @brief 移動速度倍率
 	UPROPERTY(BlueprintReadOnly)
-	float moveSpeedBias = 1.f;
+		float moveSpeedBias = 1.f;
 	// @brief グライド移動速度倍率
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float graidSpeedBias = 1.7f;
+		float graidSpeedBias = 1.7f;
 	// @brief 急降下移動速度倍率
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float diveSpeedBias = 3.5f;
-	// @brief 空中ダッシュスピード
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float airDashSpeed = 20.f;
-	// @brief 空中ダッシュ減衰
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float airDashDeceleration = 14.f;
-	// @brief 空中ジャンプパワー
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float airJumpPower = 20.f;
-	// @brief 空中ジャンプ減衰
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float airJumpDeceleration = 14.f;
-	/// @brief 制動
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float airControll = 0.02f;
+		float diveSpeedBias = 3.5f;
+	
 	/// @brief 制動倍率
 	UPROPERTY(BlueprintReadOnly)
-	float airControllBias = 1.f;
+		float airControllBias = 1.f;
 	/// @brief グライド制動倍率
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float graidAirControllBias = 1.5f;
-	/// @brief 停止力
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float stopPower = 0.01f;
+		float graidAirControllBias = 1.5f;
+
 	/// @brief 停止力倍率
 	UPROPERTY(BlueprintReadOnly)
-	float stopPowerBias = 1.f;
+		float stopPowerBias = 1.f;
 	/// @brief グライド停止力倍率
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float graidStopPowerBias = 1.5f;
-	// @brief 減速力
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float friction = 7.f;
+		float graidStopPowerBias = 1.5f;
+
 	// @brief 落下速度
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float gravity = 5.f;
+		float gravity = 5.f;
 	// @brief 落下速度倍率
 	UPROPERTY(BlueprintReadOnly)
-	float gravityBias = 1.f;
+		float gravityBias = 1.f;
 	// @brief グライド落下速度倍率
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float graidGravityBias = 0.2f;
-	// @brief 急降下落下速度
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float diveGravity = 20.f;
-	// @brief 落下速度制限
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float FallingSpeedLimit = 20.f;
+		float graidGravityBias = 0.2f;
+
 	// @brief 急降下移行時間
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float diveThreshold = 3.f;
-	/// @brief 飛翔加速力
+		float diveThreshold = 3.f;
+	// @brief 急降下落下速度
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float flyVelocityValue = 5.f;
-	/// @brief 飛翔加速力
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float flyZVelocity = 10.f;
-	/// @brief 飛翔持続時間
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float flyDuration = 3.f;
+		float diveGravity = 20.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FVector ViewVector;
+		FVector ViewVector;
 
 protected:
 	/*------------------------------------------------------------------------------------------------------------------------------
@@ -180,33 +143,6 @@ protected:
 	/// @brief 前フレーム落下速度
 	float beforeGravityAcceleration;
 
-	/// @brief 吹っ飛び方向
-	FVector forceVector;
-	/// @brief 吹っ飛び力
-	float forceValue;
-	/// @brief 吹っ飛びに対する減速力
-	float forceDecelerationValue;
-
-	/// @brief 現在の飛翔加速力
-	float currentFlyVelocityValue;
-	/// @brief 持続時間タイマー
-	float flyDurationTimer;
-	/// @brief 持続
-	FVector flyVec;
-
-	/// @brief Wire移動方向
-	FVector wireMoveVector;
-	/// @brief Wire移動速度
-	float wireMoveSpeed;
-	/// @brief Wire移動時間
-	float wireMoveTime;
-	/// @brief Wire移動時間
-	float currentWireMoveTime;
-
-	/// @brief 最後の入力ベクトル
-	FVector2D beforeMoveVector;
-	/// @brief 前フレーム位置
-	FVector beforePos;
 
 protected:
 	// 振り向き速度
@@ -214,10 +150,7 @@ protected:
 	float rotationSpeed = 8.0f;
 	// ダッシュ速度
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float dashSpeed = 1500.0f;
-
-	AA_Player* m_pCharacter;
-	AA_MainCamera* m_pMainCamera;
+		float dashSpeed = 1500.0f;
 
 private:
 	void CharacterRotate() const;

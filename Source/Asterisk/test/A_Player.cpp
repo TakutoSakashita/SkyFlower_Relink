@@ -112,34 +112,34 @@ void AA_Player::MoveForward(const float InValue)
 	MovementInputComponent->MoveForward(InValue);
 }
 
-void AA_Player::MoveAcceleration(const float InValue)
-{
-	if (!MovementInputComponent) return;
-	MovementInputComponent->MoveAcceleration(InValue);
-}
-
 void AA_Player::MoveRight(const float InValue)
 {
 	if (!MovementInputComponent) return;
 	MovementInputComponent->MoveRight(InValue);
 }
 
-void AA_Player::MoveDash()
+void AA_Player::StartMoveDash()
 {
 	if (!MovementInputComponent) return;
-	MovementInputComponent->MoveDash();
+	MovementInputComponent->StartMoveDash();
 }
 
-void AA_Player::StopMoveDash()
+void AA_Player::EndMoveDash()
 {
 	if (!MovementInputComponent) return;
-	MovementInputComponent->StopMoveDash();
+	MovementInputComponent->EndMoveDash();
 }
 
-void AA_Player::MoveJump()
+void AA_Player::StartMoveJump()
 {
 	if (!MovementInputComponent) return;
-	MovementInputComponent->MoveJump();
+	MovementInputComponent->StartMoveJump();
+}
+
+void AA_Player::EndMoveJump()
+{
+	if (!MovementInputComponent) return;
+	MovementInputComponent->EndMoveJump();
 }
 
 void AA_Player::BeginShortRangeAttack()
