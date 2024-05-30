@@ -95,6 +95,8 @@ void USFA_InputHandlerComponent::Move(const FInputActionValue& Value)
 	if (!IsValid(Camera) || !IsValid(Player)) return;
 	if (InputState == ESFA_InputState::Move_disable) return;
 
+	//PlayerStateMachine->SwitchStateByKey("Float");
+
 	//todo move to StateMchine
 	{
 		FVector2D MovementVector = Value.Get<FVector2D>();

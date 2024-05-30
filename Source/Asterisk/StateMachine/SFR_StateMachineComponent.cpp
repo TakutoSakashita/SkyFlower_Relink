@@ -23,6 +23,7 @@ void USFR_StateMachineComponent::TickComponent(float DeltaTime, ELevelTick TickT
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+
 	if (!bCanTickState) return;
 	if (!CurrentState) {
 		Debug::PrintFixedLine("CurrentState : NULL", 1001);

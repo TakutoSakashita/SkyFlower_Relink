@@ -20,7 +20,7 @@
 
 USFA_PlayerStateMachine::USFA_PlayerStateMachine()
 {
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = true;
 }
 
 void USFA_PlayerStateMachine::BeginPlay()
@@ -36,8 +36,13 @@ void USFA_PlayerStateMachine::InitializeStates()
 	for (auto It = StateMap.CreateConstIterator(); It; ++It)
 	{
 		USFA_PlayerStateBase* state = Cast<USFA_PlayerStateBase>(It->Value);
-		if (IsValid(state))
+		if (IsValid(state)) {
 			state->PlayerStateMachine = this;
+			state->Camera = Camera;
+			state->Player = Player;
+			state->InputHandler = InputHandler;
+			state->PlayerMovementComponent = PlayerMovementComponent;
+		}
 		DEBUG_PRINT(state->GetName())
 	}
 }

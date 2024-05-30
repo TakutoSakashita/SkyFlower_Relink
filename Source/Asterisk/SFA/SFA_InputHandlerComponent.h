@@ -62,7 +62,8 @@ public:
 
 	//TODO add playerAbilities
 
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
+	UInputAction* DiveAction;
 
 
 
