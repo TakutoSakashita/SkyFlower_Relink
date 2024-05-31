@@ -79,8 +79,13 @@ void USFR_StateMachineComponent::InitializeStates()
 	/*Create State and hold them in memory for when needed*/
 	for (auto It = AvailableStates.CreateConstIterator(); It; ++It)
 	{
-		USFR_StateBase* State = NewObject<USFR_StateBase>(this, It->Value);
-		StateMap.Add(It->Key, State);
+		if (It->Value) {
+			USFR_StateBase* State = NewObject<USFR_StateBase>(this, It->Value);
+			StateMap.Add(It->Key, State);
+		}
+		else {
+			Debug::Print(It->Key + "NOT FOUND");
+		}
 	}
 }
 

@@ -11,35 +11,6 @@ class ASFA_Player;
 class USFA_InputHandlerComponent;
 class USFA_PlayerMovementComponent;
 
-UENUM(BlueprintType)
-enum class ESFA_MoveState : uint8
-{
-	None,
-
-	Glide,	// move in air
-	Walk,	// move on land
-	Dash,	// jump or dash in air
-	
-	Land,	// idle on land
-	Jump,	// jump on land
-	Float,	// idle in air
-	
-	Dive,	// 
-	Fall,	// 
-
-	ElementsNum,
-};
-
-enum class ESFA_AttackState : uint8
-{
-	None,
-
-	NormalAttack,	// normal 1
-	HomingAttack,
-	LaserAttack,
-
-	ElementsNum,
-};
 
 UCLASS()
 class ASTERISK_API USFA_PlayerStateMachine : public USFR_StateMachineComponent
@@ -73,8 +44,7 @@ private:
 
 	///////////////// custom parameter
 public:
-	ESFA_MoveState MoveState = ESFA_MoveState::Float;
-	ESFA_AttackState AttackState = ESFA_AttackState::None;
+
 
 private:
 	//~Parameters for components

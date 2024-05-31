@@ -34,7 +34,7 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "State Machine")
 	TMap<FString, TSubclassOf<USFR_StateBase>> AvailableStates;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	TMap<FString, USFR_StateBase*> StateMap;
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "State Machine")

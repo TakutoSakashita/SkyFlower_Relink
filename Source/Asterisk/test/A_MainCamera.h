@@ -171,7 +171,7 @@ public:
 	UPROPERTY(EditAnywhere)
 		float boom_length_max = 500.f;
 	UPROPERTY(EditAnywhere)
-		float dive_boom_length_max = 400.f;
+		float dive_boom_length_max = 600.f;
 	UPROPERTY(EditAnywhere)
 		float graid_boom_length_max = 520.f;
 	UPROPERTY(EditAnywhere)

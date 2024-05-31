@@ -257,7 +257,7 @@ void AA_MainCamera::UpdateOnNormal(const float InDeltaTime)
 	{
 		CalculateViewPoint();
 		//ViewPoint = Player->GetActorLocation();
-		SetActorLocation(ViewPoint);
+		//SetActorLocation(ViewPoint);
 	}
 }
 
