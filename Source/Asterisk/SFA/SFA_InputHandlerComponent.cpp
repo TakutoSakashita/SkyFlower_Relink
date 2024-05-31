@@ -94,7 +94,6 @@ void USFA_InputHandlerComponent::Move(const FInputActionValue& Value)
 void USFA_InputHandlerComponent::ShortRangeAttack()
 {
 	PlayerStateMachine->SwitchStateByKey("ShortRangeAttack");
-
 }
 
 void USFA_InputHandlerComponent::LongRangeAttack()
