@@ -5,11 +5,15 @@ using UnrealBuildTool.Rules;
 
 public class Asterisk : ModuleRules
 {
-	public Asterisk(ReadOnlyTargetRules Target) : base(Target)
-	{
-		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
-	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "AIModule" });
+    public Asterisk(ReadOnlyTargetRules Target) : base(Target)
+    {
+        PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
+
+        PublicDependencyModuleNames.AddRange(new string[] { 
+            "Core", "CoreUObject", "Engine", "InputCore",
+            "EnhancedInput", "AIModule",
+            "GameplayAbilities", "GameplayTags", "GameplayTasks",
+            "GameplayStateTreeModule"});
 
         // エディタ専用にUnrealEdモジュールを追加
         if (Target.bBuildEditor)
