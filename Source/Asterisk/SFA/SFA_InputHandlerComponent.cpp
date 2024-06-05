@@ -55,6 +55,7 @@ void USFA_InputHandlerComponent::SetupPlayerInputComponent(UInputComponent* Play
 
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &USFA_InputHandlerComponent::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &USFA_InputHandlerComponent::Look);
+		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Started, this, &USFA_InputHandlerComponent::Dash);
 
 		//TODO add playerAbilities
 		EnhancedInputComponent->BindAction(ShortRangeAttackAction, ETriggerEvent::Started, this, &USFA_InputHandlerComponent::ShortRangeAttack);
@@ -89,6 +90,29 @@ void USFA_InputHandlerComponent::Move(const FInputActionValue& Value)
 		Player->AddMovementInput(Camera->GetActorForwardVector(), MovementVector.Y);
 		Player->AddMovementInput(Camera->GetActorRightVector(), MovementVector.X);
 	}
+}
+
+void USFA_InputHandlerComponent::Dash(const FInputActionValue& Value)
+{
+	//null check
+
+	const FVector2D VelocityXY = FVector2D(
+		PlayerMovementComponent->GetLastUpdateVelocity().X,
+		PlayerMovementComponent->GetLastUpdateVelocity().Y);
+	const bool IsMoving = VelocityXY.Size() > MIN_VALID_MAGNITUDE;
+
+	if (PlayerMovementComponent->MovementMode == EMovementMode::MOVE_Walking) {
+		Player->Jump();
+		return;
+	}
+	if (PlayerMovementComponent->MovementMode == EMovementMode::MOVE_Falling) {
+		PlayerMovementComponent->SetMovementMode(MOVE_Flying);
+		PlayerMovementComponent->GravityScale = 0.2f;
+		//todo playMontage
+	}
+
+	PlayerMovementComponent->bForce = true;
+	PlayerMovementComponent->forceValue = 2800.f;
 }
 
 void USFA_InputHandlerComponent::ShortRangeAttack()

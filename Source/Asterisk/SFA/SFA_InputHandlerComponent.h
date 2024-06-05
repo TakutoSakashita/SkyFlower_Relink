@@ -125,6 +125,7 @@ public:
 private:
 	void Look(const FInputActionValue& Value);
 	void Move(const FInputActionValue& Value);
+	void Dash(const FInputActionValue& Value);
 	void ShortRangeAttack();
 	void LongRangeAttack();
 	void InitializePointers();

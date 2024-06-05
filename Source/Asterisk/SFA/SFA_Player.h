@@ -39,11 +39,11 @@ private:
 		USFA_PlayerStateMachine* PlayerStateMachine;
 
 protected:
-	// AbilitySystem‚ğg—p‚·‚é‚¤‚¦‚Å•K{‚ÌƒRƒ“ƒ|[ƒlƒ“ƒg
+	// AbilitySystemã‚’ä½¿ç”¨ã™ã‚‹ã†ãˆã§å¿…é ˆã®ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 		UAbilitySystemComponent* AbilitySystem;
 
-	// ‚±‚ÌƒLƒƒƒ‰ƒNƒ^[‚ª‚ÂƒAƒrƒŠƒeƒB‚Ì”z—ñ
+	// ã“ã®ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ãŒæŒã¤ã‚¢ãƒ“ãƒªãƒ†ã‚£ã®é…åˆ—
 	UPROPERTY(EditDefaultsOnly, Category = "Abilities")
 		TArray<TSubclassOf<UGameplayAbility>> AbilityList;
 
@@ -52,9 +52,9 @@ public:
 	FORCEINLINE USFA_PlayerMovementComponent* GetPlayerMovement() const { return PlayerMovement; }
 	FORCEINLINE USFA_PlayerStateMachine* GetPlayerStateMachine() const { return PlayerStateMachine; }
 
-	// V‚µ‚¢Controller‚ª—^‚¦‚ç‚ê‚½‚Æ‚«‚ÉAbility System‚ÌƒAƒNƒ^‚ğƒŠƒtƒŒƒbƒVƒ…‚·‚é
+	// æ–°ã—ã„ControllerãŒä¸ãˆã‚‰ã‚ŒãŸã¨ãã«Ability Systemã®ã‚¢ã‚¯ã‚¿ã‚’ãƒªãƒ•ãƒ¬ãƒƒã‚·ãƒ¥ã™ã‚‹
 	virtual void PossessedBy(AController* NewController) override;
-	// Ability System Component‚ÌƒQƒbƒ^[
+	// Ability System Componentã®ã‚²ãƒƒã‚¿ãƒ¼
 	UAbilitySystemComponent* GetAbilitySystemComponent() const { return AbilitySystem; }
 
 
