@@ -4,22 +4,21 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "AbilitySystemInterface.h"
+#include "Abilities/GameplayAbility.h"
 #include "SFA_Player.generated.h"
-
-
 
 class USFA_InputHandlerComponent;
 class USFA_PlayerMovementComponent;
+class UAbilitySystemComponent;
 class USFA_PlayerStateMachine;
 
-
-
 UCLASS()
-class ASTERISK_API ASFA_Player : public ACharacter
+class ASTERISK_API ASFA_Player : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
-	///////////////// override function
+		///////////////// override function
 public:
 	ASFA_Player(const FObjectInitializer& ObjectInitializer);
 	virtual void Tick(float DeltaTime) override;
@@ -31,19 +30,32 @@ protected:
 	///////////////// custom parameter
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	USFA_InputHandlerComponent* InputHandler;
+		USFA_InputHandlerComponent* InputHandler;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	USFA_PlayerMovementComponent* PlayerMovement;
+		USFA_PlayerMovementComponent* PlayerMovement;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	USFA_PlayerStateMachine* PlayerStateMachine;
+		USFA_PlayerStateMachine* PlayerStateMachine;
 
+protected:
+	// AbilitySystemを使用するうえで必須のコンポーネント
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+		UAbilitySystemComponent* AbilitySystem;
+
+	// このキャラクターが持つアビリティの配列
+	UPROPERTY(EditDefaultsOnly, Category = "Abilities")
+		TArray<TSubclassOf<UGameplayAbility>> AbilityList;
 
 public:
 	FORCEINLINE USFA_InputHandlerComponent* GetInputHandler() const { return InputHandler; }
 	FORCEINLINE USFA_PlayerMovementComponent* GetPlayerMovement() const { return PlayerMovement; }
 	FORCEINLINE USFA_PlayerStateMachine* GetPlayerStateMachine() const { return PlayerStateMachine; }
+
+	// 新しいControllerが与えられたときにAbility Systemのアクタをリフレッシュする
+	virtual void PossessedBy(AController* NewController) override;
+	// Ability System Componentのゲッター
+	UAbilitySystemComponent* GetAbilitySystemComponent() const { return AbilitySystem; }
 
 
 

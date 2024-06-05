@@ -7,6 +7,7 @@
 
 //custom actor component
 #include "SFA_InputHandlerComponent.h"
+#include "AbilitySystemComponent.h"
 #include "SFA_PlayerMovementComponent.h"
 #include "SFA_PlayerStateMachine.h"
 
@@ -19,6 +20,7 @@ ASFA_Player::ASFA_Player(const FObjectInitializer& ObjectInitializer)
 
 	InputHandler = CreateDefaultSubobject<USFA_InputHandlerComponent>(TEXT("InputHandler"));
 	PlayerStateMachine = CreateDefaultSubobject<USFA_PlayerStateMachine>(TEXT("PlayerStateMachine"));
+	AbilitySystem = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystem"));
 	PlayerMovement = Cast<USFA_PlayerMovementComponent>(GetCharacterMovement());
 
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input
@@ -37,6 +39,24 @@ void ASFA_Player::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (IsValid(AbilitySystem))
+	{
+		int32 InputID(0);
+		if (HasAuthority() && AbilityList.Num() > 0)
+		{
+			for (auto Ability : AbilityList)
+			{
+				AbilitySystem->GiveAbility(FGameplayAbilitySpec(Ability.GetDefaultObject(), 1, InputID++));
+			}
+		}
+		AbilitySystem->InitAbilityActorInfo(this, this);
+	}
+}
+
+void ASFA_Player::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	AbilitySystem->RefreshAbilityActorInfo();
 }
 
 
