@@ -48,25 +48,25 @@ void USFA_PlayerMovementComponent::UpdateForce(float DeltaTime)
 {
 	if (!bForce)return;
 
-	// 移動量
+	// 移丒量
 	forceValue -= /*forceDecelerationValue*/ 20.f * DeltaTime;
 	FVector forceDirection;
 	Velocity.Z == 0.f ? forceDirection = Player->GetActorUpVector() : Player->GetActorForwardVector();
 
-	// 力を受けてなかったら無視
+	// 力を受けてなかったら無襾E
 	if (forceValue <= Velocity.Size())
 	{
 		bForce = false;
 		return;
 	}
 
-	// 移動
+	// 移丒
 	SweepMove(forceDirection, forceValue);
 }
 
 void USFA_PlayerMovementComponent::SweepMove(FVector MoveVector, float MoveSpeed)
 {
-	// 座標算出
+	// 座標算硜E
 	FVector MovePos = Player->GetActorLocation();
 	MovePos += MoveVector * MoveSpeed;
 	FHitResult outHit;

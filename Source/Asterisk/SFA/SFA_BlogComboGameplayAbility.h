@@ -2,6 +2,11 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
+#include "../DebugHelpers.h"
+#include "SFA_Player.h"
+#include "AbilitySystemComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameplayTagContainer.h"
 #include "SFA_BlogComboGameplayAbility.generated.h"
 
 UCLASS()
@@ -9,6 +14,7 @@ class ASTERISK_API USFA_BlogComboGameplayAbility : public UGameplayAbility
 {
 	GENERATED_BODY()
 	
+public:
 	/** AbilitySystemComponentÇÃGameplayTagCountContainerÇ…êVÇµÇ¢GameplayTagÇí«â¡Ç∑ÇÈ */
 	UFUNCTION(BlueprintCallable, Category = "GamePlayAbility")
 	virtual void AddGameplayTags(const FGameplayTagContainer GameplayTags);

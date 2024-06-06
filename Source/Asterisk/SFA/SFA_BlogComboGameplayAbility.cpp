@@ -1,5 +1,4 @@
 #include "SFA_BlogComboGameplayAbility.h"
-#include "AbilitySystemComponent.h"
 
 void USFA_BlogComboGameplayAbility::AddGameplayTags(const FGameplayTagContainer GameplayTags)
 {
@@ -13,4 +12,5 @@ void USFA_BlogComboGameplayAbility::RemoveGameplayTags(const FGameplayTagContain
 	UAbilitySystemComponent* Comp = GetAbilitySystemComponentFromActorInfo();
 
 	/*Comp -> &gt; */Comp->RemoveLooseGameplayTags(GameplayTags);
+	
 }
