@@ -109,6 +109,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	UInputAction* LongRangeAttackAction;
 
+
+
+
 private:
 	//~Parameters for components
 	ASFA_Camera* Camera;

@@ -13,7 +13,7 @@ USFA_PlayerMovementComponent::USFA_PlayerMovementComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 
 	GravityScale = 2.f;
-	MaxFlySpeed = 1600.f;
+	MaxFlySpeed = 1800.f;
 	JumpZVelocity = 1600.f;
 }
 
@@ -48,25 +48,25 @@ void USFA_PlayerMovementComponent::UpdateForce(float DeltaTime)
 {
 	if (!bForce)return;
 
-	// “∆ÅE¡ø
-	forceValue -= /*forceDecelerationValue*/ 20.f * DeltaTime;
+	// ÁßªÂãïÈáè
+	forceValue -= /*forceDecelerationValue*/ 10.f * DeltaTime;
 	FVector forceDirection;
 	Velocity.Z == 0.f ? forceDirection = Player->GetActorUpVector() : Player->GetActorForwardVector();
 
-	// ¡¶§Ú ‹§±§∆§ §´§√§ø§Èüo“ÅE
-	if (forceValue <= Velocity.Size())
+	// Âäõ„ÇíÂèó„Åë„Å¶„Å™„Åã„Å£„Åü„ÇâÁÑ°Ë¶ñ
+	if (forceValue <= 0/*Velocity.Size()*/)
 	{
 		bForce = false;
 		return;
 	}
 
-	// “∆ÅE
+	// ÁßªÂãï
 	SweepMove(forceDirection, forceValue);
 }
 
 void USFA_PlayerMovementComponent::SweepMove(FVector MoveVector, float MoveSpeed)
 {
-	// ◊˘òÀÀ„≥ÅE
+	// Â∫ßÊ®ôÁÆóÂá∫
 	FVector MovePos = Player->GetActorLocation();
 	MovePos += MoveVector * MoveSpeed;
 	FHitResult outHit;
@@ -109,12 +109,13 @@ TArray<FHitResult> USFA_PlayerMovementComponent::DoCapsuleTraceMultiByObject(con
 bool USFA_PlayerMovementComponent::CheckHasReachedFloor()
 {
 	const FVector DownVector = -UpdatedComponent->GetUpVector();
-	const FVector StartOffset = DownVector * 150.f/*FloorCheckDistance*/;
+	const FVector StartOffset = DownVector * 100.f/*FloorCheckDistance*/;
 
 	const FVector Start = UpdatedComponent->GetComponentLocation() + StartOffset;
-	const FVector End = Start + DownVector;
+	const FVector End = Start + DownVector * 100.f/*FloorCheckDistance*/;
 
 	TArray<FHitResult> PossibleFloorHits = DoCapsuleTraceMultiByObject(Start, End);
+	DRAW_LINE_SingleFrame(Start, End)
 
 	if (PossibleFloorHits.IsEmpty()) return false;
 

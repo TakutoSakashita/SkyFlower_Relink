@@ -10,10 +10,18 @@ public class Asterisk : ModuleRules
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
         PublicDependencyModuleNames.AddRange(new string[] { 
-            "Core", "CoreUObject", "Engine", "InputCore",
-            "EnhancedInput", "AIModule",
-            "GameplayAbilities", "GameplayTags", "GameplayTasks",
-            "GameplayStateTreeModule"});
+            "Core",
+            "CoreUObject",
+            "Engine",
+            "InputCore",
+            "EnhancedInput", 
+            "AIModule",
+            "GameplayAbilities", 
+            "GameplayTags", 
+            "GameplayTasks",
+            "GameplayStateTreeModule",
+            "StateTreeModule"
+        });
 
         // エディタ専用にUnrealEdモジュールを追加
         if (Target.bBuildEditor)
