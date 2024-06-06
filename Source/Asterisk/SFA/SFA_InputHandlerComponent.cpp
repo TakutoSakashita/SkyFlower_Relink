@@ -17,11 +17,11 @@
 #include "../DebugHelpers.h"
 
 
-#define MIN_VALID_MAGNITUDE 0.09f
+#define MIN_VALID_MAGNITUDE 0.1f
 
 USFA_InputHandlerComponent::USFA_InputHandlerComponent()
 {
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = true;
 }
 
 void USFA_InputHandlerComponent::BeginPlay()
@@ -46,6 +46,8 @@ void USFA_InputHandlerComponent::TickComponent(float DeltaTime, ELevelTick TickT
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	if (!IsValid(Camera) || !IsValid(Player)) InitializePointers(); // debug for packaging
+
+
 }
 
 void USFA_InputHandlerComponent::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -94,25 +96,7 @@ void USFA_InputHandlerComponent::Move(const FInputActionValue& Value)
 
 void USFA_InputHandlerComponent::Dash(const FInputActionValue& Value)
 {
-	//null check
-
-	const FVector2D VelocityXY = FVector2D(
-		PlayerMovementComponent->GetLastUpdateVelocity().X,
-		PlayerMovementComponent->GetLastUpdateVelocity().Y);
-	const bool IsMoving = VelocityXY.Size() > MIN_VALID_MAGNITUDE;
-
-	if (PlayerMovementComponent->MovementMode == EMovementMode::MOVE_Walking) {
-		Player->Jump();
-		return;
-	}
-	if (PlayerMovementComponent->MovementMode == EMovementMode::MOVE_Falling) {
-		PlayerMovementComponent->SetMovementMode(MOVE_Flying);
-		PlayerMovementComponent->GravityScale = 0.2f;
-		//todo playMontage
-	}
-
-	PlayerMovementComponent->bForce = true;
-	PlayerMovementComponent->forceValue = 2800.f;
+	PlayerStateMachine->SwitchStateByKey("Dash");
 }
 
 void USFA_InputHandlerComponent::ShortRangeAttack()

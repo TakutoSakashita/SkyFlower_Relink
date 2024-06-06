@@ -50,6 +50,8 @@ void USFA_PlayerStateMachine::InitializeStates()
 void USFA_PlayerStateMachine::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	UpdateForceMove(DeltaTime);
 }
 
 void USFA_PlayerStateMachine::InitializePointers()
@@ -58,4 +60,25 @@ void USFA_PlayerStateMachine::InitializePointers()
 	Player = Cast<ASFA_Player>(GetOwner());
 	InputHandler = Player->GetInputHandler();
 	PlayerMovementComponent = Player->GetPlayerMovement();
+}
+
+void USFA_PlayerStateMachine::UpdateForceMove(float DeltaTime)
+{
+	if (!bIsDashing) Debug::PrintFixedLine("bIsDashing = FALSE", 556);
+	Debug::PrintFixedLine("DashElapsedTime : " + FString::SanitizeFloat(DashElapsedTime), 557);
+
+	//dash process test
+	if (bIsDashing) {
+		DashElapsedTime += DeltaTime;
+		float dashProgress = DashElapsedTime / DashTime;
+		if (dashProgress > 1.f)
+		{
+			bIsDashing = false;
+		}
+		DashDirection.Normalize();
+		FVector offset = DashDirection * (DashDistance * DeltaTime / DashTime);
+		FVector newPos = Player->GetActorLocation() + offset;
+		Player->SetActorLocation(newPos);
+		Debug::PrintFixedLine(offset.ToString(), 555);
+	}
 }
