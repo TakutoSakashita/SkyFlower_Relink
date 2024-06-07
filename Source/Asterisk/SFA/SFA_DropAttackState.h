@@ -4,16 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "SFA_PlayerStateBase.h"
-#include "SFA_DashState.generated.h"
+#include "SFA_DropAttackState.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ASTERISK_API USFA_DashState : public USFA_PlayerStateBase
+class ASTERISK_API USFA_DropAttackState : public USFA_PlayerStateBase
 {
 	GENERATED_BODY()
-
 public:
 	virtual void OnEnterState() override;
 	virtual void TickState(float DeltaTime) override;
@@ -21,13 +20,13 @@ public:
 
 	//test, move to stateMachine
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UAnimMontage* Dash_AirJump_Montage;
+	UAnimMontage* DropAttack_Montage;
 
 	//~BEGIN Dash
 	float DashDistance = 2000.f;
 	float DashElapsedTime = 0.f;
 	float DashTime = 0.8f;
 	bool bIsDashing = true;
-	FVector DashDirection = FVector::Zero();
+	FVector DashDirection = FVector::DownVector;
 	//~END Dash
 };

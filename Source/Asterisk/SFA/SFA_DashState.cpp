@@ -4,7 +4,6 @@
 #include "SFA_DashState.h"
 
 
-
 void USFA_DashState::OnEnterState()
 {
 	Super::OnEnterState();
@@ -25,15 +24,16 @@ void USFA_DashState::OnEnterState()
 		PlayerMovementComponent->GravityScale = 0.2f;
 	}
 
-	FVector DashDirection = FVector::UpVector;
+	DashDirection = FVector::UpVector;
 	if (Player->GetLastMovementInputVector().Size() > 0.1f /*MIN_VALID_MAGNITUDE*/) {
 		DashDirection = FVector(Player->GetVelocity().X, Player->GetVelocity().Y, 0.f);
 	}
-	PlayerStateMachine->SetDashDirection(DashDirection);
-	PlayerStateMachine->SetIsDashing(true);
+	PlayerStateMachine->SetDashDistance(DashDistance);
 	PlayerStateMachine->SetDashElapsedTime(0.f);
+	PlayerStateMachine->SetDashTime(DashTime);
+	PlayerStateMachine->SetIsDashing(true);
+	PlayerStateMachine->SetDashDirection(DashDirection);
 
-	//todo playMontage
 	if (!Dash_AirJump_Montage) return;
 	Player->GetMesh()->GetAnimInstance()->Montage_Play(Dash_AirJump_Montage);
 }

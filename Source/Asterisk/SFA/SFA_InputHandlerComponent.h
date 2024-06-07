@@ -99,6 +99,8 @@ public:
 	UInputAction* LookAction;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	UInputAction* DashAction;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
+	UInputAction* DropAttackAction;
 
 	//TODO add playerAbilities
 
@@ -129,6 +131,7 @@ private:
 	void Look(const FInputActionValue& Value);
 	void Move(const FInputActionValue& Value);
 	void Dash(const FInputActionValue& Value);
+	void DropAttack(const FInputActionValue& Value);
 	void ShortRangeAttack();
 	void LongRangeAttack();
 	void InitializePointers();

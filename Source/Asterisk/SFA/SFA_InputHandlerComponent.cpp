@@ -58,6 +58,7 @@ void USFA_InputHandlerComponent::SetupPlayerInputComponent(UInputComponent* Play
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &USFA_InputHandlerComponent::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &USFA_InputHandlerComponent::Look);
 		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Started, this, &USFA_InputHandlerComponent::Dash);
+		EnhancedInputComponent->BindAction(DropAttackAction, ETriggerEvent::Started, this, &USFA_InputHandlerComponent::DropAttack);
 
 		//TODO add playerAbilities
 		EnhancedInputComponent->BindAction(ShortRangeAttackAction, ETriggerEvent::Started, this, &USFA_InputHandlerComponent::ShortRangeAttack);
@@ -96,7 +97,15 @@ void USFA_InputHandlerComponent::Move(const FInputActionValue& Value)
 
 void USFA_InputHandlerComponent::Dash(const FInputActionValue& Value)
 {
+	if (InputState == ESFA_InputState::Move_disable) return;
 	PlayerStateMachine->SwitchStateByKey("Dash");
+}
+
+void USFA_InputHandlerComponent::DropAttack(const FInputActionValue& Value)
+{
+	if (InputState == ESFA_InputState::Move_disable) return;
+	if (PlayerMovementComponent->MovementMode == EMovementMode::MOVE_Walking) return;
+	PlayerStateMachine->SwitchStateByKey("DropAttack");
 }
 
 void USFA_InputHandlerComponent::ShortRangeAttack()
