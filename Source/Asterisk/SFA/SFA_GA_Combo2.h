@@ -2,12 +2,12 @@
 
 #include "CoreMinimal.h"
 #include "SFA_BlogComboGameplayAbility.h"
-#include "SFA_GA_Combo1.generated.h"
+#include "SFA_GA_Combo2.generated.h"
 
 class ASFA_Player;
 
 UCLASS()
-class ASTERISK_API USFA_GA_Combo1 : public USFA_BlogComboGameplayAbility
+class ASTERISK_API USFA_GA_Combo2 : public USFA_BlogComboGameplayAbility
 {
 	GENERATED_BODY()
 
@@ -26,15 +26,17 @@ public:
 	FName nBranch;
 
 	UPROPERTY(EditAnywhere, Category = "Tag")
-	FGameplayTag AbilityBeginTagName;
+	FGameplayTag  AbilityBeginTagName;
 	UPROPERTY(EditAnywhere, Category = "Tag")
-	FGameplayTag AbilityReadyTagName;
+	FGameplayTag  AbilityReadyTagName;
 protected:
-	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, 
+	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 		const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)override;
-	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, 
+	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 		const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)override;
-private:
+public:
+	UFUNCTION()
+	void HandleMyTagAdded();
 	UFUNCTION()
 	void OnBlendOut(UAnimMontage* Montage, bool bInterrupted);
 	UFUNCTION()

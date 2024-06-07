@@ -7,6 +7,7 @@
 #include "AbilitySystemComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameplayTagContainer.h"
+#include "Abilities/Tasks/AbilityTask_WaitGameplayTag.h"
 #include "SFA_BlogComboGameplayAbility.generated.h"
 
 UCLASS()
