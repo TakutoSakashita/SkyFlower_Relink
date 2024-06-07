@@ -102,6 +102,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	UInputAction* DropAttackAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
+	UInputAction* ShootAction;
+
+
 	//TODO add playerAbilities
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
@@ -132,6 +136,7 @@ private:
 	void Move(const FInputActionValue& Value);
 	void Dash(const FInputActionValue& Value);
 	void DropAttack(const FInputActionValue& Value);
+	void Shoot(const FInputActionValue& Value);
 	void ShortRangeAttack();
 	void LongRangeAttack();
 	void InitializePointers();

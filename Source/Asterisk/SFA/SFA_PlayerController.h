@@ -21,5 +21,6 @@ private:
 	ASFA_Camera* Camera;
 
 public:
+	UFUNCTION(BlueprintCallable)
 	ASFA_Camera* GetCamera() const { return Camera; }
 };

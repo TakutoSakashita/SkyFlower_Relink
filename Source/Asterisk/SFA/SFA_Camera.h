@@ -27,8 +27,11 @@ protected:
 
 	///////////////// custom parameter
 public:
+	UPROPERTY(BlueprintReadWrite)
 	UArrowComponent* CameraArrowMain;
+	UPROPERTY(BlueprintReadWrite)
 	USpringArmComponent* SpringArmMain;
+	UPROPERTY(BlueprintReadWrite)
 	UCameraComponent* CameraMain;
 
 private:

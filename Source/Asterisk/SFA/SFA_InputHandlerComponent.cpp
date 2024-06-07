@@ -108,6 +108,11 @@ void USFA_InputHandlerComponent::DropAttack(const FInputActionValue& Value)
 	PlayerStateMachine->SwitchStateByKey("DropAttack");
 }
 
+void USFA_InputHandlerComponent::Shoot(const FInputActionValue& Value)
+{
+
+}
+
 void USFA_InputHandlerComponent::ShortRangeAttack()
 {
 	PlayerStateMachine->SwitchStateByKey("ShortRangeAttack");
