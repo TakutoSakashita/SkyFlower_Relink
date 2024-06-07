@@ -78,7 +78,7 @@ void USFA_PlayerStateMachine::UpdateForceMove(float DeltaTime)
 		DashDirection.Normalize();
 		FVector offset = DashDirection * (DashDistance * DeltaTime / DashTime);
 		FVector newPos = Player->GetActorLocation() + offset;
-		Player->SetActorLocation(newPos);
+		Player->SetActorLocation(newPos, true);
 		Debug::PrintFixedLine(offset.ToString(), 555);
 	}
 }
