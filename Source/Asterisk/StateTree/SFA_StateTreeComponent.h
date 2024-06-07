@@ -1,15 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Components/StateTreeComponent.h"
 #include "SFA_StateTreeComponent.generated.h"
 
-/**
- * 
- */
-UCLASS()
+
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class ASTERISK_API USFA_StateTreeComponent : public UStateTreeComponent
 {
 	GENERATED_BODY()
@@ -23,5 +19,6 @@ protected:
 public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	UFUNCTION(BlueprintCallable, Category = "SFA_StateTree")
 	void SwitchStateTree(UStateTree* const InStateTree);
 };
