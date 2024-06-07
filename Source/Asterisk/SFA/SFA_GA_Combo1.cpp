@@ -24,22 +24,39 @@ void USFA_GA_Combo1::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 
 	// アニメーション再生
 	AnimInstance->Montage_Play(AttackMontage);
-	
+
 	// アニメーション関連の通知
-	//AnimInstance->Oninter
 	AnimInstance->OnMontageBlendingOut.AddDynamic(this, &USFA_GA_Combo1::OnBlendOut);
 	AnimInstance->OnPlayMontageNotifyBegin.AddDynamic(this, &USFA_GA_Combo1::OnNotifyBegin);
 	AnimInstance->OnPlayMontageNotifyEnd.AddDynamic(this, &USFA_GA_Combo1::OnNotifyEnd);
 }
 
+void USFA_GA_Combo1::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
+{
+	Super::EndAbility(Handle,ActorInfo,ActivationInfo, bReplicateEndAbility,bWasCancelled);
+	FGameplayTagContainer TagContainer;
+	TagContainer.AddTag(FGameplayTag::RequestGameplayTag("Ability.Ready.Combo2"));
+	RemoveGameplayTags(TagContainer);
+
+	TagContainer.AddTag(FGameplayTag::RequestGameplayTag("Ability.Begin.Combo2"));
+	RemoveGameplayTags(TagContainer);
+}
+
 void USFA_GA_Combo1::OnBlendOut(UAnimMontage* Montage, bool bInterrupted)
 {
-
+	UE_LOG(LogTemp, Warning, TEXT("OnBlendOut"));
+	if (bInterrupted) {
+		// 中断された場合の処理
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, bInterrupted);
+		UE_LOG(LogTemp, Warning, TEXT("OnInterrupted"));
+	}
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, bInterrupted);
 }
 
 void USFA_GA_Combo1::OnNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointNotifyPayload)
 {
 	Debug::PrintFixedLine("USFA_GA_Combo1::OnNotifyBegin", 222);
+
 	//OnNotifyBeginが呼ばれた時にはNotify対応するタグを追加し、
 	//RemoveGameplayTagsが呼ばれた時にはNotifyに対応するタグを消す。
 	//Combo1.Input → Ability.Ready.Combo2
@@ -58,13 +75,14 @@ void USFA_GA_Combo1::OnNotifyBegin(FName NotifyName, const FBranchingPointNotify
 	}
 	else
 	{
-		UE_LOG(LogTemp,Warning,TEXT("USFA_GA_Combo1::Name not found"));
+		UE_LOG(LogTemp, Warning, TEXT("USFA_GA_Combo1::Name not found ,NotifyName : %s"), *NotifyName.ToString());
 	}
 }
 
 void USFA_GA_Combo1::OnNotifyEnd(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointNotifyPayload)
 {
-	Debug::PrintFixedLine("USFA_GA_Combo1::OnNotifyBegin", 222);
+	Debug::PrintFixedLine("USFA_GA_Combo1::OnNotifyEnd", 222);
+
 	//OnNotifyBeginが呼ばれた時にはNotify対応するタグを追加し、
 	//RemoveGameplayTagsが呼ばれた時にはNotifyに対応するタグを消す。
 	//Combo1.Input → Ability.Ready.Combo2
@@ -83,6 +101,6 @@ void USFA_GA_Combo1::OnNotifyEnd(FName NotifyName, const FBranchingPointNotifyPa
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("USFA_GA_Combo1::Name not found"));
+		UE_LOG(LogTemp, Warning, TEXT("USFA_GA_Combo1::Name not found ,NotifyName : %s"), *NotifyName.ToString());
 	}
 }
