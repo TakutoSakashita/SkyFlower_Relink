@@ -17,6 +17,10 @@ class ASTERISK_API ASFA_PlayerController : public APlayerController
 protected:
 	virtual void BeginPlay() override;
 
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<ASFA_Camera> CameraClass;
+
 private:
 	ASFA_Camera* Camera;
 

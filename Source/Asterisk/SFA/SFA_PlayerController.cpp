@@ -6,24 +6,27 @@
 
 void ASFA_PlayerController::BeginPlay()
 {
-    Super::BeginPlay();
+	Super::BeginPlay();
 
-    // Spawn the custom Camera
-    FActorSpawnParameters SpawnParams;
-    SpawnParams.Owner = this;
+	// Spawn the custom Camera
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = this;
 
-    Camera = GetWorld()->SpawnActor<ASFA_Camera>(ASFA_Camera::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+	if (!CameraClass) {
+		CameraClass = ASFA_Camera::StaticClass();
+	}
+	Camera = GetWorld()->SpawnActor<ASFA_Camera>(CameraClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
 
-    if (Camera)
-    {
-        // Set the Camera to follow the player
-        AActor* PlayerPawn = GetPawn();
-        if (PlayerPawn)
-        {
-            Camera->SetFollowTarget(PlayerPawn);
-        }
 
-        // Optionally, set the view target to the main camera
-        SetViewTarget(Camera);
-    }
+
+	if (Camera) {
+		// Set the Camera to follow the player
+		AActor* PlayerPawn = GetPawn();
+		if (PlayerPawn){
+			Camera->SetFollowTarget(PlayerPawn);
+		}
+
+		// Optionally, set the view target to the main camera
+		SetViewTarget(Camera);
+	}
 }

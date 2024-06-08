@@ -12,16 +12,16 @@ ASFR_Camera::ASFR_Camera()
 	PrimaryActorTick.bCanEverTick = true;
 
 	// Init main camera
-	SpringArmMain = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmMain"));
+	SpringArmMain = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArmMain->SetupAttachment(RootComponent);
 	SpringArmMain->TargetArmLength = 300.0f; // Adjust as needed
 	SpringArmMain->bUsePawnControlRotation = true;
 
-	CameraMain = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraMain"));
+	CameraMain = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	CameraMain->SetupAttachment(SpringArmMain, USpringArmComponent::SocketName);
 	CameraMain->bUsePawnControlRotation = false;
 
-	CameraArrowMain = CreateDefaultSubobject<UArrowComponent>(TEXT("CameraArrowMain"));
+	CameraArrowMain = CreateDefaultSubobject<UArrowComponent>(TEXT("Arrow"));
 	CameraArrowMain->SetupAttachment(CameraMain);
 	CameraArrowMain->ArrowSize = 0.2f;
 	CameraArrowMain->bHiddenInGame = false;

@@ -8,34 +8,43 @@
 
 //debug
 #include "../DebugHelpers.h"
-
+#include "Kismet/KismetMathLibrary.h" 
 
 ASFA_Camera::ASFA_Camera()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	CameraArrowMain = CreateDefaultSubobject<UArrowComponent>(TEXT("CameraArrowMain"));
-	CameraArrowMain->SetupAttachment(RootComponent);
-	CameraArrowMain->ArrowSize = 2.f;
-	CameraArrowMain->bHiddenInGame = false;
+	Arrow = CreateDefaultSubobject<UArrowComponent>(TEXT("Arrow"));
+	Arrow->SetupAttachment(RootComponent);
+	Arrow->ArrowSize = 2.f;
+	Arrow->bHiddenInGame = false;
 
-	SpringArmMain = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmMain"));
-	SpringArmMain->SetupAttachment(CameraArrowMain);
-	SpringArmMain->TargetArmLength = 400.0f; // Adjust as needed
-	SpringArmMain->bUsePawnControlRotation = true;
+	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	SpringArm->SetupAttachment(Arrow);
+	SpringArm->TargetArmLength = InitialSpringArmLength; // Adjust as needed
+	SpringArm->bUsePawnControlRotation = true;
 
-	CameraMain = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraMain"));
-	CameraMain->SetupAttachment(SpringArmMain, USpringArmComponent::SocketName);
-	CameraMain->bUsePawnControlRotation = false;
-
+	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
+	Camera->bUsePawnControlRotation = false;
+	Camera->FieldOfView = InitialFOV;
+	Camera->SetRelativeLocation(InitialCameraOffset);
 	//CameraMain->bCameraMeshHiddenInGame = false;
 
+	Timeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline"));
 }
 
 void ASFA_Camera::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (FloatCurve)
+	{
+		InterpFunction.BindUFunction(this, FName("AimingProcess"));
+		Timeline->AddInterpFloat(FloatCurve, InterpFunction);
+		Timeline->SetLooping(false);
+		Timeline->SetTimelineLength(TimeLineLength);
+	}
 }
 
 void ASFA_Camera::Tick(float DeltaTime)
@@ -44,6 +53,51 @@ void ASFA_Camera::Tick(float DeltaTime)
 
 	UpdateLocation();
 
+	if (Timeline)
+	{
+		Timeline->TickComponent(DeltaTime, ELevelTick::LEVELTICK_TimeOnly, nullptr);
+	}
+}
+
+void ASFA_Camera::AimingProcess(float Value)
+{
+	SpringArm->TargetArmLength = FMath::Lerp(InitialSpringArmLength, AimSpringArmLength, Value);
+	Camera->FieldOfView = FMath::Lerp(InitialFOV, AimFOV, Value);
+	Camera->SetRelativeLocation(FMath::Lerp(InitialCameraOffset, AimCameraOffset, Value));
+
+	CurrentTimelinePosition = Timeline->GetPlaybackPosition();
+
+	UE_LOG(LogTemp, Log, TEXT("AimingProcess Value: %f, Position: %f"), Value, CurrentTimelinePosition);
+}
+
+void ASFA_Camera::StartAim()
+{
+	if (!FloatCurve) return;
+	if (!Timeline) return;
+
+	if (Timeline->GetPlaybackPosition() == 0.0f || Timeline->GetPlaybackPosition() == TimeLineLength){
+		Timeline->PlayFromStart();
+	}
+	else{
+		Timeline->Play();
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("StartAim called. Position: %f"), CurrentTimelinePosition);
+}
+
+void ASFA_Camera::EndAim()
+{
+	if (!FloatCurve) return;
+	if (!Timeline) return;
+
+	if (Timeline->GetPlaybackPosition() == 0.0f || Timeline->GetPlaybackPosition() == TimeLineLength){
+		Timeline->ReverseFromEnd();
+	}
+	else{
+		Timeline->Reverse();
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("EndAim called. Position: %f"), CurrentTimelinePosition);
 }
 
 void ASFA_Camera::Turn(float value)
@@ -76,7 +130,7 @@ void ASFA_Camera::UpdateLocation()
 	FVector cameraPos = FVector(
 		targetPos.X,
 		targetPos.Y,
-		targetPos.Z + 50.f /* set camera higher than player pos */
+		targetPos.Z /* + 50.f  set camera higher than player pos */
 	);
 	SetActorLocation(cameraPos);
 
