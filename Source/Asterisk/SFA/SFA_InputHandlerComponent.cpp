@@ -1,4 +1,3 @@
-
 #include "SFA_InputHandlerComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "SFA_PlayerController.h"
@@ -14,7 +13,9 @@
 #include "../Plugins/EnhancedInput/Source/EnhancedInput/Public/EnhancedInputSubsystems.h"
 
 //debug
+#include "SFA_HUD.h"
 #include "../DebugHelpers.h"
+#include "GameFramework/GameModeBase.h"
 
 
 #define MIN_VALID_MAGNITUDE 0.1f
@@ -31,38 +32,49 @@ void USFA_InputHandlerComponent::BeginPlay()
 	InitializePointers();
 
 	// load InputMappingContext
-	ASFA_PlayerController* controller = Cast<ASFA_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	ASFA_PlayerController* controller = Cast<ASFA_PlayerController>(
+		UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	if (controller)
 	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(controller->GetLocalPlayer()))
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<
+			UEnhancedInputLocalPlayerSubsystem>(controller->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
 }
 
-void USFA_InputHandlerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void USFA_InputHandlerComponent::TickComponent(float DeltaTime, ELevelTick TickType,
+                                               FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	if (!IsValid(Camera) || !IsValid(Player)) InitializePointers(); // debug for packaging
-
-
 }
 
 void USFA_InputHandlerComponent::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	// Set up action bindings
-	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
-
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &USFA_InputHandlerComponent::Move);
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &USFA_InputHandlerComponent::Look);
+	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
+	{
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this,
+		                                   &USFA_InputHandlerComponent::Move);
+		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this,
+		                                   &USFA_InputHandlerComponent::Look);
 		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Started, this, &USFA_InputHandlerComponent::Dash);
-		EnhancedInputComponent->BindAction(DropAttackAction, ETriggerEvent::Started, this, &USFA_InputHandlerComponent::DropAttack);
+		EnhancedInputComponent->BindAction(DropAttackAction, ETriggerEvent::Started, this,
+		                                   &USFA_InputHandlerComponent::DropAttack);
+
+		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this,
+		                                   &USFA_InputHandlerComponent::StartAim);
+		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this,
+		                                   &USFA_InputHandlerComponent::EndAim);
 
 		//TODO add playerAbilities
-		EnhancedInputComponent->BindAction(ShortRangeAttackAction, ETriggerEvent::Started, this, &USFA_InputHandlerComponent::ShortRangeAttack);
-		EnhancedInputComponent->BindAction(LongRangeAttackAction, ETriggerEvent::Started, this, &USFA_InputHandlerComponent::LongRangeAttack);
+		EnhancedInputComponent->BindAction(ShortRangeAttackAction, ETriggerEvent::Started, this,
+		                                   &USFA_InputHandlerComponent::ShortRangeAttack);
+		EnhancedInputComponent->BindAction(LongRangeAttackAction, ETriggerEvent::Started, this,
+		                                   &USFA_InputHandlerComponent::LongRangeAttack);
 	}
 }
 
@@ -77,6 +89,14 @@ void USFA_InputHandlerComponent::Look(const FInputActionValue& Value)
 		Camera->Turn(LookAxisVector.X);
 		Camera->LookUp(LookAxisVector.Y);
 	}
+
+	//rotate player to cameraDirection when aiming
+	if (PlayerStateMachine->bIsAiming)
+	{
+		FRotator cameraRotation = Camera->GetActorRotation();
+		cameraRotation.Pitch = 0.f;
+		Player->SetActorRotation(cameraRotation);
+	}
 }
 
 void USFA_InputHandlerComponent::Move(const FInputActionValue& Value)
@@ -86,13 +106,7 @@ void USFA_InputHandlerComponent::Move(const FInputActionValue& Value)
 	if (InputState == ESFA_InputState::Move_disable) return;
 
 	//PlayerStateMachine->SwitchStateByKey("Float");
-
-	//todo move to StateMchine
-	{
-		FVector2D MovementVector = Value.Get<FVector2D>();
-		Player->AddMovementInput(Camera->GetActorForwardVector(), MovementVector.Y);
-		Player->AddMovementInput(Camera->GetActorRightVector(), MovementVector.X);
-	}
+	PlayerStateMachine->Move(Value);
 }
 
 void USFA_InputHandlerComponent::Dash(const FInputActionValue& Value)
@@ -108,9 +122,24 @@ void USFA_InputHandlerComponent::DropAttack(const FInputActionValue& Value)
 	PlayerStateMachine->SwitchStateByKey("DropAttack");
 }
 
+void USFA_InputHandlerComponent::StartAim(const FInputActionValue& Value)
+{
+	//TODO null check
+	Hud->ShowCrosshair(true);
+	Camera->StartAim();
+	PlayerStateMachine->bIsAiming = true;
+}
+
+void USFA_InputHandlerComponent::EndAim(const FInputActionValue& Value)
+{
+	//TODO null check
+	Hud->ShowCrosshair(false);
+	Camera->EndAim();
+	PlayerStateMachine->bIsAiming = false;
+}
+
 void USFA_InputHandlerComponent::Shoot(const FInputActionValue& Value)
 {
-
 }
 
 void USFA_InputHandlerComponent::ShortRangeAttack()
@@ -129,4 +158,6 @@ void USFA_InputHandlerComponent::InitializePointers()
 	Player = Cast<ASFA_Player>(GetOwner());
 	PlayerStateMachine = Player->GetPlayerStateMachine();
 	PlayerMovementComponent = Player->GetPlayerMovement();
+
+	Hud = Cast<ASFA_HUD>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD());
 }

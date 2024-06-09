@@ -8,6 +8,7 @@
 #include "SFA_InputHandlerComponent.generated.h"
 
 
+class ASFA_HUD;
 
 UENUM(BlueprintType)
 enum class ESFA_InputState : uint8
@@ -27,16 +28,16 @@ enum class ESFA_MoveState : uint8
 {
 	None,
 
-	Glide,	// move in air
-	Walk,	// move on land
-	Dash,	// jump or dash in air
+	Glide, // move in air
+	Walk, // move on land
+	Dash, // jump or dash in air
 
-	Land,	// idle on land
-	Jump,	// jump on land
-	Float,	// idle in air
+	Land, // idle on land
+	Jump, // jump on land
+	Float, // idle in air
 
-	Dive,	// 
-	Fall,	// 
+	Dive, // 
+	Fall, // 
 
 	ElementsNum,
 };
@@ -46,13 +47,12 @@ enum class ESFA_AttackState : uint8
 {
 	None,
 
-	NormalAttack,	// normal 1
+	NormalAttack, // normal 1
 	HomingAttack,
 	LaserAttack,
 
 	ElementsNum,
 };
-
 
 
 struct FInputActionValue;
@@ -73,7 +73,8 @@ class ASTERISK_API USFA_InputHandlerComponent : public UActorComponent
 	///////////////// override function
 public:
 	USFA_InputHandlerComponent();
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
+	                           FActorComponentTickFunction* ThisTickFunction) override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -101,6 +102,8 @@ public:
 	UInputAction* DashAction;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	UInputAction* DropAttackAction;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
+	UInputAction* AimAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	UInputAction* ShootAction;
@@ -115,15 +118,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	UInputAction* LongRangeAttackAction;
 
-
-
-
 private:
 	//~Parameters for components
 	ASFA_Camera* Camera;
 	ASFA_Player* Player;
 	USFA_PlayerStateMachine* PlayerStateMachine;
 	USFA_PlayerMovementComponent* PlayerMovementComponent;
+	ASFA_HUD* Hud;
 	//~End of Parameters for components
 
 
@@ -136,6 +137,8 @@ private:
 	void Move(const FInputActionValue& Value);
 	void Dash(const FInputActionValue& Value);
 	void DropAttack(const FInputActionValue& Value);
+	void StartAim(const FInputActionValue& Value);
+	void EndAim(const FInputActionValue& Value);
 	void Shoot(const FInputActionValue& Value);
 	void ShortRangeAttack();
 	void LongRangeAttack();

@@ -36,7 +36,8 @@ void USFA_PlayerStateMachine::InitializeStates()
 	for (auto It = StateMap.CreateConstIterator(); It; ++It)
 	{
 		USFA_PlayerStateBase* state = Cast<USFA_PlayerStateBase>(It->Value);
-		if (IsValid(state)) {
+		if (IsValid(state))
+		{
 			state->PlayerStateMachine = this;
 			state->Camera = Camera;
 			state->Player = Player;
@@ -47,7 +48,15 @@ void USFA_PlayerStateMachine::InitializeStates()
 	}
 }
 
-void USFA_PlayerStateMachine::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void USFA_PlayerStateMachine::Move(const FInputActionValue& Value)
+{
+	FVector2D MovementVector = Value.Get<FVector2D>();
+	Player->AddMovementInput(Camera->GetActorForwardVector(), MovementVector.Y);
+	Player->AddMovementInput(Camera->GetActorRightVector(), MovementVector.X);
+}
+
+void USFA_PlayerStateMachine::TickComponent(float DeltaTime, ELevelTick TickType,
+                                            FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
@@ -68,7 +77,8 @@ void USFA_PlayerStateMachine::UpdateForceMove(float DeltaTime)
 	Debug::PrintFixedLine("DashElapsedTime : " + FString::SanitizeFloat(DashElapsedTime), 557);
 
 	//dash process test
-	if (bIsDashing) {
+	if (bIsDashing)
+	{
 		DashElapsedTime += DeltaTime;
 		float dashProgress = DashElapsedTime / DashTime;
 		if (dashProgress > 1.f)

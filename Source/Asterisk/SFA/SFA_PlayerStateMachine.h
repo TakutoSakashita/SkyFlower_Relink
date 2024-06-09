@@ -6,6 +6,7 @@
 #include "../StateMachine/SFR_StateMachineComponent.h"
 #include "SFA_PlayerStateMachine.generated.h"
 
+struct FInputActionValue;
 class ASFA_Camera;
 class ASFA_Player;
 class USFA_InputHandlerComponent;
@@ -19,7 +20,8 @@ class ASTERISK_API USFA_PlayerStateMachine : public USFR_StateMachineComponent
 
 public:
 	USFA_PlayerStateMachine();
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
+	                           FActorComponentTickFunction* ThisTickFunction) override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -27,17 +29,7 @@ protected:
 
 	/////////////////// custom function
 public:
-	//todo functions for states
-
-
-
-
-
-
-
-
-
-
+	void Move(const FInputActionValue& Value);
 
 private:
 	void InitializePointers();
@@ -45,7 +37,7 @@ private:
 
 	///////////////// custom parameter
 public:
-
+	bool bIsAiming = false;
 
 private:
 	//~BEGIN components
@@ -63,11 +55,12 @@ private:
 	FVector DashDirection = FVector::Zero();
 	//~END Dash
 
+	///////////////// get set
 public:
-	void SetDashDistance(float distance) { DashDistance = distance; }
-	void SetDashElapsedTime(float distance) { DashElapsedTime = distance; }
-	void SetDashTime(float time) { DashTime = time; }
-	void SetIsDashing(bool isDashing) { bIsDashing = isDashing; }
-	bool GetIsDashing()const { return bIsDashing; }
-	void SetDashDirection(FVector direction) { DashDirection = direction; }
+	void SetDashDistance(const float Distance) { DashDistance = Distance; }
+	void SetDashElapsedTime(const float Distance) { DashElapsedTime = Distance; }
+	void SetDashTime(const float Time) { DashTime = Time; }
+	void SetIsDashing(const bool IsDashing) { bIsDashing = IsDashing; }
+	bool GetIsDashing() const { return bIsDashing; }
+	void SetDashDirection(const FVector& Direction) { DashDirection = Direction; }
 };
