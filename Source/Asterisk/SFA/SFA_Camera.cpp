@@ -38,6 +38,8 @@ void ASFA_Camera::BeginPlay()
 {
 	Super::BeginPlay();
 
+	Camera->SetRelativeLocation(InitialCameraOffset);
+	
 	if (FloatCurve)
 	{
 		InterpFunction.BindUFunction(this, FName("AimingProcess"));

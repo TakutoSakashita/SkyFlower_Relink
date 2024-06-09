@@ -70,6 +70,8 @@ void USFA_InputHandlerComponent::SetupPlayerInputComponent(UInputComponent* Play
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this,
 		                                   &USFA_InputHandlerComponent::EndAim);
 
+		EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Started, this,
+								   &USFA_InputHandlerComponent::Shoot);
 		//TODO add playerAbilities
 		EnhancedInputComponent->BindAction(ShortRangeAttackAction, ETriggerEvent::Started, this,
 		                                   &USFA_InputHandlerComponent::ShortRangeAttack);
@@ -140,6 +142,8 @@ void USFA_InputHandlerComponent::EndAim(const FInputActionValue& Value)
 
 void USFA_InputHandlerComponent::Shoot(const FInputActionValue& Value)
 {
+	//TODO null check, state check
+	PlayerStateMachine->Shoot(Value);
 }
 
 void USFA_InputHandlerComponent::ShortRangeAttack()
@@ -149,7 +153,7 @@ void USFA_InputHandlerComponent::ShortRangeAttack()
 
 void USFA_InputHandlerComponent::LongRangeAttack()
 {
-	PlayerStateMachine->SwitchStateByKey("LongRangeAttack");
+	//PlayerStateMachine->SwitchStateByKey("LongRangeAttack");
 }
 
 void USFA_InputHandlerComponent::InitializePointers()

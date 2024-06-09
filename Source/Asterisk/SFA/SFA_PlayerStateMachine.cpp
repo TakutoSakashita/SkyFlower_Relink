@@ -17,6 +17,8 @@
 #define LOG_PRINT 1
 #define DEBUG_PRINT(text) if(LOG_PRINT) Debug::Print(text);
 #define DEBUG_FIXED(text,num) if(LOG_PRINT) Debug::PrintFixedLine(text, num);
+//bullet
+#include "SFA_Bullet.h"
 
 USFA_PlayerStateMachine::USFA_PlayerStateMachine()
 {
@@ -55,6 +57,49 @@ void USFA_PlayerStateMachine::Move(const FInputActionValue& Value)
 	Player->AddMovementInput(Camera->GetActorRightVector(), MovementVector.X);
 }
 
+void USFA_PlayerStateMachine::Shoot(const FInputActionValue& Value)
+{
+	//TODO move to ShootState, setup moveSpeed and PlayerRotation
+	FVector CameraPos = Camera->GetActorLocation();
+	FRotator CameraRot = Camera->GetActorRotation();
+	FVector CameraDir = CameraRot.Vector();
+	FVector LineTraceEndDir = CameraPos + CameraDir * 50000.0f /* lineTrace length */;
+
+	FHitResult HitResult;
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(Camera);
+	CollisionParams.AddIgnoredActor(Player);
+	bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, CameraPos, LineTraceEndDir, ECC_Visibility,
+	                                                 CollisionParams);
+	FVector BulletDestination;
+	if (bHit) BulletDestination = HitResult.Location;
+	else BulletDestination = LineTraceEndDir;
+
+	FVector PlayerRightHandDir = Player->GetMesh()->GetSocketLocation(TEXT("RightHandMiddle1"));
+	FVector BulletDir = (BulletDestination - PlayerRightHandDir).GetSafeNormal(); // Dir = End - Start
+
+	DRAW_LINE_SingleFrame(PlayerRightHandDir, BulletDestination)
+
+	//spawn bullet
+	if (BulletClass)
+	{
+		FTransform Transform = Player->GetActorTransform();
+		ASFA_Bullet* Bullet = GetWorld()->SpawnActor<ASFA_Bullet>(BulletClass, Transform);
+
+		if (bIsAiming)
+		{
+			Bullet->SetActorScale3D(FVector(1.5f, 1.5f, 1.5f));
+			Bullet->SetBulletSpeed(10000.f);
+		}
+
+		Bullet->Initialize(BulletDir);
+	}
+
+	//play montage
+	if (!Shoot_Montage) return;
+	Player->GetMesh()->GetAnimInstance()->Montage_Play(Shoot_Montage);
+}
+
 void USFA_PlayerStateMachine::TickComponent(float DeltaTime, ELevelTick TickType,
                                             FActorComponentTickFunction* ThisTickFunction)
 {
@@ -80,15 +125,15 @@ void USFA_PlayerStateMachine::UpdateForceMove(float DeltaTime)
 	if (bIsDashing)
 	{
 		DashElapsedTime += DeltaTime;
-		float dashProgress = DashElapsedTime / DashTime;
-		if (dashProgress > 1.f)
+		const float DashProgress = DashElapsedTime / DashTime;
+		if (DashProgress > 1.f)
 		{
 			bIsDashing = false;
 		}
 		DashDirection.Normalize();
-		FVector offset = DashDirection * (DashDistance * DeltaTime / DashTime);
-		FVector newPos = Player->GetActorLocation() + offset;
-		Player->SetActorLocation(newPos, true);
-		Debug::PrintFixedLine(offset.ToString(), 555);
+		const FVector Offset = DashDirection * (DashDistance * DeltaTime / DashTime);
+		const FVector NewPos = Player->GetActorLocation() + Offset;
+		Player->SetActorLocation(NewPos, true);
+		Debug::PrintFixedLine(Offset.ToString(), 555);
 	}
 }

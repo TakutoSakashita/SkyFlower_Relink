@@ -6,12 +6,13 @@
 #include "../StateMachine/SFR_StateMachineComponent.h"
 #include "SFA_PlayerStateMachine.generated.h"
 
+class ASFA_Bullet;
 struct FInputActionValue;
 class ASFA_Camera;
 class ASFA_Player;
 class USFA_InputHandlerComponent;
 class USFA_PlayerMovementComponent;
-
+class UAnimMontage;
 
 UCLASS()
 class ASTERISK_API USFA_PlayerStateMachine : public USFR_StateMachineComponent
@@ -30,7 +31,8 @@ protected:
 	/////////////////// custom function
 public:
 	void Move(const FInputActionValue& Value);
-
+	void Shoot(const FInputActionValue& Value);
+	
 private:
 	void InitializePointers();
 	void UpdateForceMove(float DeltaTime);
@@ -38,7 +40,9 @@ private:
 	///////////////// custom parameter
 public:
 	bool bIsAiming = false;
-
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<ASFA_Bullet> BulletClass;
+	
 private:
 	//~BEGIN components
 	ASFA_Camera* Camera;
@@ -55,6 +59,11 @@ private:
 	FVector DashDirection = FVector::Zero();
 	//~END Dash
 
+public:
+	//~BEGIN Shoot
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UAnimMontage* Shoot_Montage;
+	//~END Shoot
 	///////////////// get set
 public:
 	void SetDashDistance(const float Distance) { DashDistance = Distance; }

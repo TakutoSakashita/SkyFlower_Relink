@@ -24,6 +24,7 @@ void USFA_DropAttackState::TickState(float DeltaTime)
 	Super::TickState(DeltaTime);
 
 	if (PlayerMovementComponent->MovementMode == EMovementMode::MOVE_Walking) {
+		Player->GetMesh()->GetAnimInstance()->Montage_Stop(0.2);
 		Player->Jump();
 		PlayerStateMachine->SwitchStateByKey("float");
 	}

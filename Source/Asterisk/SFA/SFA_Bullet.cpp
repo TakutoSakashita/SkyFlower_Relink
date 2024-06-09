@@ -5,6 +5,8 @@
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 
 // Sets default values
 ASFA_Bullet::ASFA_Bullet()
@@ -24,22 +26,14 @@ ASFA_Bullet::ASFA_Bullet()
 	ProjectileMovement->InitialSpeed = 5000.f;
 	ProjectileMovement->MaxSpeed = 10000.f;
 	ProjectileMovement->ProjectileGravityScale = 0.f;
+
+	InitialLifeSpan = 5.f;
 }
 
 // Called when the game starts or when spawned
 void ASFA_Bullet::BeginPlay()
 {
 	Super::BeginPlay();
-
-	FTimerHandle TimerHandle;
-
-	FTimerDelegate Delegate;
-	Delegate.BindLambda([&]()
-		{
-			Destroy();
-		});
-
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, 5.f, false);
 }
 
 // Called every frame
@@ -47,5 +41,16 @@ void ASFA_Bullet::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ASFA_Bullet::Initialize(const FVector& Vector) const
+{
+	ProjectileMovement->Velocity = Vector * ProjectileMovement->InitialSpeed;
+	ProjectileMovement->Activate();
+}
+
+void ASFA_Bullet::SetBulletSpeed(const float Speed) const
+{
+	ProjectileMovement->InitialSpeed = Speed;
 }
 

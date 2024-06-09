@@ -20,10 +20,11 @@ public class Asterisk : ModuleRules
             "GameplayTags", 
             "GameplayTasks",
             "GameplayStateTreeModule",
-            "StateTreeModule"
+            "StateTreeModule",
+            "Niagara"
         });
 
-        // エディタ専用にUnrealEdモジュールを追加
+        // 繧ｨ繝�繧｣繧ｿ蟆ら畑縺ｫUnrealEd繝｢繧ｸ繝･繝ｼ繝ｫ繧定ｿｽ蜉
         if (Target.bBuildEditor)
         {
             PrivateDependencyModuleNames.AddRange(new string[] { "UnrealEd" });
