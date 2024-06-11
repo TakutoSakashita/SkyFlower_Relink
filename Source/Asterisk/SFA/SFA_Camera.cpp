@@ -68,8 +68,6 @@ void ASFA_Camera::AimingProcess(float Value)
 	Camera->SetRelativeLocation(FMath::Lerp(InitialCameraOffset, AimCameraOffset, Value));
 
 	CurrentTimelinePosition = Timeline->GetPlaybackPosition();
-
-	UE_LOG(LogTemp, Log, TEXT("AimingProcess Value: %f, Position: %f"), Value, CurrentTimelinePosition);
 }
 
 void ASFA_Camera::StartAim()
@@ -83,8 +81,6 @@ void ASFA_Camera::StartAim()
 	else{
 		Timeline->Play();
 	}
-
-	UE_LOG(LogTemp, Log, TEXT("StartAim called. Position: %f"), CurrentTimelinePosition);
 }
 
 void ASFA_Camera::EndAim()
@@ -98,8 +94,6 @@ void ASFA_Camera::EndAim()
 	else{
 		Timeline->Reverse();
 	}
-
-	UE_LOG(LogTemp, Log, TEXT("EndAim called. Position: %f"), CurrentTimelinePosition);
 }
 
 void ASFA_Camera::Turn(float value)
@@ -128,15 +122,16 @@ void ASFA_Camera::LookUp(float value)
 void ASFA_Camera::UpdateLocation()
 {
 	if (!IsValid(FollowTarget)) return;
+	/*
 	FVector targetPos = FollowTarget->GetActorLocation();
 	FVector cameraPos = FVector(
 		targetPos.X,
 		targetPos.Y,
-		targetPos.Z /* + 50.f  set camera higher than player pos */
+		targetPos.Z 
 	);
 	SetActorLocation(cameraPos);
-
-	//SetActorLocation(FollowTarget->GetActorLocation());
+	*/
+	SetActorLocation(FollowTarget->GetActorLocation());
 }
 
 
