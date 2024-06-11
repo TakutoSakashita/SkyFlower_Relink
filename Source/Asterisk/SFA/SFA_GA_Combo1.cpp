@@ -8,6 +8,7 @@ void USFA_GA_Combo1::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 	//UE_LOG(LogTemp, Warning, TEXT(": %s"), *AbilityBeginTagName.GetTagName().ToString());
 
 	Player = Cast<ASFA_Player>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+
 	if (!IsValid(Player)) {
 		Debug::PrintFixedLine("USFA_GA_Combo1 : PlayerNull", 222);
 		return;
@@ -59,6 +60,23 @@ void USFA_GA_Combo1::OnNotifyBegin(FName NotifyName, const FBranchingPointNotify
 {
 	Debug::PrintFixedLine("USFA_GA_Combo1::OnNotifyBegin", 222);
 
+	ASFA_Weapon* SFA_Weapon = Player->GetWeapon();
+	if (!SFA_Weapon) {
+		UE_LOG(LogTemp, Warning, TEXT("SFA_Weapon :null"));
+
+		return;
+	}
+
+	CollisionBoxComponent = SFA_Weapon->GetBoxComponent();
+
+	if (!CollisionBoxComponent) {
+		UE_LOG(LogTemp, Warning, TEXT("CollisionBoxComponent :null"));
+
+		return;
+	}
+	// コリジョンを有効にする
+	CollisionBoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
 	//OnNotifyBeginが呼ばれた時にはNotify対応するタグを追加し、
 	//RemoveGameplayTagsが呼ばれた時にはNotifyに対応するタグを消す。
 	//Combo1.Input → Ability.Ready.Combo2
@@ -84,6 +102,10 @@ void USFA_GA_Combo1::OnNotifyBegin(FName NotifyName, const FBranchingPointNotify
 void USFA_GA_Combo1::OnNotifyEnd(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointNotifyPayload)
 {
 	Debug::PrintFixedLine("USFA_GA_Combo1::OnNotifyEnd", 222);
+
+	if (!CollisionBoxComponent)return;
+	// コリジョンを無効にする
+	CollisionBoxComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	//OnNotifyBeginが呼ばれた時にはNotify対応するタグを追加し、
 	//RemoveGameplayTagsが呼ばれた時にはNotifyに対応するタグを消す。

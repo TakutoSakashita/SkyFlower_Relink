@@ -39,6 +39,9 @@ void ASFA_Player::BeginPlay()
 {
 	Super::BeginPlay();
 
+	//
+	InitWeapon();
+
 	if (IsValid(AbilitySystem))
 	{
 		int32 InputID(0);

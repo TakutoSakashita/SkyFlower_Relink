@@ -1,6 +1,9 @@
-#include "SFA_GA_Combo2.h"
+// Fill out your copyright notice in the Description page of Project Settings.
 
-void USFA_GA_Combo2::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
+
+#include "SFA_GA_Combo3.h"
+
+void USFA_GA_Combo3::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 	const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
@@ -28,22 +31,22 @@ void USFA_GA_Combo2::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 		UE_LOG(LogTemp, Warning, TEXT("Task"));
 		//HandleMyTagAdded();
 		// タグが追加されたときの処理を設定
-		Task->Added.AddDynamic(this, &USFA_GA_Combo2::HandleMyTagAdded);
+		Task->Added.AddDynamic(this, &USFA_GA_Combo3::HandleMyTagAdded);
 	}
 }
 
-void USFA_GA_Combo2::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
+void USFA_GA_Combo3::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 	FGameplayTagContainer TagContainer;
-	TagContainer.AddTag(FGameplayTag::RequestGameplayTag("Ability.Ready.Combo3"));
+	TagContainer.AddTag(FGameplayTag::RequestGameplayTag("Ability.Ready.Combo4"));
 	RemoveGameplayTags(TagContainer);
 
-	TagContainer.AddTag(FGameplayTag::RequestGameplayTag("Ability.Begin.Combo3"));
+	TagContainer.AddTag(FGameplayTag::RequestGameplayTag("Ability.Begin.Combo4"));
 	RemoveGameplayTags(TagContainer);
 }
 
-void USFA_GA_Combo2::HandleMyTagAdded()
+void USFA_GA_Combo3::HandleMyTagAdded()
 {
 	UE_LOG(LogTemp, Warning, TEXT("HandleMyTagAdded"));
 
@@ -57,12 +60,12 @@ void USFA_GA_Combo2::HandleMyTagAdded()
 	AnimInstance->Montage_Play(AttackMontage);
 
 	// アニメーション関連の通知
-	AnimInstance->OnMontageBlendingOut.AddDynamic(this, &USFA_GA_Combo2::OnBlendOut);
-	AnimInstance->OnPlayMontageNotifyBegin.AddDynamic(this, &USFA_GA_Combo2::OnNotifyBegin);
-	AnimInstance->OnPlayMontageNotifyEnd.AddDynamic(this, &USFA_GA_Combo2::OnNotifyEnd);
+	AnimInstance->OnMontageBlendingOut.AddDynamic(this, &USFA_GA_Combo3::OnBlendOut);
+	AnimInstance->OnPlayMontageNotifyBegin.AddDynamic(this, &USFA_GA_Combo3::OnNotifyBegin);
+	AnimInstance->OnPlayMontageNotifyEnd.AddDynamic(this, &USFA_GA_Combo3::OnNotifyEnd);
 }
 
-void USFA_GA_Combo2::OnBlendOut(UAnimMontage* Montage, bool bInterrupted)
+void USFA_GA_Combo3::OnBlendOut(UAnimMontage* Montage, bool bInterrupted)
 {
 	UE_LOG(LogTemp, Warning, TEXT("OnBlendOut"));
 	if (bInterrupted) {
@@ -73,7 +76,7 @@ void USFA_GA_Combo2::OnBlendOut(UAnimMontage* Montage, bool bInterrupted)
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, bInterrupted);
 }
 
-void USFA_GA_Combo2::OnNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointNotifyPayload)
+void USFA_GA_Combo3::OnNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointNotifyPayload)
 {
 	Debug::PrintFixedLine("USFA_GA_Combo1::OnNotifyBegin", 222);
 
@@ -108,7 +111,7 @@ void USFA_GA_Combo2::OnNotifyBegin(FName NotifyName, const FBranchingPointNotify
 	}
 }
 
-void USFA_GA_Combo2::OnNotifyEnd(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointNotifyPayload)
+void USFA_GA_Combo3::OnNotifyEnd(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointNotifyPayload)
 {
 	Debug::PrintFixedLine("USFA_GA_Combo1::OnNotifyEnd", 222);
 

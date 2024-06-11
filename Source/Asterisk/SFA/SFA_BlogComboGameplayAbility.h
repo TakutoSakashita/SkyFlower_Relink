@@ -4,11 +4,15 @@
 #include "Abilities/GameplayAbility.h"
 #include "../DebugHelpers.h"
 #include "SFA_Player.h"
+#include "SFA_Weapon.h"
 #include "AbilitySystemComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/BoxComponent.h"
 #include "GameplayTagContainer.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayTag.h"
 #include "SFA_BlogComboGameplayAbility.generated.h"
+
+class UBoxComponent;
 
 UCLASS()
 class ASTERISK_API USFA_BlogComboGameplayAbility : public UGameplayAbility
@@ -23,4 +27,8 @@ public:
 	/** AbilitySystemComponentÇÃGameplayTagCountContainerÇÃGameplayTagÇçÌèúÇ∑ÇÈ */
 	UFUNCTION(BlueprintCallable, Category = "GamePlayAbility")
 	virtual void RemoveGameplayTags(const FGameplayTagContainer GameplayTags);
+
+public:
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* CollisionBoxComponent;
 };
