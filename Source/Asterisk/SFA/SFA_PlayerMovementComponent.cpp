@@ -14,7 +14,7 @@ USFA_PlayerMovementComponent::USFA_PlayerMovementComponent()
 
 	GravityScale = 2.f;
 	MaxFlySpeed = 1800.f;
-	JumpZVelocity = 1600.f;
+	JumpZVelocity = 1000.f;
 }
 
 

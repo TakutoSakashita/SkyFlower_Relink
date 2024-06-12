@@ -119,6 +119,16 @@ void ASFA_Camera::LookUp(float value)
 
 }
 
+FVector ASFA_Camera::GetCameraCompForwardVector() const
+{
+	return GetActorForwardVector();
+}
+
+FVector ASFA_Camera::GetCameraCompLocation() const
+{
+	return Camera->GetComponentLocation();
+}
+
 void ASFA_Camera::UpdateLocation()
 {
 	if (!IsValid(FollowTarget)) return;

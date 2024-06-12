@@ -31,7 +31,6 @@ protected:
 	/////////////////// custom function
 public:
 	void Move(const FInputActionValue& Value);
-	void Shoot(const FInputActionValue& Value);
 	
 private:
 	void InitializePointers();
@@ -40,8 +39,6 @@ private:
 	///////////////// custom parameter
 public:
 	bool bIsAiming = false;
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<ASFA_Bullet> BulletClass;
 	
 private:
 	//~BEGIN components
@@ -58,12 +55,7 @@ private:
 	bool bIsDashing = false;
 	FVector DashDirection = FVector::Zero();
 	//~END Dash
-
-public:
-	//~BEGIN Shoot
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UAnimMontage* Shoot_Montage;
-	//~END Shoot
+	
 	///////////////// get set
 public:
 	void SetDashDistance(const float Distance) { DashDistance = Distance; }

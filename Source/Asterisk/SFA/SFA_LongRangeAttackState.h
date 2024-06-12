@@ -25,7 +25,7 @@ public:
 public:
 	/** Attack Input */
 
-	// ƒRƒ“ƒ{“ü—Íó•t true : start , false : end
+	// åƒå„å„ƒæ“–æ¤¡åº´æ™… true : start , false : end
 	UPROPERTY(BlueprintReadOnly)
 	bool ComboAccept = true;
 	//UPROPERTY(BlueprintReadOnly)

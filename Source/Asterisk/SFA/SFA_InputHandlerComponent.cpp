@@ -127,9 +127,11 @@ void USFA_InputHandlerComponent::DropAttack(const FInputActionValue& Value)
 void USFA_InputHandlerComponent::StartAim(const FInputActionValue& Value)
 {
 	//TODO null check
+	//TODO revise player rotation
 	Hud->ShowCrosshair(true);
 	Camera->StartAim();
 	PlayerStateMachine->bIsAiming = true;
+	PlayerMovementComponent->MaxFlySpeed = 900.f;
 }
 
 void USFA_InputHandlerComponent::EndAim(const FInputActionValue& Value)
@@ -138,12 +140,13 @@ void USFA_InputHandlerComponent::EndAim(const FInputActionValue& Value)
 	Hud->ShowCrosshair(false);
 	Camera->EndAim();
 	PlayerStateMachine->bIsAiming = false;
+	PlayerMovementComponent->MaxFlySpeed = 1800.f;
 }
 
 void USFA_InputHandlerComponent::Shoot(const FInputActionValue& Value)
 {
 	//TODO null check, state check
-	PlayerStateMachine->Shoot(Value);
+	PlayerStateMachine->SwitchStateByKey("Shoot");
 }
 
 void USFA_InputHandlerComponent::ShortRangeAttack()

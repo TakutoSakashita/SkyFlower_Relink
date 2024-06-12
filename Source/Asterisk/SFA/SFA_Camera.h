@@ -40,7 +40,7 @@ public:
 private:
 	AActor* FollowTarget;
 
-	//BEGIN Aiming
+	//~BEGIN Aiming
 #pragma region Aiming
 public:
 	bool IsAiming = false;
@@ -76,13 +76,14 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	FVector AimCameraOffset = FVector(30.f, 80.f, 70.f);
 #pragma endregion
-	//END Aiming
+	//~END Aiming
 public:
 	void SetFollowTarget(AActor* Target) { FollowTarget = Target; }
-
 	void Turn(float value);
 	void LookUp(float value);
-
+	FVector GetCameraCompForwardVector() const;
+	FVector GetCameraCompLocation() const;
+	
 private:
 	void UpdateLocation();
 

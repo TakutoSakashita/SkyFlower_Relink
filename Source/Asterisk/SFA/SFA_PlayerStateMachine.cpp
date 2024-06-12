@@ -31,6 +31,17 @@ void USFA_PlayerStateMachine::BeginPlay()
 	InitializePointers();
 }
 
+void USFA_PlayerStateMachine::TickComponent(float DeltaTime, ELevelTick TickType,
+                                            FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	UpdateForceMove(DeltaTime);
+
+	if (!Camera) return;
+	//DRAW_LINE(Camera->GetCameraCompLocation(),Camera->GetCameraCompLocation() + Camera->GetCameraCompForwardVector()*500.f)
+}
+
 void USFA_PlayerStateMachine::InitializeStates()
 {
 	Super::InitializeStates();
@@ -57,56 +68,6 @@ void USFA_PlayerStateMachine::Move(const FInputActionValue& Value)
 	Player->AddMovementInput(Camera->GetActorRightVector(), MovementVector.X);
 }
 
-void USFA_PlayerStateMachine::Shoot(const FInputActionValue& Value)
-{
-	//TODO move to ShootState, setup moveSpeed and PlayerRotation
-	FVector CameraPos = Camera->GetActorLocation();
-	FRotator CameraRot = Camera->GetActorRotation();
-	FVector CameraDir = CameraRot.Vector();
-	FVector LineTraceEndDir = CameraPos + CameraDir * 50000.0f /* lineTrace length */;
-
-	FHitResult HitResult;
-	FCollisionQueryParams CollisionParams;
-	CollisionParams.AddIgnoredActor(Camera);
-	CollisionParams.AddIgnoredActor(Player);
-	bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, CameraPos, LineTraceEndDir, ECC_Visibility,
-	                                                 CollisionParams);
-	FVector BulletDestination;
-	if (bHit) BulletDestination = HitResult.Location;
-	else BulletDestination = LineTraceEndDir;
-
-	FVector PlayerRightHandDir = Player->GetMesh()->GetSocketLocation(TEXT("RightHandMiddle1"));
-	FVector BulletDir = (BulletDestination - PlayerRightHandDir).GetSafeNormal(); // Dir = End - Start
-
-	DRAW_LINE_SingleFrame(PlayerRightHandDir, BulletDestination)
-
-	//spawn bullet
-	if (BulletClass)
-	{
-		FTransform Transform = Player->GetActorTransform();
-		ASFA_Bullet* Bullet = GetWorld()->SpawnActor<ASFA_Bullet>(BulletClass, Transform);
-
-		if (bIsAiming)
-		{
-			Bullet->SetActorScale3D(FVector(1.5f, 1.5f, 1.5f));
-			Bullet->SetBulletSpeed(10000.f);
-		}
-
-		Bullet->Initialize(BulletDir);
-	}
-
-	//play montage
-	if (!Shoot_Montage) return;
-	Player->GetMesh()->GetAnimInstance()->Montage_Play(Shoot_Montage);
-}
-
-void USFA_PlayerStateMachine::TickComponent(float DeltaTime, ELevelTick TickType,
-                                            FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	UpdateForceMove(DeltaTime);
-}
 
 void USFA_PlayerStateMachine::InitializePointers()
 {

@@ -7,10 +7,13 @@
 #include "SFA_IDamageable.h"
 #include "SFA_EnemyBase.generated.h"
 
+class UNiagaraComponent;
 class USphereComponent;
 class UArrowComponent;
 class UStaticMeshComponent;
 class ASFA_Player;
+class UParticleSystem;
+class USoundBase;
 
 UCLASS()
 class ASTERISK_API ASFA_EnemyBase : public APawn, public ISFA_IDamageable
@@ -33,10 +36,8 @@ public:
 private:
 	UFUNCTION()
 	void Die();
-
 	UPROPERTY()
 	float Health = 100.f;
-
 	//~END
 
 
@@ -53,5 +54,12 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	ASFA_Player* PlayerRef;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly,  meta = (AllowPrivateAccess = "true"))
+	UNiagaraComponent* Niagara;
 
+	UPROPERTY(EditAnywhere,  meta = (AllowPrivateAccess = "true"))
+	UParticleSystem* DeathEffect;
+	
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
+	USoundBase* DeathSound;
 };
