@@ -1,5 +1,15 @@
 #include "SFA_GA_Combo1.h"
 
+USFA_GA_Combo1::USFA_GA_Combo1()
+{
+    // タグの初期化
+    this->ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability.State.Combo1")));
+
+    this->ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability.State")));
+
+    this->AbilityTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability.Action.Attack")));
+}
+
 void USFA_GA_Combo1::ActivateAbility(
     const FGameplayAbilitySpecHandle Handle, 
     const FGameplayAbilityActorInfo* ActorInfo, 
@@ -27,14 +37,14 @@ void USFA_GA_Combo1::ActivateAbility(
         return;
     }
 
-    // タグを削除
-    FGameplayTagContainer TagContainer;
-    TagContainer.AddTag(FGameplayTag::RequestGameplayTag("Ability.Ready.Combo2"));
-    RemoveGameplayTags(TagContainer);
-
-    TagContainer.Reset();  // 以前のタグをクリア
-    TagContainer.AddTag(FGameplayTag::RequestGameplayTag("Ability.Begin.Combo2"));
-    RemoveGameplayTags(TagContainer);
+    // // タグを削除
+    // FGameplayTagContainer TagContainer;
+    // TagContainer.AddTag(FGameplayTag::RequestGameplayTag("Ability.Ready.Combo2"));
+    // RemoveGameplayTags(TagContainer);
+    //
+    // TagContainer.Reset();  // 以前のタグをクリア
+    // TagContainer.AddTag(FGameplayTag::RequestGameplayTag("Ability.Begin.Combo2"));
+    // RemoveGameplayTags(TagContainer);
 
     ASFA_Weapon* SFA_Weapon = Player->GetWeapon();
     if (!SFA_Weapon) {
@@ -62,13 +72,17 @@ void USFA_GA_Combo1::ActivateAbility(
             // 敵の方向を向く
             FRotator TargetRotation = (ClosestTarget->GetActorLocation() - Player->GetActorLocation()).Rotation();
             Player->SetActorRotation(TargetRotation);
-		
+
+            // 敵から理想的な距離に位置するターゲットオフセットを計算
+            FVector DirectionToTarget = (ClosestTarget->GetActorLocation() - Player->GetActorLocation()).GetSafeNormal();
+            FVector TargetLocationOffset = DirectionToTarget * DesiredDistance;
+            
             UAbilityTask_ApplyRootMotionMoveToActorForce* ApplyRootMotionConstantForce =
                 UAbilityTask_ApplyRootMotionMoveToActorForce::ApplyRootMotionMoveToActorForce(
                     this,
                     FName("MoveToTarget"),
                     ClosestTarget,
-                    FVector::ZeroVector,
+                    TargetLocationOffset,
                     ERootMotionMoveToActorTargetOffsetType::AlignFromTargetToSource,
                     MoveToTargetDuration,
                     nullptr, // TargetLerpSpeedHorizontal
@@ -91,14 +105,19 @@ void USFA_GA_Combo1::ActivateAbility(
             ApplyRootMotionConstantForce->ReadyForActivation();
         }
     }
-    
-    // アニメーション再生
-    AnimInstance->Montage_Play(AttackMontage);
 
-    // アニメーション関連の通知
-    AnimInstance->OnMontageBlendingOut.AddDynamic(this, &USFA_GA_Combo1::OnBlendOut);
-    AnimInstance->OnPlayMontageNotifyBegin.AddDynamic(this, &USFA_GA_Combo1::OnNotifyBegin);
-    AnimInstance->OnPlayMontageNotifyEnd.AddDynamic(this, &USFA_GA_Combo1::OnNotifyEnd);
+    UAbilityTask_WaitGameplayTagAdded* Task = UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(
+        this,
+        FGameplayTag::RequestGameplayTag(FName("Ability.State.Combo1")),
+        nullptr,
+        false);
+
+    if (Task)
+    {
+        Task->Added.AddDynamic(this, &USFA_GA_Combo1::HandleMyTagAdded);
+        Task->ReadyForActivation();
+    }
+
 }
 
 void USFA_GA_Combo1::EndAbility(
@@ -144,20 +163,21 @@ AActor* USFA_GA_Combo1::GetClosestActor(const FVector& SourceLocation, TArray<AA
 void USFA_GA_Combo1::OnBlendOut(UAnimMontage* Montage, bool bInterrupted)
 {
     UE_LOG(LogTemp, Warning, TEXT("OnBlendOut"));
-    EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, bInterrupted);
 
-    if (bInterrupted) {
-        UE_LOG(LogTemp, Warning, TEXT("OnInterrupted"));
-        if (!CollisionBoxComponent) return;
-        
+    if (bInterrupted)
+    {
+        EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, bInterrupted);
         // コリジョンを無効にする
         CollisionBoxComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+        return;
     }
-    
-    if (!CollisionBoxComponent) return;
-   
-    // コリジョンを無効にする
-    CollisionBoxComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    else
+    {
+        EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+        // コリジョンを無効にする
+        CollisionBoxComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+        return;
+    }
 }
 
 void USFA_GA_Combo1::OnNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointNotifyPayload)
@@ -209,4 +229,16 @@ void USFA_GA_Combo1::OnNotifyEnd(FName NotifyName, const FBranchingPointNotifyPa
         return;
     }
     RemoveGameplayTags(TagContainer);
+}
+
+void USFA_GA_Combo1::HandleMyTagAdded()
+{
+        
+    // アニメーション再生
+    AnimInstance->Montage_Play(AttackMontage);
+
+    // アニメーション関連の通知
+    AnimInstance->OnMontageBlendingOut.AddDynamic(this, &USFA_GA_Combo1::OnBlendOut);
+    AnimInstance->OnPlayMontageNotifyBegin.AddDynamic(this, &USFA_GA_Combo1::OnNotifyBegin);
+    AnimInstance->OnPlayMontageNotifyEnd.AddDynamic(this, &USFA_GA_Combo1::OnNotifyEnd);
 }

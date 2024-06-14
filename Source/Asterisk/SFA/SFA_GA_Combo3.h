@@ -14,7 +14,7 @@ UCLASS()
 class ASTERISK_API USFA_GA_Combo3 : public USFA_BlogComboGameplayAbility
 {
 	GENERATED_BODY()
-
+	USFA_GA_Combo3();
 public:
 	ASFA_Player* Player;
 
@@ -35,6 +35,8 @@ public:
 	FGameplayTag  AbilityReadyTagName;
 	UPROPERTY(EditAnywhere, Category = "State")
 	float DistanceThreshold = 1000.0f;
+	UPROPERTY(EditAnywhere, Category = "State")
+	float DesiredDistance = 100.0f;
 protected:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 		const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)override;

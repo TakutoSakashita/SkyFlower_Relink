@@ -2,6 +2,18 @@
 
 #include "SFA_EnemyBase.h"
 
+USFA_GA_Combo2::USFA_GA_Combo2()
+{
+	// Ability Tags（能力タグ）を設定
+	this->AbilityTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability.Action.Attack")));
+
+	// Activation Owned Tags（所有しているタグ）を設定
+	this->ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability.State.Combo2")));
+
+	// Activation Required Tags（必要なタグ）を設定
+	this->ActivationRequiredTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability.Ready.Combo2")));
+}
+
 void USFA_GA_Combo2::ActivateAbility(
 	const FGameplayAbilitySpecHandle Handle,
 	const FGameplayAbilityActorInfo* ActorInfo,
@@ -9,6 +21,7 @@ void USFA_GA_Combo2::ActivateAbility(
 	const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+	this->ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability.State.Combo2")));
 
 	Player = Cast<ASFA_Player>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	if (!IsValid(Player))
@@ -29,8 +42,8 @@ void USFA_GA_Combo2::ActivateAbility(
 	// 例えば、すべての敵キャラクターを取得する
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASFA_EnemyBase::StaticClass(), PotentialTargets);
 	AActor* ClosestTarget = GetClosestActor(SourceLocation, PotentialTargets);
-	
-	if(ClosestTarget)
+
+	if (ClosestTarget)
 	{
 		float DistanceToTarget = FVector::Dist(SourceLocation, ClosestTarget->GetActorLocation());
 		if (DistanceToTarget < DistanceThreshold)
@@ -38,13 +51,18 @@ void USFA_GA_Combo2::ActivateAbility(
 			// 敵の方向を向く
 			FRotator TargetRotation = (ClosestTarget->GetActorLocation() - Player->GetActorLocation()).Rotation();
 			Player->SetActorRotation(TargetRotation);
-		
+
+			// 敵から理想的な距離に位置するターゲットオフセットを計算
+			FVector DirectionToTarget = (ClosestTarget->GetActorLocation() - Player->GetActorLocation()).
+				GetSafeNormal();
+			FVector TargetLocationOffset = DirectionToTarget * DesiredDistance;
+
 			UAbilityTask_ApplyRootMotionMoveToActorForce* ApplyRootMotionConstantForce =
 				UAbilityTask_ApplyRootMotionMoveToActorForce::ApplyRootMotionMoveToActorForce(
 					this,
 					FName("MoveToTarget"),
 					ClosestTarget,
-					FVector::ZeroVector,
+					TargetLocationOffset,
 					ERootMotionMoveToActorTargetOffsetType::AlignFromTargetToSource,
 					MoveToTargetDuration,
 					nullptr, // TargetLerpSpeedHorizontal
@@ -81,11 +99,12 @@ void USFA_GA_Combo2::ActivateAbility(
 	}
 }
 
-void USFA_GA_Combo2::EndAbility(const FGameplayAbilitySpecHandle Handle,
-                                const FGameplayAbilityActorInfo* ActorInfo,
-                                const FGameplayAbilityActivationInfo ActivationInfo,
-                                bool bReplicateEndAbility,
-                                bool bWasCancelled)
+void USFA_GA_Combo2::EndAbility(
+	const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayAbilityActivationInfo ActivationInfo,
+	bool bReplicateEndAbility,
+	bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
@@ -156,19 +175,23 @@ void USFA_GA_Combo2::OnBlendOut(UAnimMontage* Montage, bool bInterrupted)
 {
 	UE_LOG(LogTemp, Warning, TEXT("OnBlendOut"));
 
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, bInterrupted);
 	if (bInterrupted)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("OnInterrupted"));
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, bInterrupted);
 		// コリジョンを無効にする
 		CollisionBoxComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
-	// コリジョンを無効にする
-	CollisionBoxComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	else
+	{
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+		// コリジョンを無効にする
+		CollisionBoxComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
 }
 
-void USFA_GA_Combo2::OnNotifyBegin(FName NotifyName,
-                                   const FBranchingPointNotifyPayload& BranchingPointNotifyPayload)
+void USFA_GA_Combo2::OnNotifyBegin(
+	FName NotifyName,
+	const FBranchingPointNotifyPayload& BranchingPointNotifyPayload)
 {
 	Debug::PrintFixedLine("USFA_GA_Combo2::OnNotifyBegin", 222);
 
@@ -199,8 +222,9 @@ void USFA_GA_Combo2::OnNotifyBegin(FName NotifyName,
 	}
 }
 
-void USFA_GA_Combo2::OnNotifyEnd(FName NotifyName,
-                                 const FBranchingPointNotifyPayload& BranchingPointNotifyPayload)
+void USFA_GA_Combo2::OnNotifyEnd(
+	FName NotifyName,
+	const FBranchingPointNotifyPayload& BranchingPointNotifyPayload)
 {
 	Debug::PrintFixedLine("USFA_GA_Combo2::OnNotifyEnd", 222);
 

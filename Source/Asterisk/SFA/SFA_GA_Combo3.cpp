@@ -3,19 +3,35 @@
 
 #include "SFA_GA_Combo3.h"
 
-void USFA_GA_Combo3::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
-	const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
+USFA_GA_Combo3::USFA_GA_Combo3()
+{
+	// Ability Tags（能力タグ）を設定
+	this->AbilityTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability.Action.Attack")));
+
+	// Activation Owned Tags（所有しているタグ）を設定
+	this->ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability.State.Combo3")));
+
+	// Activation Required Tags（必要なタグ）を設定
+	this->ActivationRequiredTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability.Ready.Combo3")));
+}
+
+void USFA_GA_Combo3::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
+                                     const FGameplayAbilityActorInfo* ActorInfo,
+                                     const FGameplayAbilityActivationInfo ActivationInfo,
+                                     const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	//UE_LOG(LogTemp, Warning, TEXT("USFA_GA_Combo2"));
 
 	Player = Cast<ASFA_Player>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	if (!IsValid(Player)) {
+	if (!IsValid(Player))
+	{
 		Debug::PrintFixedLine("USFA_GA_Combo1 : PlayerNull", 222);
 		return;
 	};
 
-	if (!CommitAbility(Handle, ActorInfo, ActivationInfo)) {
+	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
+	{
 		Debug::PrintFixedLine("USFA_GA_Combo1 : CommitAbilityNull", 222);
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 		return;
@@ -26,8 +42,8 @@ void USFA_GA_Combo3::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 	// 例えば、すべての敵キャラクターを取得する
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASFA_EnemyBase::StaticClass(), PotentialTargets);
 	AActor* ClosestTarget = GetClosestActor(SourceLocation, PotentialTargets);
-	
-	if(ClosestTarget)
+
+	if (ClosestTarget)
 	{
 		float DistanceToTarget = FVector::Dist(SourceLocation, ClosestTarget->GetActorLocation());
 		if (DistanceToTarget < DistanceThreshold)
@@ -35,13 +51,18 @@ void USFA_GA_Combo3::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 			// 敵の方向を向く
 			FRotator TargetRotation = (ClosestTarget->GetActorLocation() - Player->GetActorLocation()).Rotation();
 			Player->SetActorRotation(TargetRotation);
-		
+
+			// 敵から理想的な距離に位置するターゲットオフセットを計算
+			FVector DirectionToTarget = (ClosestTarget->GetActorLocation() - Player->GetActorLocation()).
+				GetSafeNormal();
+			FVector TargetLocationOffset = DirectionToTarget * DesiredDistance;
+
 			UAbilityTask_ApplyRootMotionMoveToActorForce* ApplyRootMotionConstantForce =
 				UAbilityTask_ApplyRootMotionMoveToActorForce::ApplyRootMotionMoveToActorForce(
 					this,
 					FName("MoveToTarget"),
 					ClosestTarget,
-					FVector::ZeroVector,
+					TargetLocationOffset,
 					ERootMotionMoveToActorTargetOffsetType::AlignFromTargetToSource,
 					MoveToTargetDuration,
 					nullptr, // TargetLerpSpeedHorizontal
@@ -64,11 +85,11 @@ void USFA_GA_Combo3::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 			ApplyRootMotionConstantForce->ReadyForActivation();
 		}
 	}
-	
+
 	UAbilityTask_WaitGameplayTagAdded* Task = UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(
-		this, 
+		this,
 		FGameplayTag::RequestGameplayTag(FName("Ability.Begin.Combo3")),
-		nullptr, 
+		nullptr,
 		false);
 	//Task->Activate();
 
@@ -79,11 +100,12 @@ void USFA_GA_Combo3::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 		// �^�O���ǉ����ꂽ�Ƃ��̏�����ݒ�
 		Task->Added.AddDynamic(this, &USFA_GA_Combo3::HandleMyTagAdded);
 		Task->ReadyForActivation();
-
 	}
 }
 
-void USFA_GA_Combo3::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
+void USFA_GA_Combo3::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
+                                const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility,
+                                bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 	FGameplayTagContainer TagContainer;
@@ -120,23 +142,26 @@ void USFA_GA_Combo3::HandleMyTagAdded()
 	UE_LOG(LogTemp, Warning, TEXT("HandleMyTagAdded"));
 
 	AnimInstance = Player->GetMesh()->GetAnimInstance();
-	if (!IsValid(AnimInstance)) {
+	if (!IsValid(AnimInstance))
+	{
 		Debug::PrintFixedLine("USFA_GA_Combo1 : AnimInstanceNull", 222);
 		return;
 	};
 
 	ASFA_Weapon* SFA_Weapon = Player->GetWeapon();
-	if (!SFA_Weapon) {
+	if (!SFA_Weapon)
+	{
 		UE_LOG(LogTemp, Warning, TEXT("SFA_Weapon :null"));
 		return;
 	}
 
 	CollisionBoxComponent = SFA_Weapon->GetBoxComponent();
-	if (!CollisionBoxComponent) {
+	if (!CollisionBoxComponent)
+	{
 		UE_LOG(LogTemp, Warning, TEXT("CollisionBoxComponent :null"));
 		return;
 	}
-	
+
 	// �A�j���[�V�����Đ�
 	AnimInstance->Montage_Play(AttackMontage);
 
@@ -148,17 +173,18 @@ void USFA_GA_Combo3::HandleMyTagAdded()
 
 void USFA_GA_Combo3::OnBlendOut(UAnimMontage* Montage, bool bInterrupted)
 {
-	UE_LOG(LogTemp, Warning, TEXT("OnBlendOut"));
-	if (bInterrupted) {
-		// ���f���ꂽ�ꍇ�̏���
-		//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, bInterrupted);
-		UE_LOG(LogTemp, Warning, TEXT("OnInterrupted"));
+	if (bInterrupted)
+	{
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, bInterrupted);
 		// コリジョンを無効にする
 		CollisionBoxComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, bInterrupted);
-	// コリジョンを無効にする
-	CollisionBoxComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	else
+	{
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+		// コリジョンを無効にする
+		CollisionBoxComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
 }
 
 void USFA_GA_Combo3::OnNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointNotifyPayload)
@@ -211,7 +237,7 @@ void USFA_GA_Combo3::OnNotifyEnd(FName NotifyName, const FBranchingPointNotifyPa
 		// コリジョンを無効にする
 		CollisionBoxComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
-	
+
 	//OnNotifyBegin���Ă΂ꂽ���ɂ�Notify�Ή�����^�O��ǉ����A
 	//RemoveGameplayTags���Ă΂ꂽ���ɂ�Notify�ɑΉ�����^�O�������B
 	//Combo1.Input �� Ability.Ready.Combo2

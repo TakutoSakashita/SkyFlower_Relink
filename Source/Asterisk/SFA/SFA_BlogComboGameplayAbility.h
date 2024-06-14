@@ -32,9 +32,6 @@ public:
 protected:
 	// Movement parameters
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability")
-	float MoveToTargetStrength;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability")
 	float MoveToTargetDuration;
 
 public:
