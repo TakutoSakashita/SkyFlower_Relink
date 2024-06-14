@@ -38,7 +38,7 @@ void USFA_PlayerStateMachine::TickComponent(float DeltaTime, ELevelTick TickType
 
 	UpdateForceMove(DeltaTime);
 
-	if (!Camera) return;
+	if (!IsValid(Player) || !IsValid(Camera)) InitializePointers();
 	//DRAW_LINE(Camera->GetCameraCompLocation(),Camera->GetCameraCompLocation() + Camera->GetCameraCompForwardVector()*500.f)
 }
 
@@ -63,6 +63,9 @@ void USFA_PlayerStateMachine::InitializeStates()
 
 void USFA_PlayerStateMachine::Move(const FInputActionValue& Value)
 {
+	if (!IsValid(Player) || !IsValid(Camera)) return;
+
+	InitializePointers();
 	FVector2D MovementVector = Value.Get<FVector2D>();
 	Player->AddMovementInput(Camera->GetActorForwardVector(), MovementVector.Y);
 	Player->AddMovementInput(Camera->GetActorRightVector(), MovementVector.X);

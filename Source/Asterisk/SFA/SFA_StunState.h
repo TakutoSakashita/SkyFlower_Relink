@@ -15,7 +15,7 @@ class ASTERISK_API USFA_StunState : public USFA_PlayerStateBase
 	GENERATED_BODY()
 
 public:
-	// virtual void OnEnterState() override;
-	// virtual void TickState(float DeltaTime) override;
-	// virtual void OnExitState() override;
+	virtual void OnEnterState() override;
+	virtual void TickState(float DeltaTime) override;
+	virtual void OnExitState() override;
 };

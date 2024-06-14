@@ -18,7 +18,7 @@ enum class ESFA_InputState : uint8
 	Both_enable,
 	Move_disable,
 	//Action_disable,
-	//Both_disable,
+	Both_disable,
 
 	ElementsNum,
 };
@@ -81,6 +81,10 @@ protected:
 
 	///////////////// custom property
 public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bCanMove = true;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bCanAttack = true;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	ESFA_InputState InputState = ESFA_InputState::Both_enable;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

@@ -67,15 +67,18 @@ void ASFA_Player::PossessedBy(AController* NewController)
 
 void ASFA_Player::TakeDamage(AActor* Aggressor, float Damage)
 {
+	if ( PlayerState != ESFA_PlayerState::Damageable) return;
+
 	if (ASFA_EnemyBase* Enemy = Cast<ASFA_EnemyBase>(Aggressor))
 	{
-		//get damage from enemy's bullet, reduce enemy hp
+		//get damage from enemy's bullet, reduce enemy hp, switch to stunState
 		Health -= Damage;
 		if (Health <= 0.f)
 		{
 			Health = 0.f;
 			Die();
 		}
+		PlayerStateMachine->SwitchStateByKey("Stun");
 	}
 }
 

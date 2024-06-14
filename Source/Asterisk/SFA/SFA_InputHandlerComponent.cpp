@@ -103,9 +103,9 @@ void USFA_InputHandlerComponent::Look(const FInputActionValue& Value)
 
 void USFA_InputHandlerComponent::Move(const FInputActionValue& Value)
 {
+	if (!bCanMove) return;
 	if (Value.GetMagnitude() < MIN_VALID_MAGNITUDE) return;
 	if (!IsValid(Camera) || !IsValid(Player)) return;
-	if (InputState == ESFA_InputState::Move_disable) return;
 
 	//PlayerStateMachine->SwitchStateByKey("Float");
 	PlayerStateMachine->Move(Value);
@@ -113,13 +113,13 @@ void USFA_InputHandlerComponent::Move(const FInputActionValue& Value)
 
 void USFA_InputHandlerComponent::Dash(const FInputActionValue& Value)
 {
-	if (InputState == ESFA_InputState::Move_disable) return;
+	if (!bCanMove) return;
 	PlayerStateMachine->SwitchStateByKey("Dash");
 }
 
 void USFA_InputHandlerComponent::DropAttack(const FInputActionValue& Value)
 {
-	if (InputState == ESFA_InputState::Move_disable) return;
+	if (!bCanMove) return;
 	if (PlayerMovementComponent->MovementMode == EMovementMode::MOVE_Walking) return;
 	PlayerStateMachine->SwitchStateByKey("DropAttack");
 }
@@ -145,6 +145,7 @@ void USFA_InputHandlerComponent::EndAim(const FInputActionValue& Value)
 
 void USFA_InputHandlerComponent::Shoot(const FInputActionValue& Value)
 {
+	if (!bCanAttack) return;
 	//TODO null check, state check
 	PlayerStateMachine->SwitchStateByKey("Shoot");
 }
