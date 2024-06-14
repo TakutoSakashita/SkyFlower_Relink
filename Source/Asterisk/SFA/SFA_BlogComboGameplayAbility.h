@@ -8,6 +8,7 @@
 #include "AbilitySystemComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/BoxComponent.h"
+#include "Abilities/Tasks/AbilityTask_ApplyRootMotionMoveToActorForce.h"
 #include "GameplayTagContainer.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayTag.h"
 #include "SFA_BlogComboGameplayAbility.generated.h"
@@ -20,13 +21,21 @@ class ASTERISK_API USFA_BlogComboGameplayAbility : public UGameplayAbility
 	GENERATED_BODY()
 	
 public:
-	/** AbilitySystemComponent‚ÌGameplayTagCountContainer‚ÉV‚µ‚¢GameplayTag‚ğ’Ç‰Á‚·‚é */
+	/** AbilitySystemComponentã®GameplayTagCountContainerã«æ–°ã—ã„GameplayTagã‚’è¿½åŠ ã™ã‚‹ */
 	UFUNCTION(BlueprintCallable, Category = "GamePlayAbility")
 	virtual void AddGameplayTags(const FGameplayTagContainer GameplayTags);
 
-	/** AbilitySystemComponent‚ÌGameplayTagCountContainer‚ÌGameplayTag‚ğíœ‚·‚é */
+	/** AbilitySystemComponentã®GameplayTagCountContainerã®GameplayTagã‚’å‰Šé™¤ã™ã‚‹ */
 	UFUNCTION(BlueprintCallable, Category = "GamePlayAbility")
 	virtual void RemoveGameplayTags(const FGameplayTagContainer GameplayTags);
+
+protected:
+	// Movement parameters
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability")
+	float MoveToTargetStrength;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability")
+	float MoveToTargetDuration;
 
 public:
 	UPROPERTY(EditAnywhere)

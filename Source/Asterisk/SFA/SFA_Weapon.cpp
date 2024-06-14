@@ -25,6 +25,8 @@ void ASFA_Weapon::BeginPlay()
 {
 	Super::BeginPlay();
 
+	Aggressor = UGameplayStatics::GetPlayerPawn(GetWorld(),0);
+	
 	// ボックスコリジョンが有効であれば、当たり判定を追加する
 	if (BoxComponent)
 	{
@@ -44,26 +46,29 @@ void ASFA_Weapon::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 	//filter
 	if (OtherActor == nullptr || OtherActor == this) return;
 	if (OtherActor->IsA<ASFA_Player>()) return;
+	if (OtherActor == Aggressor) return;
+	
+	if (ISFA_IDamageable* Damageable = Cast<ISFA_IDamageable>(OtherActor))
+	{
+		Damageable->TakeDamage(Aggressor, hitDamage);
+	}
 
+	// play sound
+	if (DeathSound)
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(),DeathSound,GetActorLocation(),GetActorRotation());
+	// play effect
+	if (ParticleEffect)
+	{
+		FVector Location = GetActorLocation();
+		FRotator Rotation = FRotator(0.0f, 0.0f, 0.0f);
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ParticleEffect, Location, Rotation, true);
+
+		DRAW_SPHERE(Location)
+			//this->Destroy();
+	}
+
+	
 	//UE_LOG(LogTemp, Warning, TEXT("ASF_WeaponBase : OnBeginOverlap"));
 	Debug::Print("ASF_WeaponBase : OnBeginOverlap");
-
-	//apply damage
-	//IA_DamageableInterface* damageInterface = Cast<IA_DamageableInterface>(OtherActor);
-	//if (damageInterface)
-	{
-		//damageInterface->GetDamage(hitDamage);
-
-		//spawn explosion
-		if (ParticleEffect)
-		{
-			FVector Location = GetActorLocation();
-			FRotator Rotation = FRotator(0.0f, 0.0f, 0.0f);
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ParticleEffect, Location, Rotation, true);
-
-			DRAW_SPHERE(Location)
-				//this->Destroy();
-		}
-	}
 }
 

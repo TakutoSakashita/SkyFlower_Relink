@@ -29,11 +29,15 @@ public:
 	FGameplayTag AbilityBeginTagName;
 	UPROPERTY(EditAnywhere, Category = "Tag")
 	FGameplayTag AbilityReadyTagName;
+	UPROPERTY(EditAnywhere, Category = "State")
+	float DistanceThreshold = 1000.0f;
 protected:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, 
 		const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, 
 		const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)override;
+
+	AActor* GetClosestActor(const FVector& SourceLocation, TArray<AActor*> PotentialTargets);
 private:
 	UFUNCTION()
 	void OnBlendOut(UAnimMontage* Montage, bool bInterrupted);

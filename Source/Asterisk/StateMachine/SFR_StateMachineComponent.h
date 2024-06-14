@@ -23,6 +23,7 @@ protected:
 
 	///////////////// custom function
 public:
+	UFUNCTION(BlueprintCallable)
 	virtual void SwitchStateByKey(FString StateKey);
 	virtual void InitStateManager();
 
