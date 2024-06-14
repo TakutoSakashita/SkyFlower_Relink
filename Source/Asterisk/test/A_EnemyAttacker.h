@@ -27,6 +27,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "EnemyBase")
 		UBoxComponent* GetBoxComponent() { return AttackBoxComponent; }
 
-	// ISF_DamageableInterface ‚ğ‰î‚µ‚ÄŒp³‚³‚ê‚Ü‚µ‚½
+	// ISF_DamageableInterface ã‚’ä»‹ã—ã¦ç¶™æ‰¿ã•ã‚Œã¾ã—ãŸ
 	virtual void GetDamage(int32 damage) override;
 };

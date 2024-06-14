@@ -3,6 +3,7 @@
 
 #include "SFA_EnemyBase.h"
 
+#include "NiagaraComponent.h"
 #include "SFA_Player.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -20,9 +21,9 @@ ASFA_EnemyBase::ASFA_EnemyBase()
 
 	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
 	Sphere->SetSphereRadius(70.f);
-	Sphere->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
 	RootComponent = Sphere;
-
+	Sphere->SetCollisionProfileName(FName(TEXT("EnemyPreset")));
+	
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	StaticMesh->SetupAttachment(Sphere);
 	StaticMesh->SetCollisionProfileName(TEXT("BlockAll"));
@@ -30,6 +31,9 @@ ASFA_EnemyBase::ASFA_EnemyBase()
 
 	Arrow = CreateDefaultSubobject<UArrowComponent>(TEXT("Arrow"));
 	Arrow->SetupAttachment(Sphere);
+	
+	Niagara = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NiagaraComponent"));
+	Niagara->SetupAttachment(Sphere);
 }
 
 // Called when the game starts or when spawned
@@ -49,7 +53,7 @@ void ASFA_EnemyBase::TakeDamage(AActor* Aggressor, float Damage)
 {
 	if (ASFA_Player* player = Cast<ASFA_Player>(Aggressor))
 	{
-		//get damage from player, reduce enemy hp
+		//get damage from player's bullet, reduce enemy hp
 		Health -= Damage;
 		if (Health <= 0.f)
 		{
@@ -61,7 +65,7 @@ void ASFA_EnemyBase::TakeDamage(AActor* Aggressor, float Damage)
 
 void ASFA_EnemyBase::Die()
 {
-	// 音再生
+	// play sound
 	if (DeathSound)
 		UGameplayStatics::PlaySound2D(GetWorld(), DeathSound);
 

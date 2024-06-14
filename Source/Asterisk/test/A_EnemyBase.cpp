@@ -21,7 +21,7 @@ void AA_EnemyBase::Tick(float DeltaTime)
 {
 }
 
-/// @brief €–SI—¹ˆ—
+/// @brief æ­»äº¡çµ‚äº†æ™‚å‡¦ç†
 void AA_EnemyBase::OnEndDead()
 {
 	Destroy();

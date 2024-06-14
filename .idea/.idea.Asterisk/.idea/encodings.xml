@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="Encoding">
-    <file url="file://$PROJECT_DIR$/Source/Asterisk/Asterisk.Build.cs" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/Source/Asterisk/SFA/SFA_EnemyBase.cpp" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/Source/Asterisk/test/A_EnemyAttacker.cpp" charset="Shift_JIS" />
-    <file url="file://$PROJECT_DIR$/Source/Asterisk/test/A_EnemyAttacker.h" charset="Shift_JIS" />
-    <file url="file://$PROJECT_DIR$/Source/Asterisk/test/A_EnemyBase.cpp" charset="Shift_JIS" />
+  <component name="Encoding" defaultCharsetForPropertiesFiles="UTF-8">
+    <file url="file://$PROJECT_DIR$/Source/Asterisk/SFA/SFA_GA_Combo1.cpp" charset="Shift_JIS" />
+    <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>

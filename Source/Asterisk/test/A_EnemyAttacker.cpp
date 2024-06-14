@@ -9,7 +9,7 @@ AA_EnemyAttacker::AA_EnemyAttacker()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	// ƒ{ƒbƒNƒXƒRƒŠƒWƒ‡ƒ“‚ğì¬‚µAİ’è
+	// ãƒœãƒƒã‚¯ã‚¹ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’ä½œæˆã—ã€è¨­å®š
 	AttackBoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("AttackCollision"));
 	AttackBoxComponent = AttackBoxComponent;
 	AttackBoxComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);

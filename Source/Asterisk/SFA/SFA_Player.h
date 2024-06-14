@@ -5,8 +5,20 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
+#include "SFA_IDamageable.h"
 #include "Abilities/GameplayAbility.h"
 #include "SFA_Player.generated.h"
+
+UENUM(BlueprintType)
+enum class ESFA_PlayerState : uint8
+{
+	None,
+
+	Damageable,
+	Invincible,
+
+	ElementsNum,
+};
 
 class USFA_InputHandlerComponent;
 class USFA_PlayerMovementComponent;
@@ -15,11 +27,11 @@ class UAbilitySystemComponent;
 class USFA_PlayerStateMachine;
 
 UCLASS()
-class ASTERISK_API ASFA_Player : public ACharacter, public IAbilitySystemInterface
+class ASTERISK_API ASFA_Player : public ACharacter, public IAbilitySystemInterface, public ISFA_IDamageable
 {
 	GENERATED_BODY()
 
-		///////////////// override function
+	///////////////// override function
 public:
 	ASFA_Player(const FObjectInitializer& ObjectInitializer);
 	virtual void Tick(float DeltaTime) override;
@@ -31,22 +43,22 @@ protected:
 	///////////////// custom parameter
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-		USFA_InputHandlerComponent* InputHandler;
+	USFA_InputHandlerComponent* InputHandler;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-		USFA_PlayerMovementComponent* PlayerMovement;
+	USFA_PlayerMovementComponent* PlayerMovement;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-		USFA_PlayerStateMachine* PlayerStateMachine;
+	USFA_PlayerStateMachine* PlayerStateMachine;
 
 protected:
 	// AbilitySystemを使用するうえで必須のコンポーネント
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-		UAbilitySystemComponent* AbilitySystem;
+	UAbilitySystemComponent* AbilitySystem;
 
 	// このキャラクターが持つアビリティの配列
 	UPROPERTY(EditDefaultsOnly, Category = "Abilities")
-		TArray<TSubclassOf<UGameplayAbility>> AbilityList;
+	TArray<TSubclassOf<UGameplayAbility>> AbilityList;
 
 public:
 	FORCEINLINE USFA_InputHandlerComponent* GetInputHandler() const { return InputHandler; }
@@ -65,6 +77,14 @@ public:
 	// Ability System Componentのゲッター
 	UAbilitySystemComponent* GetAbilitySystemComponent() const { return AbilitySystem; }
 
-
-
+	// ~BEGIN ISFA_IDamageable interface
+	ESFA_PlayerState PlayerState = ESFA_PlayerState::Damageable;
+	virtual void TakeDamage(AActor* Aggressor, float Damage) override;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float Health = 100.f;
+	UFUNCTION(BlueprintNativeEvent)
+	void Die();
+	virtual void Die_Implementation();
+	// ~END ISFA_IDamageable interface
+	
 };

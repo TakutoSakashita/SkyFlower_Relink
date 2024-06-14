@@ -30,7 +30,7 @@ public:
 
 private:
 	UPROPERTY(EditAnywhere, Category = "EnemyBase")
-		float AttackCooldown = 2.0f; // “ËŒ‚ŠÔŠu
+		float AttackCooldown = 2.0f; // çªæ’ƒé–“éš”
 	UPROPERTY(VisibleAnywhere, Category = "EnemyBase")
 		bool bCanAttack = true;
 	virtual void UpdateState(const float InDeltaTime) {};
@@ -39,11 +39,11 @@ private:
 private:
 	virtual void OnEndDead() override;
 
-	// ISF_DamageableInterface ‚ğ‰î‚µ‚ÄŒp³‚³‚ê‚Ü‚µ‚½
+	// ISF_DamageableInterface ã‚’ä»‹ã—ã¦ç¶™æ‰¿ã•ã‚Œã¾ã—ãŸ
 	virtual void GetDamage(int32 damage) override;
 
 public:
-	////////////////////////////////////////// GetŠÖ”
+	////////////////////////////////////////// Geté–¢æ•°
 	FORCEINLINE AA_GameMode* GetGameMode() const;
 
 	FORCEINLINE AA_Player* GetPlayerCharacter() const;

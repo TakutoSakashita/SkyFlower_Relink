@@ -54,7 +54,7 @@ public:
 	virtual void LongRangeAttack(const float InDeltaTime) {};
 
 public:
-	////////////////////////////////////////// Getä÷êî
+	////////////////////////////////////////// GetÈñ¢Êï∞
 	FORCEINLINE AA_GameMode* GetGameMode() const;
 
 	FORCEINLINE AA_Player* GetPlayerCharacter() const;

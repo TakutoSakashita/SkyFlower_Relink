@@ -8,9 +8,10 @@
 //custom actor component
 #include "SFA_InputHandlerComponent.h"
 #include "AbilitySystemComponent.h"
+#include "SFA_EnemyBase.h"
 #include "SFA_PlayerMovementComponent.h"
 #include "SFA_PlayerStateMachine.h"
-
+#include "Asterisk/DebugHelpers.h"
 
 
 ASFA_Player::ASFA_Player(const FObjectInitializer& ObjectInitializer)
@@ -32,6 +33,8 @@ ASFA_Player::ASFA_Player(const FObjectInitializer& ObjectInitializer)
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
+
+	//GetCapsuleComponent()->SetCollisionProfileName(FName(TEXT("PlayerPreset")));
 }
 
 
@@ -60,6 +63,25 @@ void ASFA_Player::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 	AbilitySystem->RefreshAbilityActorInfo();
+}
+
+void ASFA_Player::TakeDamage(AActor* Aggressor, float Damage)
+{
+	if (ASFA_EnemyBase* Enemy = Cast<ASFA_EnemyBase>(Aggressor))
+	{
+		//get damage from enemy's bullet, reduce enemy hp
+		Health -= Damage;
+		if (Health <= 0.f)
+		{
+			Health = 0.f;
+			Die();
+		}
+	}
+}
+
+void ASFA_Player::Die_Implementation()
+{
+	Debug::PrintFixedLine("PLAYER DEAD",99);
 }
 
 

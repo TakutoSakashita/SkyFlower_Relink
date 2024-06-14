@@ -20,6 +20,7 @@ ASFA_Bullet::ASFA_Bullet()
 	Sphere->SetSphereRadius(15.f);
 	Sphere->OnComponentBeginOverlap.AddDynamic(this, &ASFA_Bullet::OnBeginOverlap);
 	RootComponent = Sphere;
+	Sphere->SetCollisionProfileName(FName(TEXT("BulletPreset")));
 
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	//StaticMesh->SetRelativeScale3D(FVector(1.f, 1.f, 1.f));
@@ -67,7 +68,7 @@ void ASFA_Bullet::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 		Damageable->TakeDamage(Aggressor, Damage);
 	}
 
-	// 音再生
+	// play sound
 	if (DeathSound)
 		UGameplayStatics::PlaySoundAtLocation(GetWorld(),DeathSound,GetActorLocation(),GetActorRotation());
 	// play effect
