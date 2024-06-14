@@ -86,8 +86,6 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool bCanAttack = true;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	ESFA_InputState InputState = ESFA_InputState::Both_enable;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	ESFA_MoveState MoveState = ESFA_MoveState::Float;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	ESFA_AttackState AttackState = ESFA_AttackState::None;

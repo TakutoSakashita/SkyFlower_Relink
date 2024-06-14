@@ -59,7 +59,7 @@ void USFR_PlayerStateMachine::AddForwardMovementInput(float InputValue)
 
 void USFR_PlayerStateMachine::AddRightMovementInput(float InputValue)
 {
-	// “ü—Í‚ª–³‚¯‚ê‚Î‚O‚É•â³‚µ‚Ä‚¢‚­
+	// å…¥åŠ›ãŒç„¡ã‘ã‚Œã°ï¼ã«è£œæ­£ã—ã¦ã„ã
 	if (InputValue == 0.f)
 	{
 		bInputRight = false;
@@ -88,21 +88,21 @@ void USFR_PlayerStateMachine::UpdateRootMotion(float DeltaTime)
 		return;
 	}
 
-	// RootMotion‚Ìg—p‰Â”Û
+	// RootMotionã®ä½¿ç”¨å¯å¦
 	//if (!PlayerRef->AbilityComp()->ActiveAbility().bUseRootMotionInAir) return;
 	//bRootMotion = true;
 
-	// TakeAction’†‚Ì‚İ
+	// TakeActionä¸­ã®ã¿
 	//if (!PlayerRef->IsTakingAction())return;
 
-	// ˆÚ“®
+	// ç§»å‹•
 	FHitResult* outHit = nullptr;
 	FTransform tr = mesh->ConvertLocalRootMotionToWorld(params.GetRootMotionTransform());
 	PlayerRef->AddActorWorldTransform(tr, true, outHit);
 
 	if (outHit->bBlockingHit)
 	{
-		// ƒ‹[ƒgƒ‚[ƒVƒ‡ƒ“’†‚Éã‚Éæ‚ê‚¿‚á‚¤‚±‚Æ‚ª‚ ‚é–â‘è’¼‚µ‚½‚¢
+		// ãƒ«ãƒ¼ãƒˆãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ä¸­ã«ä¸Šã«ä¹—ã‚Œã¡ã‚ƒã†ã“ã¨ãŒã‚ã‚‹å•é¡Œç›´ã—ãŸã„
 		FVector vec = FVector::ZeroVector;
 	}
 }
@@ -127,11 +127,11 @@ void USFR_PlayerStateMachine::UpdateForce(float DeltaTime)
 {
 	if (!bForce)return;
 
-	// ˆÚ“®—Ê
+	// ç§»å‹•é‡
 	forceValue -= forceDecelerationValue * DeltaTime;
 	FVector forceDirection = forceVector;
 
-	// —Í‚ğó‚¯‚Ä‚È‚©‚Á‚½‚ç–³‹
+	// åŠ›ã‚’å—ã‘ã¦ãªã‹ã£ãŸã‚‰ç„¡è¦–
 	if (/*forceValue <= 0*/forceValue * TIME <= moveSpeed * moveSpeedBias * TIME)
 	{
 		bForce = false;
@@ -146,23 +146,23 @@ void USFR_PlayerStateMachine::UpdateForce(float DeltaTime)
 		return;
 	}
 
-	// ˆÚ“®
+	// ç§»å‹•
 	SweepMove(forceDirection, forceValue * TIME);
 }
 
 void USFR_PlayerStateMachine::UpdateRotation(float DeltaTime)
 {
-	// “ü—Í‚µ‚Ä‚È‚¢‚Æ‚«‚Í‰ñ“]‚µ‚È‚¢
+	// å…¥åŠ›ã—ã¦ãªã„ã¨ãã¯å›è»¢ã—ãªã„
 	if (!bInputFwd && !bInputRight)return;
 
 	if (IsValid(CameraRef))
 	{
-		// ƒJƒƒ‰ƒxƒNƒgƒ‹
+		// ã‚«ãƒ¡ãƒ©ãƒ™ã‚¯ãƒˆãƒ«
 		FVector Fwd = FVector(CameraRef->GetActorForwardVector().X, CameraRef->GetActorForwardVector().Y, 0);
 		FVector Right = FVector(CameraRef->GetActorRightVector().X, CameraRef->GetActorRightVector().Y, 0);
-		// ˆÚ“®•ûŒü
+		// ç§»å‹•æ–¹å‘
 		FVector MoveVelocity = Fwd * inputValue.Y + Right * inputValue.X;
-		// ‰ñ“]
+		// å›è»¢
 		FRotator rotation = UKismetMathLibrary::FindLookAtRotation(PlayerRef->GetActorLocation(), PlayerRef->GetActorLocation() + MoveVelocity);
 		PlayerRef->SetActorRotation(rotation);
 	}
@@ -170,15 +170,15 @@ void USFR_PlayerStateMachine::UpdateRotation(float DeltaTime)
 
 bool USFR_PlayerStateMachine::SweepMove(FVector MoveVector, float MoveSpeed)
 {
-	// À•WZo
+	// åº§æ¨™ç®—å‡º
 	FVector MovePos = PlayerRef->GetActorLocation();
 	MovePos += MoveVector * MoveSpeed;
-	// ˆÚ“®
+	// ç§»å‹•
 	FHitResult outHit;
 	PlayerRef->SetActorLocation(MovePos, true, &outHit);
 	if (outHit.bBlockingHit)
 	{
-		// •Ç‚É“–‚½‚Á‚½‚ç•Ç‚¸‚èƒxƒNƒgƒ‹‚ÉˆÚ“®
+		// å£ã«å½“ãŸã£ãŸã‚‰å£ãšã‚Šãƒ™ã‚¯ãƒˆãƒ«ã«ç§»å‹•
 		FVector v = FVector(MoveVector.X, MoveVector.Y, MoveVector.Z);
 		v.Normalize();
 		FVector alongWallVector = GetAlongWallVector(outHit.Normal, v);
@@ -193,8 +193,8 @@ bool USFR_PlayerStateMachine::SweepMove(FVector MoveVector, float MoveSpeed)
 
 FVector USFR_PlayerStateMachine::GetAlongWallVector(FVector_NetQuantizeNormal HitNormal, FVector MoveVector)
 {
-	// •Ç‚¸‚èƒxƒNƒgƒ‹‚ğZo
-// w = f - Dot(f,n) E n
+	// å£ãšã‚Šãƒ™ã‚¯ãƒˆãƒ«ã‚’ç®—å‡º
+// w = f - Dot(f,n) ãƒ» n
 	float dot = (MoveVector.X * HitNormal.X + MoveVector.Y * HitNormal.Y + MoveVector.Z * HitNormal.Z) /
 		(FMath::Sqrt(MoveVector.X * MoveVector.X + MoveVector.Y * MoveVector.Y + MoveVector.Z * MoveVector.Z) *
 			FMath::Sqrt(HitNormal.X * HitNormal.X + HitNormal.Y * HitNormal.Y + HitNormal.Z * HitNormal.Z));

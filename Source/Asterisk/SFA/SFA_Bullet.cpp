@@ -8,6 +8,7 @@
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
 #include "SFA_IDamageable.h"
+#include "SFA_Weapon.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -62,6 +63,7 @@ void ASFA_Bullet::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
                                  const FHitResult& SweepResult)
 {
 	if (OtherActor == Aggressor) return;
+	if(Cast<ASFA_Weapon>(OtherActor)) return;
 	
 	if (ISFA_IDamageable* Damageable = Cast<ISFA_IDamageable>(OtherActor))
 	{

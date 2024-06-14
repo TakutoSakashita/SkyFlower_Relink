@@ -57,7 +57,7 @@ void USFA_ShootState::OnEnterState()
 		}
 	}
 
-	//play montage
+	// play montage
 	if (ShootMontage)
 		Player->GetMesh()->GetAnimInstance()->Montage_Play(ShootMontage);
 
@@ -80,7 +80,7 @@ void USFA_ShootState::TickState(float DeltaTime)
 		if (!AnimInstance->Montage_IsPlaying(ShootMontage))
 		{
 			//TODO back to pre-state
-			PlayerStateMachine->SwitchStateByKey("float");
+			PlayerStateMachine->SwitchStateByKey("Float");
 		}
 	}
 }

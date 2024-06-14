@@ -25,7 +25,7 @@ void USFA_DashState::OnEnterState()
 	}
 
 	DashDirection = FVector::UpVector;
-	if (Player->GetLastMovementInputVector().Size() > 0.1f /*MIN_VALID_MAGNITUDE*/) {
+	if (IsMoving) {
 		DashDirection = FVector(Player->GetVelocity().X, Player->GetVelocity().Y, 0.f);
 	}
 	PlayerStateMachine->SetDashDistance(DashDistance);
@@ -41,7 +41,7 @@ void USFA_DashState::OnEnterState()
 void USFA_DashState::TickState(float DeltaTime)
 {
 	if (!PlayerStateMachine->GetIsDashing()) {
-		PlayerStateMachine->SwitchStateByKey("float");
+		PlayerStateMachine->SwitchStateByKey("Float");
 	}
 }
 
