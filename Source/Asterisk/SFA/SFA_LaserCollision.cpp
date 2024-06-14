@@ -71,7 +71,8 @@ void ASFA_LaserCollision::Initialize(AActor* AggressorActor, FVector MoveDirecti
                                      float InitDamage)
 {
 	Aggressor = AggressorActor;
-	Direction = MoveDirection;
+	if(Aggressor) SetActorLocation(Aggressor->GetActorLocation());
+	Direction = MoveDirection.GetSafeNormal();
 	Speed = MoveSpeed;
 	SetLifeSpan(LifeSpan);
 	Damage = InitDamage;
@@ -81,8 +82,9 @@ void ASFA_LaserCollision::Initialize(AActor* AggressorActor, FVector MoveDirecti
 void ASFA_LaserCollision::Move()
 {
 	if (Direction == FVector::ZeroVector || Speed == 0.f) return;
-
+	
+	FVector PrePos = GetActorLocation();
 	FVector RelativeLocation = Direction * Speed;
 
-	SetActorRelativeLocation(RelativeLocation, false);
+	SetActorLocation(PrePos + RelativeLocation, false);
 }

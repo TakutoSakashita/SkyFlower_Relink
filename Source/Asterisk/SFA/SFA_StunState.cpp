@@ -11,14 +11,25 @@ void USFA_StunState::OnEnterState()
 	InputHandler->bCanAttack = false;
 	Player->PlayerState = ESFA_PlayerState::Invincible;
 
-	//stun 1 second and back to floatState
-	FTimerDelegate Delegate;
-	Delegate.BindLambda([&]()
+	//stun 1 second 
+	FTimerDelegate DelegateStun;
+	DelegateStun.BindLambda([&]()
 	{
+		InputHandler->bCanMove = true;
+		InputHandler->bCanAttack = true;
+	});
+	FTimerHandle TimerHandleStun;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandleStun, DelegateStun, 1.f, false);
+
+	//Invincible 2 second
+	FTimerDelegate DelegateInvincible;
+	DelegateInvincible.BindLambda([&]()
+	{
+		Player->PlayerState = ESFA_PlayerState::Damageable;
 		PlayerStateMachine->SwitchStateByKey("Float");
 	});
-	FTimerHandle TimerHandle;
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, Delegate, 1.f, false);
+	FTimerHandle TimerHandleInvincible;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandleInvincible, DelegateInvincible, 2.f, false);
 }
 
 void USFA_StunState::TickState(float DeltaTime)
