@@ -151,7 +151,7 @@ void USFA_InputHandlerComponent::Shoot(const FInputActionValue& Value)
 
 void USFA_InputHandlerComponent::ShortRangeAttack()
 {
-	PlayerStateMachine->SwitchStateByKey("ShortRangeAttack");
+	//PlayerStateMachine->SwitchStateByKey("ShortRangeAttack");
 }
 
 void USFA_InputHandlerComponent::LongRangeAttack()
