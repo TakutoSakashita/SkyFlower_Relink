@@ -1,40 +1,45 @@
 #include "SFA_GA_Combo2.h"
 
-void USFA_GA_Combo2::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
-	const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
+void USFA_GA_Combo2::ActivateAbility(
+	const FGameplayAbilitySpecHandle Handle, 
+	const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayAbilityActivationInfo ActivationInfo, 
+	const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-	//UE_LOG(LogTemp, Warning, TEXT("USFA_GA_Combo2"));
 
 	Player = Cast<ASFA_Player>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	if (!IsValid(Player)) {
-		Debug::PrintFixedLine("USFA_GA_Combo1 : PlayerNull", 222);
+		Debug::PrintFixedLine("USFA_GA_Combo2 : PlayerNull", 222);
 		return;
-	};
+	}
 
 	if (!CommitAbility(Handle, ActorInfo, ActivationInfo)) {
-		Debug::PrintFixedLine("USFA_GA_Combo1 : CommitAbilityNull", 222);
+		Debug::PrintFixedLine("USFA_GA_Combo2 : CommitAbilityNull", 222);
+		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 		return;
 	}
 
 	UAbilityTask_WaitGameplayTagAdded* Task = UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(
-		this, // ï¿½Aï¿½rï¿½ï¿½ï¿½eï¿½Bï¿½Ìï¿½ï¿½Lï¿½ï¿½
-		FGameplayTag::RequestGameplayTag("Ability.Begin.Combo2"), // ï¿½Äï¿½ï¿½ï¿½ï¿½ï¿½Qï¿½[ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½Cï¿½^ï¿½O
-		Player,
-		false // OptionalExternalTargetï¿½ï¿½ï¿½gï¿½pï¿½ï¿½ï¿½È‚ï¿½ï¿½ê‡ï¿½ï¿½false
-	);
-	if (Task)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Task"));
-		HandleMyTagAdded();
-		// ï¿½^ï¿½Oï¿½ï¿½ï¿½Ç‰ï¿½ï¿½ï¿½ï¿½ê‚½ï¿½Æ‚ï¿½ï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½İ’ï¿½
+		this,
+		FGameplayTag::RequestGameplayTag(FName("Ability.Begin.Combo2")),
+		nullptr,
+		false);
+
+	if (Task) {
 		Task->Added.AddDynamic(this, &USFA_GA_Combo2::HandleMyTagAdded);
+		Task->ReadyForActivation();
 	}
 }
 
-void USFA_GA_Combo2::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
+void USFA_GA_Combo2::EndAbility(const FGameplayAbilitySpecHandle Handle, 
+	const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayAbilityActivationInfo ActivationInfo, 
+	bool bReplicateEndAbility,
+	bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+
 	FGameplayTagContainer TagContainer;
 	TagContainer.AddTag(FGameplayTag::RequestGameplayTag("Ability.Ready.Combo3"));
 	RemoveGameplayTags(TagContainer);
@@ -49,14 +54,14 @@ void USFA_GA_Combo2::HandleMyTagAdded()
 
 	AnimInstance = Player->GetMesh()->GetAnimInstance();
 	if (!IsValid(AnimInstance)) {
-		Debug::PrintFixedLine("USFA_GA_Combo1 : AnimInstanceNull", 222);
+		Debug::PrintFixedLine("USFA_GA_Combo2 : AnimInstanceNull", 222);
 		return;
-	};
+	}
 
-	// ï¿½Aï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½Äï¿½
+	// ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
 	AnimInstance->Montage_Play(AttackMontage);
 
-	// ï¿½Aï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½Ö˜Aï¿½Ì’Ê’m
+	// ƒAƒjƒ[ƒVƒ‡ƒ“ŠÖ˜A‚Ì’Ê’m
 	AnimInstance->OnMontageBlendingOut.AddDynamic(this, &USFA_GA_Combo2::OnBlendOut);
 	AnimInstance->OnPlayMontageNotifyBegin.AddDynamic(this, &USFA_GA_Combo2::OnNotifyBegin);
 	AnimInstance->OnPlayMontageNotifyEnd.AddDynamic(this, &USFA_GA_Combo2::OnNotifyEnd);
@@ -65,75 +70,63 @@ void USFA_GA_Combo2::HandleMyTagAdded()
 void USFA_GA_Combo2::OnBlendOut(UAnimMontage* Montage, bool bInterrupted)
 {
 	UE_LOG(LogTemp, Warning, TEXT("OnBlendOut"));
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, bInterrupted);
 	if (bInterrupted) {
-		// ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½ê‚½ï¿½ê‡ï¿½Ìï¿½ï¿½ï¿½
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, bInterrupted);
 		UE_LOG(LogTemp, Warning, TEXT("OnInterrupted"));
 	}
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, bInterrupted);
 }
 
-void USFA_GA_Combo2::OnNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointNotifyPayload)
+void USFA_GA_Combo2::OnNotifyBegin(FName NotifyName,
+	const FBranchingPointNotifyPayload& BranchingPointNotifyPayload)
 {
-	Debug::PrintFixedLine("USFA_GA_Combo1::OnNotifyBegin", 222);
+	Debug::PrintFixedLine("USFA_GA_Combo2::OnNotifyBegin", 222);
 
 	ASFA_Weapon* SFA_Weapon = Player->GetWeapon();
 	if (!SFA_Weapon) return;
 
 	CollisionBoxComponent = SFA_Weapon->GetBoxComponent();
 
-	if (!CollisionBoxComponent)return;
-	// ï¿½Rï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Lï¿½ï¿½ï¿½É‚ï¿½ï¿½ï¿½
+	if (!CollisionBoxComponent) return;
+	// ƒRƒŠƒWƒ‡ƒ“‚ğ—LŒø‚É‚·‚é
 	CollisionBoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
-	//OnNotifyBeginï¿½ï¿½ï¿½Ä‚Î‚ê‚½ï¿½ï¿½ï¿½É‚ï¿½Notifyï¿½Î‰ï¿½ï¿½ï¿½ï¿½ï¿½^ï¿½Oï¿½ï¿½Ç‰ï¿½ï¿½ï¿½ï¿½A
-	//RemoveGameplayTagsï¿½ï¿½ï¿½Ä‚Î‚ê‚½ï¿½ï¿½ï¿½É‚ï¿½Notifyï¿½É‘Î‰ï¿½ï¿½ï¿½ï¿½ï¿½^ï¿½Oï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B
-	//Combo1.Input ï¿½ï¿½ Ability.Ready.Combo2
-	//Combo1.Branch ï¿½ï¿½ Ability.Begin.Combo2
-	if (NotifyName == nInput)
-	{
+	// NotifyName‚É‰‚¶‚½ƒ^ƒO‚Ì’Ç‰Á
+	if (NotifyName == nInput) {
 		FGameplayTagContainer TagContainer;
 		TagContainer.AddTag(FGameplayTag::RequestGameplayTag(AbilityReadyTagName.GetTagName()));
 		AddGameplayTags(TagContainer);
 	}
-	else if (NotifyName == nBranch)
-	{
+	else if (NotifyName == nBranch) {
 		FGameplayTagContainer TagContainer;
 		TagContainer.AddTag(FGameplayTag::RequestGameplayTag(AbilityBeginTagName.GetTagName()));
 		AddGameplayTags(TagContainer);
 	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("USFA_GA_Combo1::Name not found ,NotifyName : %s"), *NotifyName.ToString());
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("USFA_GA_Combo2::Name not found ,NotifyName : %s"), *NotifyName.ToString());
 	}
 }
 
-void USFA_GA_Combo2::OnNotifyEnd(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointNotifyPayload)
+void USFA_GA_Combo2::OnNotifyEnd(FName NotifyName, 
+	const FBranchingPointNotifyPayload& BranchingPointNotifyPayload)
 {
-	Debug::PrintFixedLine("USFA_GA_Combo1::OnNotifyEnd", 222);
+	Debug::PrintFixedLine("USFA_GA_Combo2::OnNotifyEnd", 222);
 
-	if (!CollisionBoxComponent)return;
-	// ï¿½Rï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½ğ–³Œï¿½ï¿½É‚ï¿½ï¿½ï¿½
+	if (!CollisionBoxComponent) return;
+	// ƒRƒŠƒWƒ‡ƒ“‚ğ–³Œø‚É‚·‚é
 	CollisionBoxComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-	//OnNotifyBeginï¿½ï¿½ï¿½Ä‚Î‚ê‚½ï¿½ï¿½ï¿½É‚ï¿½Notifyï¿½Î‰ï¿½ï¿½ï¿½ï¿½ï¿½^ï¿½Oï¿½ï¿½Ç‰ï¿½ï¿½ï¿½ï¿½A
-	//RemoveGameplayTagsï¿½ï¿½ï¿½Ä‚Î‚ê‚½ï¿½ï¿½ï¿½É‚ï¿½Notifyï¿½É‘Î‰ï¿½ï¿½ï¿½ï¿½ï¿½^ï¿½Oï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B
-	//Combo1.Input ï¿½ï¿½ Ability.Ready.Combo2
-	//Combo1.Branch ï¿½ï¿½ Ability.Begin.Combo2
-	if (NotifyName == nInput)
-	{
+	// NotifyName‚É‰‚¶‚½ƒ^ƒO‚Ìíœ
+	if (NotifyName == nInput) {
 		FGameplayTagContainer TagContainer;
 		TagContainer.AddTag(FGameplayTag::RequestGameplayTag(AbilityReadyTagName.GetTagName()));
 		RemoveGameplayTags(TagContainer);
 	}
-	else if (NotifyName == nBranch)
-	{
+	else if (NotifyName == nBranch) {
 		FGameplayTagContainer TagContainer;
 		TagContainer.AddTag(FGameplayTag::RequestGameplayTag(AbilityBeginTagName.GetTagName()));
 		RemoveGameplayTags(TagContainer);
 	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("USFA_GA_Combo1::Name not found ,NotifyName : %s"), *NotifyName.ToString());
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("USFA_GA_Combo2::Name not found ,NotifyName : %s"), *NotifyName.ToString());
 	}
 }

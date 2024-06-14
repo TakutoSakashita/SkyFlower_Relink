@@ -17,21 +17,25 @@ void USFA_GA_Combo3::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 
 	if (!CommitAbility(Handle, ActorInfo, ActivationInfo)) {
 		Debug::PrintFixedLine("USFA_GA_Combo1 : CommitAbilityNull", 222);
+		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 		return;
 	}
 
 	UAbilityTask_WaitGameplayTagAdded* Task = UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(
-		this, // �A�r���e�B�̏��L��
-		FGameplayTag::RequestGameplayTag("Ability.Begin.Combo2"), // �Ď�����Q�[���v���C�^�O
-		Player,
-		false // OptionalExternalTarget���g�p���Ȃ��ꍇ��false
-	);
+		this, 
+		FGameplayTag::RequestGameplayTag(FName("Ability.Begin.Combo3")),
+		nullptr, 
+		false);
+	//Task->Activate();
+
 	if (Task)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Task"));
-		HandleMyTagAdded();
+		//HandleMyTagAdded();
 		// �^�O���ǉ����ꂽ�Ƃ��̏�����ݒ�
 		Task->Added.AddDynamic(this, &USFA_GA_Combo3::HandleMyTagAdded);
+		Task->ReadyForActivation();
+
 	}
 }
 
@@ -61,8 +65,8 @@ void USFA_GA_Combo3::HandleMyTagAdded()
 
 	// �A�j���[�V�����֘A�̒ʒm
 	AnimInstance->OnMontageBlendingOut.AddDynamic(this, &USFA_GA_Combo3::OnBlendOut);
-	AnimInstance->OnPlayMontageNotifyBegin.AddDynamic(this, &USFA_GA_Combo3::OnNotifyBegin);
-	AnimInstance->OnPlayMontageNotifyEnd.AddDynamic(this, &USFA_GA_Combo3::OnNotifyEnd);
+	//AnimInstance->OnPlayMontageNotifyBegin.AddDynamic(this, &USFA_GA_Combo3::OnNotifyBegin);
+	//AnimInstance->OnPlayMontageNotifyEnd.AddDynamic(this, &USFA_GA_Combo3::OnNotifyEnd);
 }
 
 void USFA_GA_Combo3::OnBlendOut(UAnimMontage* Montage, bool bInterrupted)
@@ -70,7 +74,7 @@ void USFA_GA_Combo3::OnBlendOut(UAnimMontage* Montage, bool bInterrupted)
 	UE_LOG(LogTemp, Warning, TEXT("OnBlendOut"));
 	if (bInterrupted) {
 		// ���f���ꂽ�ꍇ�̏���
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, bInterrupted);
+		//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, bInterrupted);
 		UE_LOG(LogTemp, Warning, TEXT("OnInterrupted"));
 	}
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, bInterrupted);
