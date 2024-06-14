@@ -7,7 +7,7 @@ void USFA_StunState::OnEnterState()
 {
 	Super::OnEnterState();
 
-	InputHandler->bCanAttack = false;
+	InputHandler->bCanMove = false;
 	InputHandler->bCanAttack = false;
 	Player->PlayerState = ESFA_PlayerState::Invincible;
 
@@ -29,7 +29,7 @@ void USFA_StunState::TickState(float DeltaTime)
 void USFA_StunState::OnExitState()
 {
 	Super::OnExitState();
-	InputHandler->bCanAttack = true;
+	InputHandler->bCanMove = true;
 	InputHandler->bCanAttack = true;
 	Player->PlayerState = ESFA_PlayerState::Damageable;
 }
