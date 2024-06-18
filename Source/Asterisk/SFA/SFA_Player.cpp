@@ -78,7 +78,7 @@ void ASFA_Player::TakeDamage(AActor* Aggressor, float Damage)
 			Health = 0.f;
 			Die();
 		}
-		PlayerStateMachine->SwitchStateByKey("Stun");
+		//PlayerStateMachine->SwitchStateByKey("Stun");
 	}
 }
 

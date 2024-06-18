@@ -32,6 +32,7 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	AActor* Aggressor = nullptr;
+	UPROPERTY(EditAnywhere)
 	float Damage = 10.f;
 
 	UFUNCTION(BlueprintCallable)
