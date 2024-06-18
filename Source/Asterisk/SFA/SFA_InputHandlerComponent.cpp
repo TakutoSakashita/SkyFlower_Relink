@@ -71,7 +71,7 @@ void USFA_InputHandlerComponent::SetupPlayerInputComponent(UInputComponent* Play
 		                                   &USFA_InputHandlerComponent::EndAim);
 
 		EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Started, this,
-								   &USFA_InputHandlerComponent::Shoot);
+		                                   &USFA_InputHandlerComponent::Shoot);
 		//TODO add playerAbilities
 		EnhancedInputComponent->BindAction(ShortRangeAttackAction, ETriggerEvent::Started, this,
 		                                   &USFA_InputHandlerComponent::ShortRangeAttack);
@@ -93,12 +93,12 @@ void USFA_InputHandlerComponent::Look(const FInputActionValue& Value)
 	}
 
 	//rotate player to cameraDirection when aiming
-	if (PlayerStateMachine->bIsAiming)
-	{
-		FRotator cameraRotation = Camera->GetActorRotation();
-		cameraRotation.Pitch = 0.f;
-		Player->SetActorRotation(cameraRotation);
-	}
+	// if (PlayerStateMachine->bIsAiming)
+	// {
+	// 	FRotator cameraRotation = Camera->GetActorRotation();
+	// 	cameraRotation.Pitch = 0.f;
+	// 	Player->SetActorRotation(cameraRotation);
+	// }
 }
 
 void USFA_InputHandlerComponent::Move(const FInputActionValue& Value)
@@ -107,7 +107,6 @@ void USFA_InputHandlerComponent::Move(const FInputActionValue& Value)
 	if (Value.GetMagnitude() < MIN_VALID_MAGNITUDE) return;
 	if (!IsValid(Camera) || !IsValid(Player)) return;
 
-	//PlayerStateMachine->SwitchStateByKey("Float");
 	PlayerStateMachine->Move(Value);
 }
 
@@ -131,6 +130,10 @@ void USFA_InputHandlerComponent::StartAim(const FInputActionValue& Value)
 	Hud->ShowCrosshair(true);
 	Camera->StartAim();
 	PlayerStateMachine->bIsAiming = true;
+	{
+		//Player->bUseControllerRotationYaw = true;
+		PlayerMovementComponent->bOrientRotationToMovement = false;
+	}
 	PlayerMovementComponent->MaxFlySpeed = 900.f;
 }
 
@@ -140,6 +143,10 @@ void USFA_InputHandlerComponent::EndAim(const FInputActionValue& Value)
 	Hud->ShowCrosshair(false);
 	Camera->EndAim();
 	PlayerStateMachine->bIsAiming = false;
+	{
+		//Player->bUseControllerRotationYaw = false;
+		PlayerMovementComponent->bOrientRotationToMovement = true;
+	}
 	PlayerMovementComponent->MaxFlySpeed = 1800.f;
 }
 

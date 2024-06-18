@@ -52,7 +52,7 @@ void USFR_StateMachineComponent::SwitchStateByKey(FString StateKey)
 	}
 	else if ((CurrentState->GetClass() == NewState->GetClass() && !CurrentState->bCanRepeat))// if is same state class and not repeatable
 	{
-		Debug::Print(StateKey + " IS NOT REPEATABLE. SWITCH FAILED");
+		Debug::PrintFixedLine(StateKey + " IS NOT REPEATABLE. SWITCH FAILED",1002);
 	}
 	else// perform state switch
 	{

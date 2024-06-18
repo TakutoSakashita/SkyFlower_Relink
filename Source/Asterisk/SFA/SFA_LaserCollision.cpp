@@ -64,7 +64,7 @@ void ASFA_LaserCollision::OnBeginOverlap(UPrimitiveComponent* OverlappedComponen
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), DeathEffect, GetActorLocation(), GetActorRotation(),
 		                                         FVector(3));
 
-	Debug::Print(" LASER COLLISION : " + OtherActor->GetName());
+	Debug::PrintFixedLine(" LASER COLLISION : " + OtherActor->GetName(), 111111);
 }
 
 void ASFA_LaserCollision::Initialize(AActor* AggressorActor, FVector MoveDirection, float MoveSpeed, float LifeSpan,

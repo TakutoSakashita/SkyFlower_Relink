@@ -39,7 +39,6 @@ private:
 	///////////////// custom parameter
 public:
 	bool bIsAiming = false;
-	
 private:
 	//~BEGIN components
 	ASFA_Camera* Camera;

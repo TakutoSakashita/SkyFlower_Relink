@@ -40,6 +40,12 @@ void USFA_PlayerStateMachine::TickComponent(float DeltaTime, ELevelTick TickType
 
 	if (!IsValid(Player) || !IsValid(Camera)) InitializePointers();
 	//DRAW_LINE(Camera->GetCameraCompLocation(),Camera->GetCameraCompLocation() + Camera->GetCameraCompForwardVector()*500.f)
+
+	if (bIsAiming)
+	{
+		const FRotator CameraRot = Camera->GetActorRotation();
+		Player->SetActorRotation(FRotator(0.f, CameraRot.Yaw, 0.f));
+	}
 }
 
 void USFA_PlayerStateMachine::InitializeStates()
