@@ -1,7 +1,7 @@
+#include "SFA_DestructibleObject.h"
 #include "SFA_Player.h"
 #include "SFA_GameMode.h"
 #include "Kismet/GameplayStatics.h"
-#include "SFA_DestructibleObject.h"
 
 ASFA_DestructibleObject::ASFA_DestructibleObject()
 {
