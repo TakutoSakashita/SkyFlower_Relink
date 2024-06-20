@@ -87,9 +87,9 @@ private:
 public:
 	////////////////////////////////////////////////// EnemyState
 	UFUNCTION(BlueprintCallable, Category = "EnemyBase")
-	void SetCharacterState(const EASF_EnemyState InEnemyState) { EnemyState = InEnemyState; }
+	void SetEnemyState(const EASF_EnemyState InEnemyState) { EnemyState = InEnemyState; }
 	UFUNCTION(BlueprintCallable, Category = "CharacterBase")
-	EASF_EnemyState GetCharacterState() { return EnemyState; }
+	EASF_EnemyState GetEnemyState() { return EnemyState; }
 	/// @brief 死亡しているか
 	UFUNCTION(BlueprintCallable, Category = "EnemyBase")
 	bool IsDead() const { 
@@ -112,6 +112,9 @@ public:
 	/// @brief 遠距離攻撃可能距離を取得
 	UFUNCTION(BlueprintCallable, Category = "CharacterBase")
 	float GetAttackableDistance_LongRange() const { return EnemyParam.AttackableDistance_LongRange; }
+	/// @param 移動速度を取得
+	UFUNCTION(BlueprintCallable, Category = "CharacterBase")
+	float GetMoveSpeed() const { return EnemyParam.MoveSpeed;}
 
 private:
 	UFUNCTION()
