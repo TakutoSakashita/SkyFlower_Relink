@@ -1,6 +1,7 @@
 #include "SFA_ShooterController.h"
 #include "SFA_Shooter.h"
 #include "SFA_Player.h"
+#include "../DebugHelpers.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -64,28 +65,33 @@ void ASFA_ShooterController::UpdateOnNormal(const float InDeltaTime)
 	Super::UpdateOnNormal(InDeltaTime);
 
 	if(!IsValid(OwnerShooter)) return;
-	
-	if(const ASFA_Player* const Player = Cast<ASFA_Player>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 1)))
+	if (!IsValid(OwnerShooter->GetMovementComponent()))
+	{
+		Debug::PrintFixedLine("ShooterController : MovementComponent Is NULL.");
+		return;
+	}
+
+	if (const ASFA_Player* const Player = Cast<ASFA_Player>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)))
 	{
 		const FVector PlayerPos = Player->GetActorLocation();
 		const FVector EnemyPos = OwnerShooter->GetActorLocation();
 		const FVector CurrentVector = PlayerPos - EnemyPos;
-		
+
 		// 敵キャラクターの回転を更新
 		const FRotator NewRotation = CurrentVector.Rotation();
 		OwnerShooter->SetActorRotation(NewRotation);
 
 		// 現在のプレイヤーとの距離によってステートを更新
-		const float Distance = CurrentVector.Size();
-		if (Distance < OwnerShooter->GetAttackableDistance_ShortRange())
-		{
-			OwnerShooter->SetEnemyState(EASF_EnemyState::ShortRangeAttack);
-		}
-		else if (Distance < OwnerShooter->GetAttackableDistance_LongRange())
-		{
-			OwnerShooter->SetEnemyState(EASF_EnemyState::LongRangeAttack);
-		}
-		else
+		//const float Distance = CurrentVector.Size();
+		//if (Distance < OwnerAttacker->GetAttackableDistance_ShortRange())
+		//{
+		//	OwnerAttacker->SetEnemyState(EASF_EnemyState::ShortRangeAttack);
+		//}
+		//else if (Distance < OwnerAttacker->GetAttackableDistance_LongRange())
+		//{
+		//	OwnerAttacker->SetEnemyState(EASF_EnemyState::LongRangeAttack);
+		//}
+		//else
 		{
 			// 攻撃可能距離に到達していなければプレイヤーに向かって移動
 			const FVector MoveDirection = CurrentVector.GetSafeNormal();

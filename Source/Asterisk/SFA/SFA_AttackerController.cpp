@@ -1,22 +1,16 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "SFA_AttackerController.h"
 #include "SFA_Attacker.h"
 #include "SFA_Player.h"
+#include "../DebugHelpers.h"
 #include "AnimNodes/AnimNode_RandomPlayer.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
-
-// Sets default values
 ASFA_AttackerController::ASFA_AttackerController()
 {
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-// Called when the game starts or when spawned
 void ASFA_AttackerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -26,9 +20,12 @@ void ASFA_AttackerController::BeginPlay()
 void ASFA_AttackerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
+
+	if (!IsValid(InPawn)) return;
+
+	OwnerAttacker = Cast<ASFA_Attacker>(InPawn);
 }
 
-// Called every frame
 void ASFA_AttackerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -68,9 +65,14 @@ void ASFA_AttackerController::UpdateOnNormal(const float InDeltaTime)
 {
 	Super::UpdateOnNormal(InDeltaTime);
 
-	if(!IsValid(OwnerAttacker)) return;
-	
-	if(const ASFA_Player* const Player = Cast<ASFA_Player>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 1)))
+	if (!IsValid(OwnerAttacker)) return;
+	if (!IsValid(OwnerAttacker->GetMovementComponent()))
+	{
+		Debug::PrintFixedLine("AttackerController : MovementComponent Is NULL.");
+		return;
+	}
+
+	if(const ASFA_Player* const Player = Cast<ASFA_Player>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)))
 	{
 		const FVector PlayerPos = Player->GetActorLocation();
 		const FVector EnemyPos = OwnerAttacker->GetActorLocation();
@@ -81,16 +83,16 @@ void ASFA_AttackerController::UpdateOnNormal(const float InDeltaTime)
 		OwnerAttacker->SetActorRotation(NewRotation);
 
 		// 現在のプレイヤーとの距離によってステートを更新
-		const float Distance = CurrentVector.Size();
-		if (Distance < OwnerAttacker->GetAttackableDistance_ShortRange())
-		{
-			OwnerAttacker->SetEnemyState(EASF_EnemyState::ShortRangeAttack);
-		}
-		else if (Distance < OwnerAttacker->GetAttackableDistance_LongRange())
-		{
-			OwnerAttacker->SetEnemyState(EASF_EnemyState::LongRangeAttack);
-		}
-		else
+		//const float Distance = CurrentVector.Size();
+		//if (Distance < OwnerAttacker->GetAttackableDistance_ShortRange())
+		//{
+		//	OwnerAttacker->SetEnemyState(EASF_EnemyState::ShortRangeAttack);
+		//}
+		//else if (Distance < OwnerAttacker->GetAttackableDistance_LongRange())
+		//{
+		//	OwnerAttacker->SetEnemyState(EASF_EnemyState::LongRangeAttack);
+		//}
+		//else
 		{
 			// 攻撃可能距離に到達していなければプレイヤーに向かって移動
 			const FVector MoveDirection = CurrentVector.GetSafeNormal();

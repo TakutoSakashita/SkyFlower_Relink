@@ -1,8 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "SFA_EnemyBase.h"
-
 #include "NiagaraComponent.h"
 #include "SFA_Player.h"
 #include "Components/SphereComponent.h"
@@ -13,10 +9,10 @@
 #include "Sound/SoundBase.h"
 
 
-// Sets default values
 ASFA_EnemyBase::ASFA_EnemyBase()
+	: EnemyState(EASF_EnemyState::Normal)
+	, EnemyParam()
 {
-	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
@@ -36,13 +32,11 @@ ASFA_EnemyBase::ASFA_EnemyBase()
 	Niagara->SetupAttachment(Sphere);
 }
 
-// Called when the game starts or when spawned
 void ASFA_EnemyBase::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
-// Called every frame
 void ASFA_EnemyBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
