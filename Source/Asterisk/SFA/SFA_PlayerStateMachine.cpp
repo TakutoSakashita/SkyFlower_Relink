@@ -46,6 +46,11 @@ void USFA_PlayerStateMachine::TickComponent(float DeltaTime, ELevelTick TickType
 		const FRotator CameraRot = Camera->GetActorRotation();
 		Player->SetActorRotation(FRotator(0.f, CameraRot.Yaw, 0.f));
 	}
+	else if (bIsBoosting && PlayerMovementComponent->IsMovingInAir())
+	{
+		const FRotator CameraRot = Camera->GetActorRotation();
+		Player->SetActorRotation(FRotator(CameraRot.Pitch - 80.f , CameraRot.Yaw, 0.f));
+	}
 }
 
 void USFA_PlayerStateMachine::InitializeStates()

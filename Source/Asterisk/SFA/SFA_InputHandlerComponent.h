@@ -108,7 +108,8 @@ public:
 	UInputAction* AimAction;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	UInputAction* ShootAction;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
+	UInputAction* BoostAction;
 
 	//TODO add playerAbilities
 
@@ -140,6 +141,8 @@ private:
 	void DropAttack(const FInputActionValue& Value);
 	void StartAim(const FInputActionValue& Value);
 	void EndAim(const FInputActionValue& Value);
+	void StartBoost(const FInputActionValue& Value);
+	void EndBoost(const FInputActionValue& Value);
 	void Shoot(const FInputActionValue& Value);
 	void ShortRangeAttack();
 	void LongRangeAttack();

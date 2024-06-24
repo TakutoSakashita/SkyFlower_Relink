@@ -70,6 +70,12 @@ void USFA_InputHandlerComponent::SetupPlayerInputComponent(UInputComponent* Play
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this,
 		                                   &USFA_InputHandlerComponent::EndAim);
 
+		EnhancedInputComponent->BindAction(BoostAction, ETriggerEvent::Started, this,
+		                                   &USFA_InputHandlerComponent::StartBoost);
+		EnhancedInputComponent->BindAction(BoostAction, ETriggerEvent::Completed, this,
+		                                   &USFA_InputHandlerComponent::EndBoost);
+
+
 		EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Started, this,
 		                                   &USFA_InputHandlerComponent::Shoot);
 		//TODO add playerAbilities
@@ -130,10 +136,7 @@ void USFA_InputHandlerComponent::StartAim(const FInputActionValue& Value)
 	Hud->ShowCrosshair(true);
 	Camera->StartAim();
 	PlayerStateMachine->bIsAiming = true;
-	{
-		//Player->bUseControllerRotationYaw = true;
-		PlayerMovementComponent->bOrientRotationToMovement = false;
-	}
+	PlayerMovementComponent->bOrientRotationToMovement = false;
 	PlayerMovementComponent->MaxFlySpeed = 900.f;
 }
 
@@ -143,10 +146,21 @@ void USFA_InputHandlerComponent::EndAim(const FInputActionValue& Value)
 	Hud->ShowCrosshair(false);
 	Camera->EndAim();
 	PlayerStateMachine->bIsAiming = false;
-	{
-		//Player->bUseControllerRotationYaw = false;
-		PlayerMovementComponent->bOrientRotationToMovement = true;
-	}
+	PlayerMovementComponent->bOrientRotationToMovement = true;
+	PlayerMovementComponent->MaxFlySpeed = 1800.f;
+}
+
+void USFA_InputHandlerComponent::StartBoost(const FInputActionValue& Value)
+{
+	Camera->StartBoost();
+	PlayerStateMachine->bIsBoosting = true;
+	PlayerMovementComponent->MaxFlySpeed = 8000.f;
+}
+
+void USFA_InputHandlerComponent::EndBoost(const FInputActionValue& Value)
+{
+	Camera->EndBoost();
+	PlayerStateMachine->bIsBoosting = false;
 	PlayerMovementComponent->MaxFlySpeed = 1800.f;
 }
 

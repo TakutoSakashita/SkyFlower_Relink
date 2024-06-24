@@ -15,6 +15,9 @@ USFA_PlayerMovementComponent::USFA_PlayerMovementComponent()
 	GravityScale = 2.f;
 	MaxFlySpeed = 1800.f;
 	JumpZVelocity = 1000.f;
+	MaxAcceleration = 25000.f;
+	AirControl = 1.f;
+	BrakingDecelerationFlying = 10000.f;
 }
 
 
@@ -25,18 +28,20 @@ void USFA_PlayerMovementComponent::BeginPlay()
 
 	Player = Cast<ASFA_Player>(GetOwner());
 	AnimInstance = CharacterOwner->GetMesh()->GetAnimInstance();
-	
 }
 
 
 // Called every frame
-void USFA_PlayerMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void USFA_PlayerMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
+                                                 FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (MovementMode == EMovementMode::MOVE_Flying && CheckHasReachedFloor()) {
+	if (MovementMode == EMovementMode::MOVE_Flying && CheckHasReachedFloor())
+	{
 		Debug::PrintFixedLine("HAS REACHED FLOOR", 222);
-		if (MovementMode == EMovementMode::MOVE_Flying) {
+		if (MovementMode == EMovementMode::MOVE_Flying)
+		{
 			SetMovementMode(MOVE_Falling);
 			GravityScale = 2.f;
 			//todo playMontage
@@ -70,10 +75,16 @@ void USFA_PlayerMovementComponent::SweepMove(FVector MoveVector, float MoveSpeed
 	FVector MovePos = Player->GetActorLocation();
 	MovePos += MoveVector * MoveSpeed;
 	FHitResult outHit;
-	Player->SetActorLocation(MovePos, true, &outHit);	
+	Player->SetActorLocation(MovePos, true, &outHit);
 }
 
-TArray<FHitResult> USFA_PlayerMovementComponent::DoCapsuleTraceMultiByObject(const FVector& Start, const FVector& End, bool bShowDebugShape, bool bDrawPersistentShapes)
+bool USFA_PlayerMovementComponent::IsMovingInAir()
+{
+	return Velocity.Size2D() > 0.1f;
+}
+
+TArray<FHitResult> USFA_PlayerMovementComponent::DoCapsuleTraceMultiByObject(
+	const FVector& Start, const FVector& End, bool bShowDebugShape, bool bDrawPersistentShapes)
 {
 	TArray<FHitResult> OutCapsuleTranceHitResults;
 
@@ -126,11 +137,10 @@ bool USFA_PlayerMovementComponent::CheckHasReachedFloor()
 	{
 		const bool bFloorReached =
 			FVector::Parallel(-PossibleFloorHit.ImpactNormal, FVector::UpVector) &&
-			UnrotatedClimbVelocity.Z < -10.f;	/* moving down */
+			UnrotatedClimbVelocity.Z < -10.f; /* moving down */
 
 		if (bFloorReached) return true;
 	}
 
 	return false;
 }
-

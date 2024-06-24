@@ -32,6 +32,8 @@ public:
 	void UpdateForce(float DeltaTime);
 	UFUNCTION()
 	void SweepMove(FVector MoveVector, float MoveSpeed);
+	UFUNCTION()
+	bool IsMovingInAir();
 
 private:
 	UFUNCTION()

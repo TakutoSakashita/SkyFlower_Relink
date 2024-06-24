@@ -31,7 +31,8 @@ ASFA_Camera::ASFA_Camera()
 	Camera->SetRelativeLocation(InitialCameraOffset);
 	//CameraMain->bCameraMeshHiddenInGame = false;
 
-	Timeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline"));
+	AimTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("AimTimeline"));
+	BoostTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("BoostTimeline"));
 }
 
 void ASFA_Camera::BeginPlay()
@@ -40,12 +41,20 @@ void ASFA_Camera::BeginPlay()
 
 	Camera->SetRelativeLocation(InitialCameraOffset);
 	
-	if (FloatCurve)
+	if (AimFloatCurve)
 	{
-		InterpFunction.BindUFunction(this, FName("AimingProcess"));
-		Timeline->AddInterpFloat(FloatCurve, InterpFunction);
-		Timeline->SetLooping(false);
-		Timeline->SetTimelineLength(TimeLineLength);
+		AimInterpFunction.BindUFunction(this, FName("AimingProcess"));
+		AimTimeline->AddInterpFloat(AimFloatCurve, AimInterpFunction);
+		AimTimeline->SetLooping(false);
+		AimTimeline->SetTimelineLength(AimTimeLineLength);
+	}
+
+	if (BoostFloatCurve)
+	{
+		BoostInterpFunction.BindUFunction(this, FName("BoostingProcess"));
+		BoostTimeline->AddInterpFloat(BoostFloatCurve, BoostInterpFunction);
+		BoostTimeline->SetLooping(false);
+		BoostTimeline->SetTimelineLength(BoostTimeLineLength);
 	}
 }
 
@@ -55,9 +64,14 @@ void ASFA_Camera::Tick(float DeltaTime)
 
 	UpdateLocation();
 
-	if (Timeline)
+	if (AimTimeline)
 	{
-		Timeline->TickComponent(DeltaTime, ELevelTick::LEVELTICK_TimeOnly, nullptr);
+		AimTimeline->TickComponent(DeltaTime, ELevelTick::LEVELTICK_TimeOnly, nullptr);
+	}
+
+	if (BoostTimeline)
+	{
+		BoostTimeline->TickComponent(DeltaTime, ELevelTick::LEVELTICK_TimeOnly, nullptr);
 	}
 }
 
@@ -67,32 +81,67 @@ void ASFA_Camera::AimingProcess(float Value)
 	Camera->FieldOfView = FMath::Lerp(InitialFOV, AimFOV, Value);
 	Camera->SetRelativeLocation(FMath::Lerp(InitialCameraOffset, AimCameraOffset, Value));
 
-	CurrentTimelinePosition = Timeline->GetPlaybackPosition();
+	AimCurrentTimelinePosition = AimTimeline->GetPlaybackPosition();
 }
 
 void ASFA_Camera::StartAim()
 {
-	if (!FloatCurve) return;
-	if (!Timeline) return;
+	if (!AimFloatCurve) return;
+	if (!AimTimeline) return;
 
-	if (Timeline->GetPlaybackPosition() == 0.0f || Timeline->GetPlaybackPosition() == TimeLineLength){
-		Timeline->PlayFromStart();
+	if (AimTimeline->GetPlaybackPosition() == 0.0f || AimTimeline->GetPlaybackPosition() == AimTimeLineLength){
+		AimTimeline->PlayFromStart();
 	}
 	else{
-		Timeline->Play();
+		AimTimeline->Play();
 	}
 }
 
 void ASFA_Camera::EndAim()
 {
-	if (!FloatCurve) return;
-	if (!Timeline) return;
+	if (!AimFloatCurve) return;
+	if (!AimTimeline) return;
 
-	if (Timeline->GetPlaybackPosition() == 0.0f || Timeline->GetPlaybackPosition() == TimeLineLength){
-		Timeline->ReverseFromEnd();
+	if (AimTimeline->GetPlaybackPosition() == 0.0f || AimTimeline->GetPlaybackPosition() == AimTimeLineLength){
+		AimTimeline->ReverseFromEnd();
 	}
 	else{
-		Timeline->Reverse();
+		AimTimeline->Reverse();
+	}
+}
+
+void ASFA_Camera::BoostingProcess(float Value)
+{
+	SpringArm->TargetArmLength = FMath::Lerp(InitialSpringArmLength, BoostSpringArmLength, Value);
+	Camera->FieldOfView = FMath::Lerp(InitialFOV, BoostFOV, Value);
+	Camera->SetRelativeLocation(FMath::Lerp(InitialCameraOffset, BoostCameraOffset, Value));
+
+	BoostCurrentTimelinePosition = BoostTimeline->GetPlaybackPosition();
+}
+
+void ASFA_Camera::StartBoost()
+{
+	if (!BoostFloatCurve) return;
+	if (!BoostTimeline) return;
+
+	if (BoostTimeline->GetPlaybackPosition() == 0.0f || BoostTimeline->GetPlaybackPosition() == BoostTimeLineLength){
+		BoostTimeline->PlayFromStart();
+	}
+	else{
+		BoostTimeline->Play();
+	}
+}
+
+void ASFA_Camera::EndBoost()
+{
+	if (!BoostFloatCurve) return;
+	if (!BoostTimeline) return;
+
+	if (BoostTimeline->GetPlaybackPosition() == 0.0f || BoostTimeline->GetPlaybackPosition() == BoostTimeLineLength){
+		BoostTimeline->ReverseFromEnd();
+	}
+	else{
+		BoostTimeline->Reverse();
 	}
 }
 

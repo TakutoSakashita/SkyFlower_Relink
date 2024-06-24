@@ -31,14 +31,18 @@ protected:
 	/////////////////// custom function
 public:
 	void Move(const FInputActionValue& Value);
-	
+
 private:
 	void InitializePointers();
 	void UpdateForceMove(float DeltaTime);
 
 	///////////////// custom parameter
 public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool bIsAiming = false;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bIsBoosting = false;
+
 private:
 	//~BEGIN components
 	ASFA_Camera* Camera;
@@ -54,7 +58,7 @@ private:
 	bool bIsDashing = false;
 	FVector DashDirection = FVector::Zero();
 	//~END Dash
-	
+
 	///////////////// get set
 public:
 	void SetDashDistance(const float Distance) { DashDistance = Distance; }

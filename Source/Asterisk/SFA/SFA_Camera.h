@@ -13,8 +13,6 @@ class UCameraComponent;
 class UTimelineComponent;
 
 
-
-
 UCLASS()
 class ASTERISK_API ASFA_Camera : public APawn
 {
@@ -40,20 +38,28 @@ public:
 private:
 	AActor* FollowTarget;
 
-	//~BEGIN Aiming
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float InitialSpringArmLength = 400.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float InitialFOV = 90.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector InitialCameraOffset = FVector(0.f, 0.f, 80.f);
+
 #pragma region Aiming
+	//~BEGIN Aiming
 public:
 	bool IsAiming = false;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	UTimelineComponent* Timeline;
+	UTimelineComponent* AimTimeline;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float TimeLineLength = 0.15f;
-	float CurrentTimelinePosition = 0.0f;
+	float AimTimeLineLength = 0.15f;
+	float AimCurrentTimelinePosition = 0.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UCurveFloat* FloatCurve;
+	UCurveFloat* AimFloatCurve;
 
-	FOnTimelineFloat InterpFunction{};
+	FOnTimelineFloat AimInterpFunction{};
 
 	UFUNCTION()
 	void AimingProcess(float Value);
@@ -61,30 +67,57 @@ public:
 	void StartAim();
 	UFUNCTION(BlueprintCallable)
 	void EndAim();
-
-	UPROPERTY(BlueprintReadWrite)
-	float InitialSpringArmLength = 400.f;
-	UPROPERTY(BlueprintReadWrite)
-	float InitialFOV = 90.f;
-	UPROPERTY(BlueprintReadWrite)
-	FVector InitialCameraOffset = FVector(0.f, 0.f, 80.f);
-
-	UPROPERTY(BlueprintReadWrite)
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float AimSpringArmLength = 300.f;
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float AimFOV = 70.f;
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector AimCameraOffset = FVector(30.f, 80.f, 70.f);
-#pragma endregion
 	//~END Aiming
+#pragma endregion
+
+
+#pragma region Boosting
+	//~BEGIN Boosting
+public:
+	bool IsBoosting = false;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UTimelineComponent* BoostTimeline;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BoostTimeLineLength = 0.15f;
+	float BoostCurrentTimelinePosition = 0.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UCurveFloat* BoostFloatCurve;
+
+	FOnTimelineFloat BoostInterpFunction{};
+
+	UFUNCTION()
+	void BoostingProcess(float Value);
+	UFUNCTION(BlueprintCallable)
+	void StartBoost();
+	UFUNCTION(BlueprintCallable)
+	void EndBoost();
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BoostSpringArmLength = 2000.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BoostFOV = 120.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector BoostCameraOffset = FVector(0.f, 0.f, 50.f);
+
+	
+	//~ENd Boosting
+#pragma endregion
+
 public:
 	void SetFollowTarget(AActor* Target) { FollowTarget = Target; }
 	void Turn(float value);
 	void LookUp(float value);
 	FVector GetCameraCompForwardVector() const;
 	FVector GetCameraCompLocation() const;
-	
+
 private:
 	void UpdateLocation();
-
 };
