@@ -26,6 +26,6 @@ public:
 public:
 	virtual void TakeDamage(AActor* Aggressor, float Damage) override;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere,Category = "Status")
 	float Health = 100.f;
 };

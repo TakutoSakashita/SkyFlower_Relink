@@ -16,13 +16,16 @@ class ASTERISK_API ASFA_GameMode : public AGameModeBase
 public:
 	ASFA_GameMode();
 
+	virtual void StartPlay() override;
+
+	// 破壊可能オブジェクトのデリゲート
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnObjectDestroyed OnObjectDestroyed;
-
+	UPROPERTY()
+	TArray<AActor*> MaxDestroyedObjectCount;
+	UFUNCTION()
 	void ObjectDestroyed();
 
-	UPROPERTY(EditAnywhere)
-	int32 MaxDestroyedObjectCount = 4;
 	
 private:
 	int32 DestroyedObjectCount;
