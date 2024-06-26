@@ -7,39 +7,23 @@
 void USFA_DashState::OnEnterState()
 {
 	Super::OnEnterState();
-
-	const FVector2D VelocityXY = FVector2D(
-		PlayerMovementComponent->GetLastUpdateVelocity().X,
-		PlayerMovementComponent->GetLastUpdateVelocity().Y);
-	const bool IsMoving = VelocityXY.Size() > 0.1f /*MIN_VALID_MAGNITUDE*/;
-
-	if (PlayerMovementComponent->MovementMode == EMovementMode::MOVE_Walking) {
-		Player->Jump();
-		return;
-	}
-
-	if (PlayerMovementComponent->MovementMode == EMovementMode::MOVE_Falling) {
-
-		PlayerMovementComponent->SetMovementMode(MOVE_Flying);
-		PlayerMovementComponent->GravityScale = 0.2f;
-	}
-
-	DashDirection = FVector::UpVector;
-	if (IsMoving) {
-		DashDirection = FVector(Player->GetVelocity().X, Player->GetVelocity().Y, 0.f);
-	}
+	
+	//DashDirection = FVector(Player->GetVelocity().X, Player->GetVelocity().Y, 0.f);
+	DashDirection = FVector(Player->GetActorForwardVector().X, Player->GetActorForwardVector().Y, 0.f);
+	
 	PlayerStateMachine->SetDashDistance(DashDistance);
 	PlayerStateMachine->SetDashElapsedTime(0.f);
 	PlayerStateMachine->SetDashTime(DashTime);
 	PlayerStateMachine->SetIsDashing(true);
 	PlayerStateMachine->SetDashDirection(DashDirection);
 
-	if (!Dash_AirJump_Montage) return;
-	Player->GetMesh()->GetAnimInstance()->Montage_Play(Dash_AirJump_Montage);
+	if (!Dash_Montage) return;
+	Player->GetMesh()->GetAnimInstance()->Montage_Play(Dash_Montage);
 }
 
 void USFA_DashState::TickState(float DeltaTime)
 {
+	Super::TickState(DeltaTime);
 	if (!PlayerStateMachine->GetIsDashing()) {
 		PlayerStateMachine->SwitchStateByKey("Float");
 	}

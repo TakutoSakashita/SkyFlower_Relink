@@ -150,10 +150,8 @@ void ASFA_Camera::Turn(float value)
 	//AddControllerYawInput(2.f /*yawSensitivity*/ * value * GetWorld()->GetDeltaSeconds());
 
 	FRotator CameraRotation = GetActorRotation();
-	CameraRotation.Yaw += 1.f /*yawSensitivity*/ * value;
+	CameraRotation.Yaw += 1.f * CameraTurnRate * value;
 	SetActorRotation(CameraRotation);
-
-
 }
 
 void ASFA_Camera::LookUp(float value)
@@ -161,11 +159,9 @@ void ASFA_Camera::LookUp(float value)
 	//AddControllerPitchInput(2.f /*pitchSensitivity*/ * value * GetWorld()->GetDeltaSeconds());
 
 	FRotator CameraRotation = GetActorRotation();
-	CameraRotation.Pitch += 1.f /*pitchSensitivity*/ * value;
+	CameraRotation.Pitch += 1.f * CameraLookUpRate * value;
 	CameraRotation.Pitch = FMath::Clamp(CameraRotation.Pitch, -80.0f, 80.0f);// pitch from -80 to 80 degree
 	SetActorRotation(CameraRotation);
-
-
 }
 
 FVector ASFA_Camera::GetCameraCompForwardVector() const

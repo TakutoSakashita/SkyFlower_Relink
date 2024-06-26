@@ -35,8 +35,14 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UCameraComponent* Camera;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float CameraTurnRate = 1.6f;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float CameraLookUpRate = 1.6f;
+
 private:
-	AActor* FollowTarget;
+	UPROPERTY()
+	AActor* FollowTarget = nullptr;
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

@@ -110,6 +110,8 @@ public:
 	UInputAction* ShootAction;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	UInputAction* BoostAction;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
+	UInputAction* JumpAction;
 
 	//TODO add playerAbilities
 
@@ -121,13 +123,18 @@ public:
 	UInputAction* LongRangeAttackAction;
 
 private:
-	//~Parameters for components
-	ASFA_Camera* Camera;
-	ASFA_Player* Player;
-	USFA_PlayerStateMachine* PlayerStateMachine;
-	USFA_PlayerMovementComponent* PlayerMovementComponent;
-	ASFA_HUD* Hud;
-	//~End of Parameters for components
+	//~BEGIN Parameters for components
+	UPROPERTY()
+	ASFA_Camera* CameraRef;
+	UPROPERTY()
+	ASFA_Player* PlayerRef;
+	UPROPERTY()
+	USFA_PlayerStateMachine* PlayerStateMachineRef;
+	UPROPERTY()
+	USFA_PlayerMovementComponent* PlayerMovementComponentRef;
+	UPROPERTY()
+	ASFA_HUD* HudRef;
+	//~END of Parameters for components
 
 
 	///////////////// custom function
@@ -138,10 +145,12 @@ private:
 	void Look(const FInputActionValue& Value);
 	void Move(const FInputActionValue& Value);
 	void Dash(const FInputActionValue& Value);
+	void Jump(const FInputActionValue& Value);
 	void DropAttack(const FInputActionValue& Value);
 	void StartAim(const FInputActionValue& Value);
 	void EndAim(const FInputActionValue& Value);
 	void StartBoost(const FInputActionValue& Value);
+	void UpdateBoost(const FInputActionValue& Value);
 	void EndBoost(const FInputActionValue& Value);
 	void Shoot(const FInputActionValue& Value);
 	void ShortRangeAttack();

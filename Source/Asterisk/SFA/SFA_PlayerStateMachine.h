@@ -30,7 +30,8 @@ protected:
 
 	/////////////////// custom function
 public:
-	void Move(const FInputActionValue& Value);
+	void Move(const FInputActionValue& Value) const;
+	void Look(const FInputActionValue& Value) const;
 
 private:
 	void InitializePointers();
@@ -45,10 +46,14 @@ public:
 
 private:
 	//~BEGIN components
-	ASFA_Camera* Camera;
-	ASFA_Player* Player;
-	USFA_InputHandlerComponent* InputHandler;
-	USFA_PlayerMovementComponent* PlayerMovementComponent;
+	UPROPERTY()
+	ASFA_Camera* Camera = nullptr;
+	UPROPERTY()
+	ASFA_Player* Player = nullptr;
+	UPROPERTY()
+	USFA_InputHandlerComponent* InputHandler = nullptr;
+	UPROPERTY()
+	USFA_PlayerMovementComponent* PlayerMovementComponent = nullptr;
 	//~END components
 
 	//~BEGIN Dash

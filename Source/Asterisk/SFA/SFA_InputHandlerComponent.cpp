@@ -18,8 +18,6 @@
 #include "GameFramework/GameModeBase.h"
 
 
-#define MIN_VALID_MAGNITUDE 0.1f
-
 USFA_InputHandlerComponent::USFA_InputHandlerComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
@@ -49,7 +47,7 @@ void USFA_InputHandlerComponent::TickComponent(float DeltaTime, ELevelTick TickT
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (!IsValid(Camera) || !IsValid(Player)) InitializePointers(); // debug for packaging
+	if (!IsValid(CameraRef) || !IsValid(PlayerRef)) InitializePointers(); // debug for packaging
 }
 
 void USFA_InputHandlerComponent::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -61,7 +59,10 @@ void USFA_InputHandlerComponent::SetupPlayerInputComponent(UInputComponent* Play
 		                                   &USFA_InputHandlerComponent::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this,
 		                                   &USFA_InputHandlerComponent::Look);
-		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Started, this, &USFA_InputHandlerComponent::Dash);
+		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Started, this,
+		                                   &USFA_InputHandlerComponent::Dash);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this,
+		                                   &USFA_InputHandlerComponent::Jump);
 		EnhancedInputComponent->BindAction(DropAttackAction, ETriggerEvent::Started, this,
 		                                   &USFA_InputHandlerComponent::DropAttack);
 
@@ -72,6 +73,8 @@ void USFA_InputHandlerComponent::SetupPlayerInputComponent(UInputComponent* Play
 
 		EnhancedInputComponent->BindAction(BoostAction, ETriggerEvent::Started, this,
 		                                   &USFA_InputHandlerComponent::StartBoost);
+		EnhancedInputComponent->BindAction(BoostAction, ETriggerEvent::Triggered, this,
+		                                   &USFA_InputHandlerComponent::UpdateBoost);
 		EnhancedInputComponent->BindAction(BoostAction, ETriggerEvent::Completed, this,
 		                                   &USFA_InputHandlerComponent::EndBoost);
 
@@ -88,87 +91,85 @@ void USFA_InputHandlerComponent::SetupPlayerInputComponent(UInputComponent* Play
 
 void USFA_InputHandlerComponent::Look(const FInputActionValue& Value)
 {
-	if (Value.GetMagnitude() < MIN_VALID_MAGNITUDE) return;
-	if (!IsValid(Camera)) return;
-
-	//todo move to StateMachine
-	{
-		FVector2D LookAxisVector = Value.Get<FVector2D>();
-		Camera->Turn(LookAxisVector.X);
-		Camera->LookUp(LookAxisVector.Y);
-	}
-
-	//rotate player to cameraDirection when aiming
-	// if (PlayerStateMachine->bIsAiming)
-	// {
-	// 	FRotator cameraRotation = Camera->GetActorRotation();
-	// 	cameraRotation.Pitch = 0.f;
-	// 	Player->SetActorRotation(cameraRotation);
-	// }
+	PlayerStateMachineRef->Look(Value);
 }
 
 void USFA_InputHandlerComponent::Move(const FInputActionValue& Value)
 {
 	if (!bCanMove) return;
-	if (Value.GetMagnitude() < MIN_VALID_MAGNITUDE) return;
-	if (!IsValid(Camera) || !IsValid(Player)) return;
 
-	PlayerStateMachine->Move(Value);
+	PlayerStateMachineRef->Move(Value);
 }
 
 void USFA_InputHandlerComponent::Dash(const FInputActionValue& Value)
 {
 	if (!bCanMove) return;
-	PlayerStateMachine->SwitchStateByKey("Dash");
+	PlayerStateMachineRef->SwitchStateByKey("Dash");
+}
+
+void USFA_InputHandlerComponent::Jump(const FInputActionValue& Value)
+{
+	if (!bCanMove) return;
+	PlayerStateMachineRef->SwitchStateByKey("Jump");
 }
 
 void USFA_InputHandlerComponent::DropAttack(const FInputActionValue& Value)
 {
 	if (!bCanMove) return;
-	if (PlayerMovementComponent->MovementMode == EMovementMode::MOVE_Walking) return;
-	PlayerStateMachine->SwitchStateByKey("DropAttack");
+	if (PlayerMovementComponentRef->MovementMode == EMovementMode::MOVE_Walking) return;
+	PlayerStateMachineRef->SwitchStateByKey("DropAttack");
 }
 
 void USFA_InputHandlerComponent::StartAim(const FInputActionValue& Value)
 {
 	//TODO null check
 	//TODO revise player rotation
-	Hud->ShowCrosshair(true);
-	Camera->StartAim();
-	PlayerStateMachine->bIsAiming = true;
-	PlayerMovementComponent->bOrientRotationToMovement = false;
-	PlayerMovementComponent->MaxFlySpeed = 900.f;
+	HudRef->ShowCrosshair(true);
+	CameraRef->StartAim();
+	PlayerStateMachineRef->bIsAiming = true;
+	PlayerMovementComponentRef->bOrientRotationToMovement = false;
+	PlayerMovementComponentRef->MaxFlySpeed = 900.f;
 }
 
 void USFA_InputHandlerComponent::EndAim(const FInputActionValue& Value)
 {
 	//TODO null check
-	Hud->ShowCrosshair(false);
-	Camera->EndAim();
-	PlayerStateMachine->bIsAiming = false;
-	PlayerMovementComponent->bOrientRotationToMovement = true;
-	PlayerMovementComponent->MaxFlySpeed = 1800.f;
+	HudRef->ShowCrosshair(false);
+	CameraRef->EndAim();
+	PlayerStateMachineRef->bIsAiming = false;
+	PlayerMovementComponentRef->bOrientRotationToMovement = true;
+	PlayerMovementComponentRef->MaxFlySpeed = 1800.f;
 }
 
 void USFA_InputHandlerComponent::StartBoost(const FInputActionValue& Value)
 {
-	Camera->StartBoost();
-	PlayerStateMachine->bIsBoosting = true;
-	PlayerMovementComponent->MaxFlySpeed = 8000.f;
+	if (!IsValid(CameraRef)) return;
+	CameraRef->StartBoost();
+	PlayerStateMachineRef->bIsBoosting = true;
+	PlayerMovementComponentRef->MaxFlySpeed = 8000.f;
+}
+
+void USFA_InputHandlerComponent::UpdateBoost(const FInputActionValue& Value)
+{
+	if (!IsValid(PlayerRef)) return;
+
+	//auto moving forward
+	PlayerRef->AddMovementInput(CameraRef->GetActorForwardVector(), 1.f);
 }
 
 void USFA_InputHandlerComponent::EndBoost(const FInputActionValue& Value)
 {
-	Camera->EndBoost();
-	PlayerStateMachine->bIsBoosting = false;
-	PlayerMovementComponent->MaxFlySpeed = 1800.f;
+	if (!IsValid(CameraRef)) return;
+	CameraRef->EndBoost();
+	PlayerStateMachineRef->bIsBoosting = false;
+	PlayerMovementComponentRef->MaxFlySpeed = 1800.f;
 }
 
 void USFA_InputHandlerComponent::Shoot(const FInputActionValue& Value)
 {
 	if (!bCanAttack) return;
 	//TODO null check, state check
-	PlayerStateMachine->SwitchStateByKey("Shoot");
+	PlayerStateMachineRef->SwitchStateByKey("Shoot");
 }
 
 void USFA_InputHandlerComponent::ShortRangeAttack()
@@ -183,10 +184,10 @@ void USFA_InputHandlerComponent::LongRangeAttack()
 
 void USFA_InputHandlerComponent::InitializePointers()
 {
-	Camera = Cast<ASFA_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0))->GetCamera();
-	Player = Cast<ASFA_Player>(GetOwner());
-	PlayerStateMachine = Player->GetPlayerStateMachine();
-	PlayerMovementComponent = Player->GetPlayerMovement();
+	CameraRef = Cast<ASFA_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0))->GetCamera();
+	PlayerRef = Cast<ASFA_Player>(GetOwner());
+	PlayerStateMachineRef = PlayerRef->GetPlayerStateMachine();
+	PlayerMovementComponentRef = PlayerRef->GetPlayerMovement();
 
-	Hud = Cast<ASFA_HUD>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD());
+	HudRef = Cast<ASFA_HUD>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD());
 }

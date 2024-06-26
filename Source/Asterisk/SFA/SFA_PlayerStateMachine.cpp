@@ -20,6 +20,8 @@
 //bullet
 #include "SFA_Bullet.h"
 
+#define MIN_VALID_MAGNITUDE 0.1f
+
 USFA_PlayerStateMachine::USFA_PlayerStateMachine()
 {
 	PrimaryComponentTick.bCanEverTick = true;
@@ -49,7 +51,7 @@ void USFA_PlayerStateMachine::TickComponent(float DeltaTime, ELevelTick TickType
 	else if (bIsBoosting && PlayerMovementComponent->IsMovingInAir())
 	{
 		const FRotator CameraRot = Camera->GetActorRotation();
-		Player->SetActorRotation(FRotator(CameraRot.Pitch - 80.f , CameraRot.Yaw, 0.f));
+		Player->SetActorRotation(FRotator(CameraRot.Pitch - 80.f, CameraRot.Yaw, 0.f));
 	}
 }
 
@@ -72,14 +74,27 @@ void USFA_PlayerStateMachine::InitializeStates()
 	}
 }
 
-void USFA_PlayerStateMachine::Move(const FInputActionValue& Value)
+void USFA_PlayerStateMachine::Move(const FInputActionValue& Value) const
 {
 	if (!IsValid(Player) || !IsValid(Camera)) return;
+	if (Value.GetMagnitude() < MIN_VALID_MAGNITUDE) return;
 
-	InitializePointers();
 	FVector2D MovementVector = Value.Get<FVector2D>();
-	Player->AddMovementInput(Camera->GetActorForwardVector(), MovementVector.Y);
+
+	FVector DirectionVector = bIsBoosting ? Camera->GetActorUpVector() : Camera->GetActorForwardVector();
+
+	Player->AddMovementInput(DirectionVector, MovementVector.Y);
 	Player->AddMovementInput(Camera->GetActorRightVector(), MovementVector.X);
+}
+
+void USFA_PlayerStateMachine::Look(const FInputActionValue& Value) const
+{
+	if (!IsValid(Camera)) return;
+	if (Value.GetMagnitude() < MIN_VALID_MAGNITUDE) return;
+
+	FVector2D LookAxisVector = Value.Get<FVector2D>();
+	Camera->Turn(LookAxisVector.X);
+	Camera->LookUp(LookAxisVector.Y);
 }
 
 
