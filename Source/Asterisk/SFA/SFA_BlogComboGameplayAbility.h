@@ -5,6 +5,7 @@
 #include "../DebugHelpers.h"
 #include "SFA_Player.h"
 #include "SFA_Weapon.h"
+#include "SFA_EnemyBase.h"
 #include "AbilitySystemComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/BoxComponent.h"

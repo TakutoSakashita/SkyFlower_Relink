@@ -6,10 +6,8 @@ USFA_GA_Combo2::USFA_GA_Combo2()
 {
 	// Ability Tags（能力タグ）を設定
 	this->AbilityTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability.Action.Attack")));
-
 	// Activation Owned Tags（所有しているタグ）を設定
 	this->ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability.State.Combo2")));
-
 	// Activation Required Tags（必要なタグ）を設定
 	this->ActivationRequiredTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability.Ready.Combo2")));
 }
@@ -24,26 +22,18 @@ void USFA_GA_Combo2::ActivateAbility(
 	this->ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability.State.Combo2")));
 
 	Player = Cast<ASFA_Player>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	if (!IsValid(Player))
-	{
-		Debug::PrintFixedLine("USFA_GA_Combo2 : PlayerNull", 222);
-		return;
-	}
+	if (!IsValid(Player)) return;
+	
 
-	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
-	{
-		Debug::PrintFixedLine("USFA_GA_Combo2 : CommitAbilityNull", 222);
-		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
-		return;
-	}
+	if (!CommitAbility(Handle, ActorInfo, ActivationInfo)) return;
+	CommitAbility(Handle, ActorInfo, ActivationInfo);
 
 	FVector SourceLocation = Player->GetActorLocation();
 	TArray<AActor*> PotentialTargets;
 	// 例えば、すべての敵キャラクターを取得する
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASFA_EnemyBase::StaticClass(), PotentialTargets);
-	AActor* ClosestTarget = GetClosestActor(SourceLocation, PotentialTargets);
 
-	if (ClosestTarget)
+	if (AActor* ClosestTarget = GetClosestActor(SourceLocation, PotentialTargets))
 	{
 		float DistanceToTarget = FVector::Dist(SourceLocation, ClosestTarget->GetActorLocation());
 		if (DistanceToTarget < DistanceThreshold)
@@ -53,8 +43,7 @@ void USFA_GA_Combo2::ActivateAbility(
 			Player->SetActorRotation(TargetRotation);
 
 			// 敵から理想的な距離に位置するターゲットオフセットを計算
-			FVector DirectionToTarget = (ClosestTarget->GetActorLocation() - Player->GetActorLocation()).
-				GetSafeNormal();
+			FVector DirectionToTarget = (ClosestTarget->GetActorLocation() - Player->GetActorLocation()).GetSafeNormal();
 			FVector TargetLocationOffset = DirectionToTarget * DesiredDistance;
 
 			UAbilityTask_ApplyRootMotionMoveToActorForce* ApplyRootMotionConstantForce =
@@ -77,22 +66,15 @@ void USFA_GA_Combo2::ActivateAbility(
 					0.f, // ClampVelocityOnFinish
 					false // bDisableDestinationReachedInterrupt
 				);
-
-			//ApplyRootMotionConstantForce->OnFinished.AddDynamic(this, &USFA_GA_Combo2::OnMoveCompleted);
-			//OnTimedOut.AddDynamic(this, &USFA_GA_Combo2::OnMoveCompleted);
-			//ApplyRootMotionConstantForce->OnTimedOutAndDestinationReached.AddDynamic(this, &USFA_GA_Combo2::OnMoveCompleted);
-
 			ApplyRootMotionConstantForce->ReadyForActivation();
 		}
 	}
 
-	UAbilityTask_WaitGameplayTagAdded* Task = UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(
+	if (UAbilityTask_WaitGameplayTagAdded* Task = UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(
 		this,
 		FGameplayTag::RequestGameplayTag(FName("Ability.Begin.Combo2")),
 		nullptr,
-		false);
-
-	if (Task)
+		false))
 	{
 		Task->Added.AddDynamic(this, &USFA_GA_Combo2::HandleMyTagAdded);
 		Task->ReadyForActivation();
