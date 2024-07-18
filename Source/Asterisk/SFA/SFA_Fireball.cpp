@@ -26,7 +26,7 @@ void ASFA_Fireball::Tick(float DeltaTime)
 void ASFA_Fireball::ShootAllDirections()
 {
 	//if (ProjectileClass || MaxProjectiles <= 0) return;
-	UE_LOG(LogTemp, Warning, TEXT("SSSSSSSSSSSSSSSSSSSSS"));
+	//UE_LOG(LogTemp, Warning, TEXT("SSSSSSSSSSSSSSSSSSSSS"));
 	const FVector SpawnLocation = GetActorLocation();
 	const float goldenRatio = (1.0f + FMath::Sqrt(5.0f)) / 2.0f;
 
